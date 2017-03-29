@@ -4,8 +4,16 @@ emed contains python scripts to digest event data from EM7 DB instances and crea
 
 The requirements to run these scripts are as follows:
 	1) a mysql/mariadb instance (5.5 or higher)
+		a) yum -y install mariadb-server mariadb
+		b) systemctl enable mariadb
+		c) systemctl status mariadb
 	2) a login for mysql sufficient to create/drop databases
-	3) python 2.7 or higher with the following modules (and any second order dependencies)
+	3) ensure the following pacakages are installed via package manager
+	    a) python-devel
+		b) mariadb-devel
+		c) mysql-connector-python
+		d) gcc
+	4) python 2.7 or higher with the following modules (and any second order dependencies)
 		a) argparse (1.3.0)
 		b) et-xmlfile (1.0.1)
 		c) lxml (3.4.4)
