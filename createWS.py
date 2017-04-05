@@ -153,7 +153,7 @@ def createWS(wb, s, dbh, FormatWB=True):
 		c.fill = PatternFill('solid', fgColor=headerfillcolor)
 
 	row = firstdatarow
-	for eventID in s['events']:
+	for eventID in s['eventsApp']:
 		cellA_ID = 'A%d'% (row)
 		cellB_ID = 'B%d'% (row)
 		cellC_ID = 'C%d'% (row)
@@ -166,12 +166,12 @@ def createWS(wb, s, dbh, FormatWB=True):
 		else:
 			rowfillcolor = data1fillcolor
 
-		# Get the data for the row from the events table
+		# Get the data for the row from the eventsApp table
 		try:
 			event_cur = dbh.cursor(mdb.cursors.DictCursor)
 			event_query = "SELECT \
 			EventName, AlertMessage, ThresholdValue, ThresholdUnit, EventSeverity, AppName \
-			from events where EventGUID = '%s'" % (eventID)
+			from eventsApp where EventGUID = '%s'" % (eventID)
 			event_cur.execute(event_query)
 		except mdb.Error, e:
 			print "Error %d: %s" % (e.args[0], e.args[1])

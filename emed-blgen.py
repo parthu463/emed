@@ -80,7 +80,7 @@ for sheet in sheets:
 	# print "Sheet: %s; SheetGUID: %s" % (sheet['SheetName'], sheet['SheetGUID'])
 	try:
 		events_cur = dbh.cursor(mdb.cursors.DictCursor)
-		events_query = "select distinct EventGUID from events INNER JOIN sheetappmapping on events.AppGUID = sheetappmapping.AppGUID  INNER JOIN sheets on sheetappmapping.SheetGUID = sheets.SheetGUID where sheets.SheetGUID = %s and EventSeverity != 0" % ( sheet['SheetGUID'] )
+		events_query = "select distinct EventGUID from eventsApp INNER JOIN sheetappmapping on eventsApp.AppGUID = sheetappmapping.AppGUID  INNER JOIN sheets on sheetappmapping.SheetGUID = sheets.SheetGUID where sheets.SheetGUID = %s and EventSeverity != 0" % ( sheet['SheetGUID'] )
 
 		events_cur.execute(events_query)
 	except mdb.Error, e:
@@ -92,10 +92,10 @@ for sheet in sheets:
 	except mdb.Error, e:
 		print "Error %d: %s" % (e.args[0], e.args[1])
 		sys.exit(1)
-	sheet['events'] = {}
+	sheet['eventsApp'] = {}
 	for event in events:
 		#print "    %s" % ( event['EventGUID'])
-		sheet['events'][event['EventGUID']] = {}
+		sheet['eventsApp'][event['EventGUID']] = {}
 		
 #pp.pprint(sheets)
 
@@ -119,7 +119,7 @@ for sheet in sheets:
 # Get the data out of the control table
 try:
 	control_cur = dbh.cursor(mdb.cursors.DictCursor)
-	control_query = "SELECT blwbname, blwbversion from control"
+	control_query = "SELECT wbtype, wbformat, wbname, wbversion from control"
 	control_cur.execute(control_query)
 except mdb.Error, e:
 	print "Error %d: %s" % (e.args[0], e.args[1])
@@ -132,7 +132,7 @@ except mdb.Error, e:
 	sys.exit(1)
 	
 # Create the workbook and get a handle
-blfname = "%s_%s_%s.xlsx" % (control['blwbname'], control['blwbversion'], wbFileNameTime)
+blfname = "%s_%s_%s.xlsx" % (control['wbname'], control['wbversion'], wbFileNameTime)
 wb = Workbook()
 
 createTitleWS(wb, wbRevisionTime, str(uuid.uuid4()))

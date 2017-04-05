@@ -8,9 +8,9 @@ GRANT ALL PRIVILEGES ON emed.* TO 'eventmgt'@'%';
 
 USE emed;
 
-DROP TABLE IF EXISTS events;
+DROP TABLE IF EXISTS eventsApp;
 
-CREATE TABLE `events` (
+CREATE TABLE `eventsApp` (
 	`AppName` VARCHAR(64) NOT NULL,
 	`EventName` VARCHAR(128) NOT NULL,
 	`AlertMessage` VARCHAR(128) NOT NULL DEFAULT '',
@@ -25,6 +25,19 @@ CREATE TABLE `events` (
 	`AppGUID` CHAR(32) NULL DEFAULT NULL,
 	`AlertGUID` CHAR(32) NULL DEFAULT NULL,
 	`ThresholdGUID` CHAR(32) NULL DEFAULT NULL
+)
+COLLATE='latin1_swedish_ci'
+ENGINE=InnoDB
+;	
+
+DROP TABLE IF EXISTS eventsTrap;
+
+CREATE TABLE `eventsTrap` (
+	`EventName` VARCHAR(128) NOT NULL,
+	`EventSeverity` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
+	`EventMessage` VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
+	`EventGUID` CHAR(32) NULL DEFAULT NULL,
+	`PowerpackGUID` CHAR(32) NOT NULL
 )
 COLLATE='latin1_swedish_ci'
 ENGINE=InnoDB
@@ -56,20 +69,38 @@ COLLATE='latin1_swedish_ci'
 ENGINE=InnoDB
 ;	
 
+DROP TABLE IF EXISTS `sheettrapmapping`;
+
+CREATE TABLE `sheettrapmapping` (
+    `SheetGUID` bigint(20) NOT NULL,
+	`PowerpackGUID` CHAR(32) NULL DEFAULT NULL
+	-- CONSTRAINT sheets_SheetGUID FOREIGN KEY (SheetGUID) REFERENCES sheets (SheetGUID),
+	-- CONSTRAINT events_AppGUID FOREIGN KEY (AppGUID) REFERENCES events (AppGUID)
+)
+COLLATE='latin1_swedish_ci'
+ENGINE=InnoDB
+;	
+
 DROP TABLE IF EXISTS `control`;
 
 CREATE TABLE `control` (
-	`blwbname` VARCHAR(64) NOT NULL DEFAULT 'VSBTH',
-	`blwbversion` VARCHAR(16) NOT NULL DEFAULT '0.9'
+	`wbtype` VARCHAR(64) NOT NULL DEFAULT 'baseline',
+	`wbformat` VARCHAR(64) NOT NULL DEFAULT 'xlsx',
+	`wbname` VARCHAR(64) NOT NULL DEFAULT 'VSBTH',
+	`wbversion` VARCHAR(16) NOT NULL DEFAULT '0.91'
 )
 COLLATE='latin1_swedish_ci'
 ENGINE=InnoDB
 ;	
 INSERT INTO `control` 
-(`blwbname`, `blwbversion`)
+(`wbtype`, `wbformat`, `wbname`, `wbversion`)
 VALUES
-('vsblth', '0.9');
+('baseline', 'xlsx', 'vsblth', '0.91');
 
+INSERT INTO `control` 
+(`wbtype`, `wbformat`, `wbname`, `wbversion`)
+VALUES
+('procedure', 'xlsx', 'vssop', '0.91');
 
 
 DROP TABLE IF EXISTS `sevmapping`;

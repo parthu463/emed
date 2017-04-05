@@ -1,11 +1,4 @@
 
--- set @ELEM_NAME = 'elem_PhysComputeChassis_UCSequipmentChassis_operability';
--- set @CMP = '!=';
--- set @THR = '0';
--- select svcElement_id from svcElements where name = @ELEM_NAME INTO @ELEM_ID;
--- insert into alarmThresholds (svcElement_id, alarmLevel_id, comparison, threshold) VALUES (@ELEM_ID, 1, @CMP, @THR);
--- set @ELEM_ID = NULL;
-
 use emed;
 
 insert into sheets
@@ -21,25 +14,35 @@ insert into sheets
 (SheetName, displayOrder, SheetDesc) VALUES ('VNXe', '5', 'EMC VNXe');
 
 insert into sheets
-(SheetName, displayOrder, SheetDesc) VALUES ('Cisco Switch', '6', 'Cisco Switch Chassis, PSU, Fan and Temperature');
+(SheetName, displayOrder, SheetDesc) VALUES ('Isilon', '6', 'EMC Isilon');
 
 insert into sheets
-(SheetName, displayOrder, SheetDesc) VALUES ('Switch iFace', '7', 'Ethernet Interfaces');
+(SheetName, displayOrder, SheetDesc) VALUES ('XIO', '7', 'EMC XtremIO');
 
 insert into sheets
-(SheetName, displayOrder, SheetDesc) VALUES ('vSphere Hosts', '8', 'vSphere Host');
+(SheetName, displayOrder, SheetDesc) VALUES ('Cisco Switch', '8', 'Cisco Switch Chassis, PSU, Fan and Temperature');
 
 insert into sheets
-(SheetName, displayOrder, SheetDesc) VALUES ('vSphere Datastores', '9', 'vSphere Datastore');
+(SheetName, displayOrder, SheetDesc) VALUES ('Switch iFace', '9', 'Ethernet Interfaces');
 
 insert into sheets
-(SheetName, displayOrder, SheetDesc) VALUES ('vSphere Guest VM (Tenant)', '10', 'vSphere Guest VM for Tenant Stack (GRM)');
+(SheetName, displayOrder, SheetDesc) VALUES ('vSphere Hosts', '10', 'vSphere Host');
 
 insert into sheets
-(SheetName, displayOrder, SheetDesc) VALUES ('CMOS (Tenant)', '11', 'Tenant VM Full Stack');
+(SheetName, displayOrder, SheetDesc) VALUES ('vSphere Datastores', '11', 'vSphere Datastore');
 
 insert into sheets
-(SheetName, displayOrder, SheetDesc) VALUES ('AMP VM', '12', 'Amp VM Full Stack');
+(SheetName, displayOrder, SheetDesc) VALUES ('vSphere Guest VM (Tenant)', '12', 'vSphere Guest VM for Tenant Stack (GRM)');
+
+insert into sheets
+(SheetName, displayOrder, SheetDesc) VALUES ('CMOS (Tenant)', '13', 'Tenant VM Full Stack');
+
+insert into sheets
+(SheetName, displayOrder, SheetDesc) VALUES ('AMP VM', '14', 'Amp VM Full Stack');
+
+
+-- Note:  The SheetGUID is one less than the displayOrder as long as the insert statements
+--        (above) remain in the display order.
 
 -- UCS Sheet App GUID's
 insert into sheetappmapping
@@ -108,73 +111,90 @@ insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES
 (3, 'AFA041B66625E8909F7461AEF8CB0B59');
 
+-- EMC VNXe Sheet App GUID's
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(4, '05D6C2082EF641A396D7E3A3BCBCDB24');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(4, '63CE15CFF5772CF47B0696A43650EF45');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(4, 'DDB27A65F22F05B87D716974119B77FB');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(4, '78524AC5E64F08571B5A079EEA827780');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(4, '77FF4E61707D1F346EB59387CC0D67D5');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(4, '1912E3288AA80B091024DBA002D4CE21');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(4, '118A6B23B9ABA66241362A48ED6F7913');
+
+
+-- EMC Isilon Sheet App GUID's
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(5, '603736D666A4A105D34AC00AE53D08E1');
+
+insert into sheettrapmapping
+(SheetGUID, PowerpackGUID) VALUES
+(5, '5479472A416E160702305726EB03F8F7');
+
+-- EMC XtremIO Sheet App GUID's
+
+insert into sheettrapmapping
+(SheetGUID, PowerpackGUID) VALUES
+(6, '2997BED40C4C7660A040BED374E872A0');
+
+insert into sheettrapmapping
+(SheetGUID, PowerpackGUID) VALUES
+(6, 'B7B8D6E4990A88F9EC99886D3D8D6C99');
 
 -- Cisco Switch Sheet App GUID's
 insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES
-(5, '645A45434787F06A9625D86C68CF59E1');
+(7, '645A45434787F06A9625D86C68CF59E1');
 
 insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES
-(5, '6E511AD041262B6437BBE3B8C2D7B4D8');
+(7, '6E511AD041262B6437BBE3B8C2D7B4D8');
 
 insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES
-(5, '2B2DE3560233FD6F773A350A215D1916');
+(7, '2B2DE3560233FD6F773A350A215D1916');
 
 insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES
-(5, 'FA9707E3F4F286D3B267C6DAF3CC4000');
+(7, 'FA9707E3F4F286D3B267C6DAF3CC4000');
+
+-- Network Interfaces Sheet App GUID's
+
 
 -- vSphere Host Sheet App GUID's
 insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES
-(7, 'F524618A59A440BA56E4B6C529B907B5');
+(9, 'F524618A59A440BA56E4B6C529B907B5');
 
 insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES
-(7, 'ADA1AD08362D983A8F3FA94F335F6048');
+(9, 'ADA1AD08362D983A8F3FA94F335F6048');
 
 -- vSphere Datastore Sheet App GUID's
 insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES
-(8, 'DD16CF364267AE0AFEB56C4D2BC53C79');
+(10, 'DD16CF364267AE0AFEB56C4D2BC53C79');
 
 -- vSphere Guest VM (Tenant) App GUID's
-insert into sheetappmapping
-(SheetGUID, AppGUID) VALUES
-(9, 'E28ED8DD41A89F3607DF8A204FF0475E');
-
-insert into sheetappmapping
-(SheetGUID, AppGUID) VALUES
-(9, 'E0326A53EFDCDD3BF395904B0F640D1B');
-
--- vSphere CMOS VM App GUID's
-insert into sheetappmapping
-(SheetGUID, AppGUID) VALUES
-(10, 'E28ED8DD41A89F3607DF8A204FF0475E');
-
-insert into sheetappmapping
-(SheetGUID, AppGUID) VALUES
-(10, 'E0326A53EFDCDD3BF395904B0F640D1B');
-
-insert into sheetappmapping
-(SheetGUID, AppGUID) VALUES
-(10, '232296730F74319D6765D79118603276');
-
-insert into sheetappmapping
-(SheetGUID, AppGUID) VALUES
-(10, '2E6DA0C29015D69F1F8D91529555C32C');
-
-insert into sheetappmapping
-(SheetGUID, AppGUID) VALUES
-(10, '46561F78FE7ABD6D43321ECC54FB6DAC');
-
-insert into sheetappmapping
-(SheetGUID, AppGUID) VALUES
-(10, '8A980A54AA30B3A3201B42691048D63E');
-
--- vSphere AMP VM App GUID's
 insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES
 (11, 'E28ED8DD41A89F3607DF8A204FF0475E');
@@ -183,19 +203,52 @@ insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES
 (11, 'E0326A53EFDCDD3BF395904B0F640D1B');
 
+-- vSphere CMOS VM App GUID's
 insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES
-(11, '232296730F74319D6765D79118603276');
+(12, 'E28ED8DD41A89F3607DF8A204FF0475E');
 
 insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES
-(11, '2E6DA0C29015D69F1F8D91529555C32C');
+(12, 'E0326A53EFDCDD3BF395904B0F640D1B');
 
 insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES
-(11, '46561F78FE7ABD6D43321ECC54FB6DAC');
+(12, '232296730F74319D6765D79118603276');
 
 insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES
-(11, '8A980A54AA30B3A3201B42691048D63E');
+(12, '2E6DA0C29015D69F1F8D91529555C32C');
 
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(12, '46561F78FE7ABD6D43321ECC54FB6DAC');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(12, '8A980A54AA30B3A3201B42691048D63E');
+
+-- vSphere AMP VM App GUID's
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(13, 'E28ED8DD41A89F3607DF8A204FF0475E');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(13, 'E0326A53EFDCDD3BF395904B0F640D1B');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(13, '232296730F74319D6765D79118603276');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(13, '2E6DA0C29015D69F1F8D91529555C32C');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(13, '46561F78FE7ABD6D43321ECC54FB6DAC');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(13, '8A980A54AA30B3A3201B42691048D63E');
