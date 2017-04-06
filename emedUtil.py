@@ -14,42 +14,56 @@ pp = pprint.PrettyPrinter(indent = 1)
 def createTitleWS(wb, revtime, uuidstr, FormatWB=True, generator='emed-blgen.py'):
 	ws = wb.active
 	ws.title = "Title"
+	
+	formatPalette = {}
+	formatPalette['virtustream'] = {}
 
-	titlefontsize = 14
-	titlefillcolor = 'bd1e30'
+	formatPalette['virtustream']['titlefontsize'] = 14
+	formatPalette['virtustream']['titlefillcolor'] = 'bd1e30'
 
-	labelfontsize = 12
-	labelfillcolor = '1a4b5f'
+	formatPalette['virtustream']['labelfontsize'] = 12
+	formatPalette['virtustream']['labelfillcolor'] = '1a4b5f'
+	
+	formatPalette['soft'] = {}
+
+	formatPalette['soft']['titlefontsize'] = 14
+	formatPalette['soft']['titlefillcolor'] = 'f6273e'
+
+	formatPalette['soft']['labelfontsize'] = 12
+	formatPalette['soft']['labelfillcolor'] = '21627c'
+
+	palette = 'virtustream'
+	palette = 'soft'
 	
 	c=ws['A1']
 	c.value = 'Virtustream'
 	if FormatWB:
-		c.font = Font(bold = True, size=titlefontsize)
-		c.fill = PatternFill('solid', fgColor=titlefillcolor)
+		c.font = Font(bold = True, size=formatPalette[palette]['titlefontsize'])
+		c.fill = PatternFill('solid', fgColor=formatPalette[palette]['titlefillcolor'])
 	ws.merge_cells('A1:B1')
 	
 	c=ws['A2']
 	c.value = 'Monitored Objects and Thresholds for Vblock Systems'
 	if FormatWB:
-		c.font = Font(bold = True, size=labelfontsize)
-		c.fill = PatternFill('solid', fgColor=labelfillcolor)
+		c.font = Font(bold = True, size=formatPalette[palette]['labelfontsize'])
+		c.fill = PatternFill('solid', fgColor=formatPalette[palette]['labelfillcolor'])
 	ws.merge_cells('A2:B2')
 	
 	c=ws['A6']
 	c.value = 'Generator'
 	if FormatWB:
-		c.font = Font(size=labelfontsize)
+		c.font = Font(size=formatPalette[palette]['labelfontsize'])
 	c=ws['B6']
 	c.value = generator
 	c=ws['A7']
 	c.value = 'Creation Time'
 	if FormatWB:
-		c.font = Font(size=labelfontsize)
+		c.font = Font(size=formatPalette[palette]['labelfontsize'])
 	c=ws['B7'] = revtime
 	c=ws['A8']
 	c.value = 'Identifier'
 	if FormatWB:
-		c.font = Font(size=labelfontsize)
+		c.font = Font(size=formatPalette[palette]['labelfontsize'])
 	c=ws['B8']
 	c.value = uuidstr
 	
@@ -60,22 +74,41 @@ def createWS(wb, s, dbh, FormatWB=True):
 	# pp.pprint(s)
 
 	# Create styles and positions in worksheets
-	titlerow = 1
-	#vs_title = NamedStyle(name='VS_Title')
-	titlefontsize = 14
-	#vs_title.font = Font(bold=True, size=titlefontsize)
-	titlefillcolor = 'bd1e30'
-	#vs_title.fill = PatternFill("solid", fgColor=titlefillcolor)
-	#wb.add_named_style(vs_title)
+	formatPalette = {}
+	formatPalette['virtustream'] = {}
 
-	headerrow = 2
-	headerfontsize = 12
-	headerfillcolor = '1a4b5f'
+	formatPalette['virtustream']['titlerow'] = 1
+	formatPalette['virtustream']['titlefontsize'] = 14
+	formatPalette['virtustream']['titlefillcolor'] = 'bd1e30'
 
-	firstdatarow = 3
 
-	data0fillcolor = '586a6f'
-	data1fillcolor = 'b5b9bb'
+	formatPalette['virtustream']['headerrow'] = 2
+	formatPalette['virtustream']['headerfontsize'] = 12
+	formatPalette['virtustream']['headerfillcolor'] = '1a4b5f'
+
+	formatPalette['virtustream']['firstdatarow'] = 3
+
+	formatPalette['virtustream']['data0fillcolor'] = '586a6f'
+	formatPalette['virtustream']['data1fillcolor'] = 'b5b9bb'
+	
+	formatPalette['soft'] = {}
+
+	formatPalette['soft']['titlerow'] = 1
+	formatPalette['soft']['titlefontsize'] = 14
+	formatPalette['soft']['titlefillcolor'] = 'f6273e'
+
+
+	formatPalette['soft']['headerrow'] = 2
+	formatPalette['soft']['headerfontsize'] = 12
+	formatPalette['soft']['headerfillcolor'] = '21627c'
+
+	formatPalette['soft']['firstdatarow'] = 3
+
+	formatPalette['soft']['data0fillcolor'] = '728a90'
+	formatPalette['soft']['data1fillcolor'] = 'd9d9d9'
+
+	palette = 'virtustream'
+	palette = 'soft'
 	
 	# create styles
 	#style_header = NamedStyle(name='VS_Header')
@@ -95,64 +128,64 @@ def createWS(wb, s, dbh, FormatWB=True):
 
 	# Title Row
 	
-	cellA_ID = 'A%d'% (titlerow)
-	cellB_ID = 'B%d'% (titlerow)
-	cellF_ID = 'F%d'% (titlerow)
+	cellA_ID = 'A%d'% (formatPalette[palette]['titlerow'])
+	cellB_ID = 'B%d'% (formatPalette[palette]['titlerow'])
+	cellF_ID = 'F%d'% (formatPalette[palette]['titlerow'])
 	c = ws[cellA_ID]
 	c.value = 'Virtustream'
 	if FormatWB:
-		c.font = Font(bold = True, size=titlefontsize)
-		c.fill = PatternFill('solid', fgColor=titlefillcolor)
+		c.font = Font(bold = True, size=formatPalette[palette]['titlefontsize'])
+		c.fill = PatternFill('solid', fgColor=formatPalette[palette]['titlefillcolor'])
 #	c.style = vs_title
 
 
 	c = ws[cellB_ID]
 	c.value = s['SheetDesc']
 	if FormatWB:
-		c.font = Font(bold = True, size=titlefontsize)
-		c.fill = PatternFill('solid', fgColor=titlefillcolor)
+		c.font = Font(bold = True, size=formatPalette[palette]['titlefontsize'])
+		c.fill = PatternFill('solid', fgColor=formatPalette[palette]['titlefillcolor'])
 	ws.merge_cells('%s:%s' % (cellB_ID, cellF_ID))
 	
 	
 	# Header Row
-	cellA_ID = 'A%d'% (headerrow)
-	cellB_ID = 'B%d'% (headerrow)
-	cellC_ID = 'C%d'% (headerrow)
-	cellD_ID = 'D%d'% (headerrow)
-	cellE_ID = 'E%d'% (headerrow)
-	cellF_ID = 'F%d'% (headerrow)
+	cellA_ID = 'A%d'% (formatPalette[palette]['headerrow'])
+	cellB_ID = 'B%d'% (formatPalette[palette]['headerrow'])
+	cellC_ID = 'C%d'% (formatPalette[palette]['headerrow'])
+	cellD_ID = 'D%d'% (formatPalette[palette]['headerrow'])
+	cellE_ID = 'E%d'% (formatPalette[palette]['headerrow'])
+	cellF_ID = 'F%d'% (formatPalette[palette]['headerrow'])
 	ws[cellA_ID] = 'Event Name'
 	c = ws[cellA_ID]
 	if FormatWB:
-		c.font = Font(bold = True, size=headerfontsize)
-		c.fill = PatternFill('solid', fgColor=headerfillcolor)
+		c.font = Font(bold = True, size=formatPalette[palette]['headerfontsize'])
+		c.fill = PatternFill('solid', fgColor=formatPalette[palette]['headerfillcolor'])
 	ws[cellB_ID] = 'Message Format'
 	c = ws[cellB_ID]
 	if FormatWB:
-		c.font = Font(bold = True, size=headerfontsize)
-		c.fill = PatternFill('solid', fgColor=headerfillcolor)
+		c.font = Font(bold = True, size=formatPalette[palette]['headerfontsize'])
+		c.fill = PatternFill('solid', fgColor=formatPalette[palette]['headerfillcolor'])
 	ws[cellC_ID] = 'Threshold'
 	c = ws[cellC_ID]
 	if FormatWB:
-		c.font = Font(bold = True, size=headerfontsize)
-		c.fill = PatternFill('solid', fgColor=headerfillcolor)
+		c.font = Font(bold = True, size=formatPalette[palette]['headerfontsize'])
+		c.fill = PatternFill('solid', fgColor=formatPalette[palette]['headerfillcolor'])
 	ws[cellD_ID] = 'Unit'
 	c = ws[cellD_ID]
 	if FormatWB:
-		c.font = Font(bold = True, size=headerfontsize)
-		c.fill = PatternFill('solid', fgColor=headerfillcolor)
+		c.font = Font(bold = True, size=formatPalette[palette]['headerfontsize'])
+		c.fill = PatternFill('solid', fgColor=formatPalette[palette]['headerfillcolor'])
 	ws[cellE_ID] = 'Severity'
 	c = ws[cellE_ID]
 	if FormatWB:
-		c.font = Font(bold = True, size=headerfontsize)
-		c.fill = PatternFill('solid', fgColor=headerfillcolor)
+		c.font = Font(bold = True, size=formatPalette[palette]['headerfontsize'])
+		c.fill = PatternFill('solid', fgColor=formatPalette[palette]['headerfillcolor'])
 	ws[cellF_ID] = 'Dynamic App'
 	c = ws[cellF_ID]
 	if FormatWB:
-		c.font = Font(bold = True, size=headerfontsize)
-		c.fill = PatternFill('solid', fgColor=headerfillcolor)
+		c.font = Font(bold = True, size=formatPalette[palette]['headerfontsize'])
+		c.fill = PatternFill('solid', fgColor=formatPalette[palette]['headerfillcolor'])
 
-	row = firstdatarow
+	row = formatPalette[palette]['firstdatarow']
 
 	# Get the list of events for each sheet and type in the sheet
 	eventtypes = ('eventsApp', 'eventsTrap')
@@ -176,9 +209,9 @@ def createWS(wb, s, dbh, FormatWB=True):
 				cellF_ID = 'F%d'% (row)
 		
 				if (row % 2) == 1:
-					rowfillcolor = data0fillcolor
+					rowfillcolor = formatPalette[palette]['data0fillcolor']
 				else:
-					rowfillcolor = data1fillcolor
+					rowfillcolor = formatPalette[palette]['data1fillcolor']
 
 				# Get the data for the row from the eventsApp table
 				try:
