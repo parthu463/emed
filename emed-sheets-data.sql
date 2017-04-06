@@ -23,7 +23,7 @@ insert into sheets
 (SheetName, displayOrder, SheetDesc) VALUES ('Cisco Switch', '8', 'Cisco Switch Chassis, PSU, Fan and Temperature');
 
 insert into sheets
-(SheetName, displayOrder, SheetDesc) VALUES ('Switch iFace', '9', 'Ethernet Interfaces');
+(SheetName, displayOrder, SheetDesc) VALUES ('Switch iFace', '9', 'Interface Monitoring');
 
 insert into sheets
 (SheetName, displayOrder, SheetDesc) VALUES ('vSphere Hosts', '10', 'vSphere Host');

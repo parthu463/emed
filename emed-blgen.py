@@ -11,7 +11,7 @@ from openpyxl import Workbook
 import time
 from datetime import datetime
 
-from createWS import *
+from emedUtil import createWS, createTitleWS
 
 pp = pprint.PrettyPrinter(indent = 1)
 
@@ -48,12 +48,6 @@ except mdb.Error, e:
 # Get a curstor into the database
 # cur = dbh.cursor(mdb.cursors.DictCursor)
 
-wbTime = datetime.utcnow()
-wbRevisionTime = wbTime.strftime("%Y-%b-%d %H:%M:%S") # Embedded in Workbook
-wbDaySeconds = "%s" % ((int(wbTime.strftime("%H"),10)*3600)\
-+ int(wbTime.strftime("%M"),10)*60\
-+ int(wbTime.strftime("%S"),10))
-wbFileNameTime = "%s-%s" % ((wbTime.strftime("%Y-%b-%d")), wbDaySeconds)
 
 # Get the list of sheets
 try:
@@ -76,50 +70,54 @@ except mdb.Error, e:
 	
 
 for sheet in sheets:
-	# Get the list of events for each sheet
-	# print "Sheet: %s; SheetGUID: %s" % (sheet['SheetName'], sheet['SheetGUID'])
-	try:
-		events_cur = dbh.cursor(mdb.cursors.DictCursor)
-		events_query = "select distinct EventGUID from eventsApp INNER JOIN sheetappmapping on eventsApp.AppGUID = sheetappmapping.AppGUID  INNER JOIN sheets on sheetappmapping.SheetGUID = sheets.SheetGUID where sheets.SheetGUID = %s and EventSeverity != 0" % ( sheet['SheetGUID'] )
+	# Get the list of events for each sheet and type in the sheet
+	eventtypes = ('eventsApp', 'eventsTrap')
 
-		events_cur.execute(events_query)
-	except mdb.Error, e:
-		print "Error %d: %s" % (e.args[0], e.args[1])
-		sys.exit(1)
+	for eventtype in eventtypes:
+		events_prequery = '';
+		if 'eventsApp' == eventtype:
+			events_prequery = "select distinct EventGUID from eventsApp INNER JOIN sheetappmapping on\
+				eventsApp.AppGUID = sheetappmapping.AppGUID  INNER JOIN sheets on sheetappmapping.SheetGUID = sheets.SheetGUID\
+				where sheets.SheetGUID = %s and EventSeverity != 0"
 
-	try:
-		events = events_cur.fetchall()
-	except mdb.Error, e:
-		print "Error %d: %s" % (e.args[0], e.args[1])
-		sys.exit(1)
-	sheet['eventsApp'] = {}
-	for event in events:
-		#print "    %s" % ( event['EventGUID'])
-		sheet['eventsApp'][event['EventGUID']] = {}
+		if 'eventsTrap' == eventtype:
+			events_prequery = "select distinct EventGUID from eventsTrap INNER JOIN sheettrapmapping on\
+				eventsTrap.PowerpackGUID = sheettrapmapping.PowerpackGUID INNER JOIN sheets on sheettrapmapping.SheetGUID = sheets.SheetGUID\
+				where sheets.SheetGUID = %s and EventSeverity != 0"
+		try:
+			events_cur = dbh.cursor(mdb.cursors.DictCursor)
+			events_query =  events_prequery % ( sheet['SheetGUID'] )
+	
+			events_cur.execute(events_query)
+		except mdb.Error, e:
+			print "Error %d: %s" % (e.args[0], e.args[1])
+			sys.exit(1)
+
+		try:
+			events = events_cur.fetchall()
+		except mdb.Error, e:
+			print "Error %d: %s" % (e.args[0], e.args[1])
+			sys.exit(1)
+
+		if events:
+			sheet[eventtype] = {}
+			for event in events:
+				#print "    %s" % ( event['EventGUID'])
+				sheet[eventtype][event['EventGUID']] = {}
 		
-#pp.pprint(sheets)
-
+		events_cur.close()
+					
 # sheets contains the ordered list of sheets to create and the list of events for each sheet.
-#  ({'SheetGUID': 1L,
-#  'SheetName': 'UCS',
-#    'displayOrder': 2L,
-#    'events': {'2178341D754953C09EAFC442A3823E51': {},
-#               '323AA806419C1EA1817DED17FB86A1A3': {},
-#               'DED8A1475BFF9428CDBF1713D93B423C': {}}},
-#   {'SheetGUID': 2L,
-#    'SheetName': 'vSphere Hosts',
-#    'displayOrder': 3L,
-#    'events': {'1BB1E3BCC297796F60CAD9A056A9C923': {},
-#               'C8C344738D2E17B18B0BFBE64FFECF54': {}}},
-#   {'SheetGUID': 3L,
-#    'SheetName': 'vSphere Datastores',
-#    'displayOrder': 4L,
-#    'events': {'A29279EE1201EBC8C437DB700D1CC78F': {}}})
+# uncomment pretty print, sys.exit lines below and run to see format
+# pp.pprint(sheets)
+# sys.exit(0)
+
+# Data structures populated
 
 # Get the data out of the control table
 try:
 	control_cur = dbh.cursor(mdb.cursors.DictCursor)
-	control_query = "SELECT wbtype, wbformat, wbname, wbversion from control"
+	control_query = "SELECT wbname, wbversion from control where wbtype like 'baseline'"
 	control_cur.execute(control_query)
 except mdb.Error, e:
 	print "Error %d: %s" % (e.args[0], e.args[1])
@@ -131,6 +129,14 @@ except mdb.Error, e:
 	print "Error %d: %s" % (e.args[0], e.args[1])
 	sys.exit(1)
 	
+# Create time strings for embedding and in file name
+wbTime = datetime.utcnow()
+wbRevisionTime = wbTime.strftime("%Y-%b-%d %H:%M:%S") # Embedded in Workbook
+wbDaySeconds = "%s" % ((int(wbTime.strftime("%H"),10)*3600)\
++ int(wbTime.strftime("%M"),10)*60\
++ int(wbTime.strftime("%S"),10))
+wbFileNameTime = "%s-%s" % ((wbTime.strftime("%Y%m%d")), wbDaySeconds)
+
 # Create the workbook and get a handle
 blfname = "%s_%s_%s.xlsx" % (control['wbname'], control['wbversion'], wbFileNameTime)
 wb = Workbook()

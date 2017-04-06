@@ -9,7 +9,7 @@ import pprint
 import time
 from datetime import datetime
 
-from loadWS import *
+from emedUtil import loadWStoEMED
 
 pp = pprint.PrettyPrinter(indent = 1)
 
