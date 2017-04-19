@@ -70,30 +70,6 @@ COLLATE='latin1_swedish_ci'
 ENGINE=InnoDB
 ;	
 
-DROP TABLE IF EXISTS `sheetappmapping`;
-
-CREATE TABLE `sheetappmapping` (
-    `SheetGUID` bigint(20) NOT NULL,
-	`AppGUID` CHAR(32) NULL DEFAULT NULL
-	-- CONSTRAINT sheets_SheetGUID FOREIGN KEY (SheetGUID) REFERENCES sheets (SheetGUID),
-	-- CONSTRAINT events_AppGUID FOREIGN KEY (AppGUID) REFERENCES events (AppGUID)
-)
-COLLATE='latin1_swedish_ci'
-ENGINE=InnoDB
-;	
-
-DROP TABLE IF EXISTS `sheettrapmapping`;
-
-CREATE TABLE `sheettrapmapping` (
-    `SheetGUID` bigint(20) NOT NULL,
-	`PowerpackGUID` CHAR(32) NULL DEFAULT NULL
-	-- CONSTRAINT sheets_SheetGUID FOREIGN KEY (SheetGUID) REFERENCES sheets (SheetGUID),
-	-- CONSTRAINT events_AppGUID FOREIGN KEY (AppGUID) REFERENCES events (AppGUID)
-)
-COLLATE='latin1_swedish_ci'
-ENGINE=InnoDB
-;	
-
 DROP TABLE IF EXISTS `trapDataXMS`;
 
 CREATE TABLE `trapDataXMS` (
@@ -132,9 +108,9 @@ VALUES
 ('procedure', 'xlsx', 'vssop', '0.91');
 
 
-DROP TABLE IF EXISTS `sevmapping`;
+DROP TABLE IF EXISTS `severityMapping`;
 
-CREATE TABLE `sevmapping` (
+CREATE TABLE `severityMapping` (
 	`EventSeverity` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
 	`EventDisplay` VARCHAR(32) NOT NULL
 )
@@ -142,27 +118,27 @@ COLLATE='latin1_swedish_ci'
 ENGINE=InnoDB
 ;
 
-INSERT INTO `sevmapping`
+INSERT INTO `severityMapping`
 (`EventSeverity`, `EventDisplay`)
 VALUES
 (0, 'Healthy');	
-INSERT INTO `sevmapping`
+INSERT INTO `severityMapping`
 (`EventSeverity`, `EventDisplay`)
 VALUES
 (1, 'Informational');	
-INSERT INTO `sevmapping`
+INSERT INTO `severityMapping`
 (`EventSeverity`, `EventDisplay`)
 VALUES
 (2, 'Warning');	
-INSERT INTO `sevmapping`
+INSERT INTO `severityMapping`
 (`EventSeverity`, `EventDisplay`)
 VALUES
 (3, 'Minor');	
-INSERT INTO `sevmapping`
+INSERT INTO `severityMapping`
 (`EventSeverity`, `EventDisplay`)
 VALUES
 (4, 'Major');	
-INSERT INTO `sevmapping`
+INSERT INTO `severityMapping`
 (`EventSeverity`, `EventDisplay`)
 VALUES
 (5, 'Critical');	

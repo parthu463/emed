@@ -64,32 +64,41 @@ except mdb.Error, e:
 	print "Error %d: %s" % (e.args[0], e.args[1])
 	sys.exit(1)
 	
-pp.pprint(sheets)
+#pp.pprint(sheets)
 #print sheet['displayOrder']
 #print "Sheet: %s; SheetGUID: %s" (sheet['SheetName'], sheet['SheetGUID'])
-sys.exit(0)	
+#sys.exit(0)	
 
+eventtypes = ('eventsApp', 'eventsTrap', 'eventsTrapVarBind')
 for sheet in sheets:
+	# pp.pprint(sheet)
 	# Get the list of events for each sheet and type in the sheet
-	eventtypes = ('eventsApp', 'eventsTrap', 'eventsTrapVarBind')
 
-	for eventtype in eventtypes:
+	for current_type in range(0, (len(eventtypes) - 1)):
+		eventtype = eventtypes[current_type]
 		events_prequery = '';
 		if 'eventsApp' == eventtype:
-			events_prequery = "select distinct EventGUID from eventsApp INNER JOIN sheetappmapping on\
-				eventsApp.AppGUID = sheetappmapping.AppGUID  INNER JOIN sheets on sheetappmapping.SheetGUID = sheets.SheetGUID\
-				where sheets.SheetGUID = %s and EventSeverity != 0"
+			events_prequery = "select distinct EventGUID from eventsApp\
+				INNER JOIN sheetMapping on eventsApp.AppGUID = sheetMapping.DataIdentifier\
+				INNER JOIN sheets on sheetMapping.SheetGUID = sheets.SheetGUID\
+				where sheetMapping.DataType = %d and sheets.SheetGUID = %s and EventSeverity != 0"
 
-		if 'eventsTrap' == eventtype:
-			events_prequery = "select distinct EventGUID from eventsTrap INNER JOIN sheettrapmapping on\
-				eventsTrap.PowerpackGUID = sheettrapmapping.PowerpackGUID INNER JOIN sheets on sheettrapmapping.SheetGUID = sheets.SheetGUID\
-				where sheets.SheetGUID = %s and EventSeverity != 0"
-		if 'eventsTrapVarBind' == eventtype:
-			events_prequery = "select distinct EventGUID from eventsTrap INNER JOIN sheettrapmapping on\
-				eventsTrap.PowerpackGUID = sheettrapmapping.PowerpackGUID INNER JOIN sheets on sheettrapmapping.SheetGUID = sheets.SheetGUID\
-				where sheets.SheetGUID = %s and EventSeverity != 0"try:
+		elif 'eventsTrap' == eventtype:
+			events_prequery = "select distinct EventGUID from eventsTrap\
+				INNER JOIN sheetMapping on eventsTrap.PowerpackGUID = sheetMapping.DataIdentifier\
+				INNER JOIN sheets on sheetMapping.SheetGUID = sheets.SheetGUID\
+				where dataType = %d and sheets.SheetGUID = %s and EventSeverity != 0"
+
+		elif 'eventsTrapVarBind' == eventtype:
+			events_prequery = "select dataIdentifier as EventGUID from sheetMapping \
+				where dataType = %d and SheetGUID = %s"
+		else:
+			print "Unidentified Event Type: %s" % (eventtype)
+			sys.exit(1)
+
+		try:
 			events_cur = dbh.cursor(mdb.cursors.DictCursor)
-			events_query =  events_prequery % ( sheet['SheetGUID'] )
+			events_query =  events_prequery % ( current_type, sheet['SheetGUID'] )
 	
 			events_cur.execute(events_query)
 		except mdb.Error, e:
