@@ -64,10 +64,10 @@ except mdb.Error, e:
 	print "Error %d: %s" % (e.args[0], e.args[1])
 	sys.exit(1)
 	
-#pp.pprint(sheets)
+pp.pprint(sheets)
 #print sheet['displayOrder']
 #print "Sheet: %s; SheetGUID: %s" (sheet['SheetName'], sheet['SheetGUID'])
-	
+sys.exit(0)	
 
 for sheet in sheets:
 	# Get the list of events for each sheet and type in the sheet

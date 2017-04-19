@@ -44,7 +44,7 @@ insert into sheets
 -- Note:  The SheetGUID is one less than the displayOrder as long as the insert statements
 --        (above) remain in the display order.
 
--- UCS Sheet App GUID's
+-- UCS Sheet
 insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES
 (1, '06A45DD39CAC5C6BDA6F4B5495570B00');
@@ -77,7 +77,7 @@ insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES
 (1, 'E1CADD030364B5BBDA98BD86ABB2CC37');
 
--- EMC VMAX Sheet App GUID's
+-- EMC VMAX Sheet
 insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES
 (2, 'DF7DE29E9880F27AB791CC4F2D8085D4');
@@ -86,7 +86,7 @@ insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES
 (2, 'A810D5905D7323E613E0BD853B18F5B2');
 
--- EMC VNX Sheet App GUID's
+-- EMC VNX Sheet
 insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES
 (3, 'DCF964F36ABD74A1ECE10839FA52F81B');
@@ -112,8 +112,6 @@ insert into sheetappmapping
 (3, 'AFA041B66625E8909F7461AEF8CB0B59');
 
 --
-
-
 insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES
 (3, 'DCF964F36ABD74A1ECE10839FA52F81B');
@@ -243,7 +241,7 @@ insert into sheetappmapping
 (3, '301FCADCB2E454F9D16CFCB08A6D32A9');
 
 
--- EMC VNXe Sheet App GUID's
+-- EMC VNXe Sheet
 insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES
 (4, '05D6C2082EF641A396D7E3A3BCBCDB24');
@@ -273,7 +271,7 @@ insert into sheetappmapping
 (4, '118A6B23B9ABA66241362A48ED6F7913');
 
 
--- EMC Isilon Sheet App GUID's
+-- EMC Isilon Sheet
 insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES
 (5, '603736D666A4A105D34AC00AE53D08E1');
@@ -282,17 +280,17 @@ insert into sheettrapmapping
 (SheetGUID, PowerpackGUID) VALUES
 (5, '5479472A416E160702305726EB03F8F7');
 
--- EMC XtremIO Sheet App GUID's
+-- EMC XtremIO Sheet
 
-insert into sheettrapmapping
-(SheetGUID, PowerpackGUID) VALUES
-(6, '2997BED40C4C7660A040BED374E872A0');
+-- insert into sheettrapmapping
+-- (SheetGUID, PowerpackGUID) VALUES
+-- (6, '2997BED40C4C7660A040BED374E872A0');
 
-insert into sheettrapmapping
-(SheetGUID, PowerpackGUID) VALUES
-(6, 'B7B8D6E4990A88F9EC99886D3D8D6C99');
+-- insert into sheettrapmapping
+-- (SheetGUID, PowerpackGUID) VALUES
+-- (6, 'B7B8D6E4990A88F9EC99886D3D8D6C99');
 
--- Cisco Switch Sheet App GUID's
+-- Cisco Switch Sheet
 insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES
 (7, '645A45434787F06A9625D86C68CF59E1');
@@ -309,10 +307,10 @@ insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES
 (7, 'FA9707E3F4F286D3B267C6DAF3CC4000');
 
--- Network Interfaces Sheet App GUID's
+-- Network Interfaces Sheet
 
 
--- vSphere Host Sheet App GUID's
+-- vSphere Host Sheet
 insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES
 (9, 'F524618A59A440BA56E4B6C529B907B5');
@@ -321,12 +319,12 @@ insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES
 (9, 'ADA1AD08362D983A8F3FA94F335F6048');
 
--- vSphere Datastore Sheet App GUID's
+-- vSphere Datastore
 insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES
 (10, 'DD16CF364267AE0AFEB56C4D2BC53C79');
 
--- vSphere Guest VM (Tenant) App GUID's
+-- vSphere Guest VM (Tenant) Sheet
 insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES
 (11, 'E28ED8DD41A89F3607DF8A204FF0475E');
@@ -335,7 +333,7 @@ insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES
 (11, 'E0326A53EFDCDD3BF395904B0F640D1B');
 
--- vSphere CMOS VM App GUID's
+-- vSphere CMOS VM App Sheet
 insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES
 (12, 'E28ED8DD41A89F3607DF8A204FF0475E');
@@ -360,7 +358,7 @@ insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES
 (12, '8A980A54AA30B3A3201B42691048D63E');
 
--- vSphere AMP VM App GUID's
+-- vSphere AMP VM App Sheet
 insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES
 (13, 'E28ED8DD41A89F3607DF8A204FF0475E');
