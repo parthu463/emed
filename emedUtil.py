@@ -9,7 +9,7 @@ from openpyxl import load_workbook
 
 import pprint
 
-pp = pprint.PrettyPrinter(indent = 1)
+pp = pprint.PrettyPrinter(indent = 1, depth = 4)
 
 def createTitleWS(wb, revtime, uuidstr, FormatWB=True, generator='emed-blgen.py'):
 	ws = wb.active
@@ -67,7 +67,8 @@ def createTitleWS(wb, revtime, uuidstr, FormatWB=True, generator='emed-blgen.py'
 	c=ws['B8']
 	c.value = uuidstr
 	
-	
+	ws.column_dimensions['A'].width = 16
+	ws.column_dimensions['B'].width = 50
 	
 def createWS(wb, s, dbh, FormatWB=True):
 	pp = pprint.PrettyPrinter(indent = 1)
@@ -265,6 +266,27 @@ def createWS(wb, s, dbh, FormatWB=True):
 
 		except KeyError:
 			continue
+
+	ws.column_dimensions['A'].width = 55
+	ws.column_dimensions['B'].width = 105
+	ws.column_dimensions['C'].width = 10
+	ws.column_dimensions['D'].width = 10
+	ws.column_dimensions['E'].width = 10
+	ws.column_dimensions['F'].width = 35
+
+	filterStart_ID = 'A%d'% (formatPalette[palette]['headerrow'])
+	filterEnd_ID = 'F%d' % (row - 1)
+	filterRange = '%s:%s' % (filterStart_ID, filterEnd_ID)
+	ws.auto_filter_ref = filterRange
+#	ws.auto_filter.add_filter_column('A')
+#	ws.auto_filter.add_filter_column('B')
+#	ws.auto_filter.add_filter_column('C')
+#	ws.auto_filter.add_filter_column('D')
+#	ws.auto_filter.add_filter_column('E')
+#	ws.auto_filter.add_filter_column('F')
+
+#	pp.pprint(ws)
+
 
 
 def loadWStoEMED(type, wsdata, dbh):

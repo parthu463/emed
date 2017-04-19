@@ -111,6 +111,138 @@ insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES
 (3, 'AFA041B66625E8909F7461AEF8CB0B59');
 
+--
+
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(3, 'DCF964F36ABD74A1ECE10839FA52F81B');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(3, '24CE64DE060C2DC86135D0F71463A713');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(3, 'C618C4FD890F6F1F78B09930BFFCED0D');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(3, '536B981634ECD67D0E3FE3E198353556');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(3, 'C1F40683777331FCB5A82BB600C0F41F');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(3, '14619851D36CE71EEE11F17A1113F9F6');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(3, 'A360134A68FA79E9E9BFCDC1B49392D2');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(3, '2E8D9ACBC116234D97E09E0DB75818B3');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(3, '5219707080C4452DCF00443E6E041FB2');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(3, '01930C3C88DB45674A638E72642F1486');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(3, '3F1BCAA1313609A3EFC4C38D8B7F1CD3');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(3, '84CF3A9020171C9785F595D93D7A07E8');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(3, '69776B470846A1AB0A2C18BC8C9487D1');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(3, 'D454D82F25DF461C0AC86A1FEA54544B');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(3, '6637978F5B1CA96822822A2BD38062AA');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(3, '0775AF3263ACD6C75E195406D67C20BC');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(3, '17989AD6F45C4C05B42CA92D32932036');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(3, '3F0AF7DA8B255948E80F79E1932ECEA2');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(3, 'AB83E979F968D817512ABB52A884EAAF');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(3, 'AFA041B66625E8909F7461AEF8CB0B59');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(3, '1A6698328A485E60707903971AACFDFA');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(3, 'FFFE95BC78E496B059CF81D50B530232');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(3, '164E8FC44046306FF9B5D2190717B7CF');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(3, '0BBF291DA430AA8ADD34DF9B08F5791A');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(3, '6C5BFF5AD43C2638CB22DD9707FAF749');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(3, '26F9E5D8A9411268E93DFCD278E3E446');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(3, '48A5B882EC03D6D0D65B8A6BF62B2296');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(3, '4BE1545B422A08D1F0B1B8735C2F5201');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(3, '8508300460B1E5E204FB7D7A145E4082');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(3, 'BD1F16AB78FD19746CDBB48F7AF9C416');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(3, '3C86C6F8E9A6E703D460B418EB0031B8');
+
+insert into sheetappmapping
+(SheetGUID, AppGUID) VALUES
+(3, '301FCADCB2E454F9D16CFCB08A6D32A9');
+
+
 -- EMC VNXe Sheet App GUID's
 insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES

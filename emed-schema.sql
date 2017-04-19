@@ -81,6 +81,21 @@ COLLATE='latin1_swedish_ci'
 ENGINE=InnoDB
 ;	
 
+DROP TABLE IF EXISTS `trapDataXMS`;
+
+CREATE TABLE `trapDataXMS` (
+    `trapIndex` bigint(20) NOT NULL AUTO_INCREMENT,
+	`trapName` CHAR(128) NULL DEFAULT NULL,
+    `trapCode` bigint(20) NOT NULL DEFAULT 4294967295,
+	`trapMessage` VARCHAR(128) NOT NULL DEFAULT '',
+	`trapFieldValues` VARCHAR(128) NOT NULL DEFAULT '',
+	`trapSeverity` CHAR(32) NULL DEFAULT NULL,
+	PRIMARY KEY (trapIndex)
+)
+COLLATE='latin1_swedish_ci'
+ENGINE=InnoDB
+;	
+
 DROP TABLE IF EXISTS `control`;
 
 CREATE TABLE `control` (
