@@ -69,12 +69,12 @@ except mdb.Error, e:
 #print "Sheet: %s; SheetGUID: %s" (sheet['SheetName'], sheet['SheetGUID'])
 #sys.exit(0)	
 
-eventtypes = ('eventsApp', 'eventsTrap', 'eventsTrapVarBind')
+eventtypes = ('eventsApp', 'eventsTrap', 'eventsTrapVarbind')
 for sheet in sheets:
 	# pp.pprint(sheet)
 	# Get the list of events for each sheet and type in the sheet
 
-	for current_type in range(0, (len(eventtypes) - 1)):
+	for current_type in range(0, len(eventtypes)):
 		eventtype = eventtypes[current_type]
 		events_prequery = '';
 		if 'eventsApp' == eventtype:
@@ -87,11 +87,12 @@ for sheet in sheets:
 			events_prequery = "select distinct EventGUID from eventsTrap\
 				INNER JOIN sheetMapping on eventsTrap.PowerpackGUID = sheetMapping.DataIdentifier\
 				INNER JOIN sheets on sheetMapping.SheetGUID = sheets.SheetGUID\
-				where dataType = %d and sheets.SheetGUID = %s and EventSeverity != 0"
+				where sheetMapping.DataType = %d and sheets.SheetGUID = %s and EventSeverity != 0"
 
-		elif 'eventsTrapVarBind' == eventtype:
-			events_prequery = "select dataIdentifier as EventGUID from sheetMapping \
-				where dataType = %d and SheetGUID = %s"
+		elif 'eventsTrapVarbind' == eventtype:
+			events_prequery = "select dataIdentifier as EventGUID from sheetMapping\
+				where sheetMapping.DataType = %d and sheetMapping.SheetGUID = %s"
+
 		else:
 			print "Unidentified Event Type: %s" % (eventtype)
 			sys.exit(1)
