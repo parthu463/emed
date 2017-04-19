@@ -71,7 +71,7 @@ sys.exit(0)
 
 for sheet in sheets:
 	# Get the list of events for each sheet and type in the sheet
-	eventtypes = ('eventsApp', 'eventsTrap')
+	eventtypes = ('eventsApp', 'eventsTrap', 'eventsTrapVarBind')
 
 	for eventtype in eventtypes:
 		events_prequery = '';
@@ -84,7 +84,10 @@ for sheet in sheets:
 			events_prequery = "select distinct EventGUID from eventsTrap INNER JOIN sheettrapmapping on\
 				eventsTrap.PowerpackGUID = sheettrapmapping.PowerpackGUID INNER JOIN sheets on sheettrapmapping.SheetGUID = sheets.SheetGUID\
 				where sheets.SheetGUID = %s and EventSeverity != 0"
-		try:
+		if 'eventsTrapVarBind' == eventtype:
+			events_prequery = "select distinct EventGUID from eventsTrap INNER JOIN sheettrapmapping on\
+				eventsTrap.PowerpackGUID = sheettrapmapping.PowerpackGUID INNER JOIN sheets on sheettrapmapping.SheetGUID = sheets.SheetGUID\
+				where sheets.SheetGUID = %s and EventSeverity != 0"try:
 			events_cur = dbh.cursor(mdb.cursors.DictCursor)
 			events_query =  events_prequery % ( sheet['SheetGUID'] )
 	

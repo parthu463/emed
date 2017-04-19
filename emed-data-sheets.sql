@@ -290,6 +290,10 @@ insert into sheettrapmapping
 -- (SheetGUID, PowerpackGUID) VALUES
 -- (6, 'B7B8D6E4990A88F9EC99886D3D8D6C99');
 
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
+(6, 3, 'emed-data-traps-xms.sql');
+
 -- Cisco Switch Sheet
 insert into sheetappmapping
 (SheetGUID, AppGUID) VALUES

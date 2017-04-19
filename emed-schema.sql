@@ -57,6 +57,19 @@ COLLATE='latin1_swedish_ci'
 ENGINE=InnoDB
 ;	
 
+DROP TABLE IF EXISTS `sheetMapping`;
+
+CREATE TABLE `sheetMapping` (
+    `SheetGUID` bigint(20) NOT NULL
+	,`DataType` bigint(20) NOT NULL 
+	,`DataIdentifier` CHAR(64) NULL DEFAULT NULL
+	,CONSTRAINT sheets_SheetGUID FOREIGN KEY (SheetGUID) REFERENCES sheets (SheetGUID)
+	-- ,CONSTRAINT events_AppGUID FOREIGN KEY (AppGUID) REFERENCES events (AppGUID)
+)
+COLLATE='latin1_swedish_ci'
+ENGINE=InnoDB
+;	
+
 DROP TABLE IF EXISTS `sheetappmapping`;
 
 CREATE TABLE `sheetappmapping` (
@@ -107,6 +120,7 @@ CREATE TABLE `control` (
 COLLATE='latin1_swedish_ci'
 ENGINE=InnoDB
 ;	
+
 INSERT INTO `control` 
 (`wbtype`, `wbformat`, `wbname`, `wbversion`)
 VALUES
@@ -152,19 +166,4 @@ INSERT INTO `sevmapping`
 (`EventSeverity`, `EventDisplay`)
 VALUES
 (5, 'Critical');	
-
-		
--- CREATE TABLE IF NOT EXISTS svcDefs (
-  -- _id bigint(20) NOT NULL AUTO_INCREMENT,
-  -- name varchar(80) DEFAULT NULL,
-  -- displayName varchar(80) DEFAULT NULL,
-  -- displayOrder bigint(20) NOT NULL DEFAULT 4294967295,
-  -- active boolean DEFAULT TRUE,
-  -- descr varchar(1024) DEFAULT NULL,
-  -- PRIMARY KEY (svcDef_id)
--- ) ENGINE=InnoDB
-  -- DEFAULT CHARSET=utf8
-  -- COLLATE=utf8_bin
-  -- COMMENT='Service Definitions represent the root of a hierarchy of Service Clusters.';
-
 
