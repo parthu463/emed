@@ -11,7 +11,7 @@ from openpyxl import Workbook
 import time
 from datetime import datetime
 
-from emedUtil import createWS, createTitleWS
+from emedUtil import createWS, createTitleWS, eventtypes
 
 pp = pprint.PrettyPrinter(indent = 1)
 
@@ -69,7 +69,6 @@ except mdb.Error, e:
 #print "Sheet: %s; SheetGUID: %s" (sheet['SheetName'], sheet['SheetGUID'])
 #sys.exit(0)	
 
-eventtypes = ('eventsApp', 'eventsTrap', 'eventsTrapVarbind')
 for sheet in sheets:
 	# pp.pprint(sheet)
 	# Get the list of events for each sheet and type in the sheet
@@ -145,10 +144,10 @@ except mdb.Error, e:
 # Create time strings for embedding and in file name
 wbTime = datetime.utcnow()
 wbRevisionTime = wbTime.strftime("%Y-%b-%d %H:%M:%S") # Embedded in Workbook
-wbDaySeconds = "%s" % ((int(wbTime.strftime("%H"),10)*3600)\
+wbDaySeconds = (int(wbTime.strftime("%H"),10)*3600)\
 + int(wbTime.strftime("%M"),10)*60\
-+ int(wbTime.strftime("%S"),10))
-wbFileNameTime = "%s-%s" % ((wbTime.strftime("%Y%m%d")), wbDaySeconds)
++ int(wbTime.strftime("%S"),10)
+wbFileNameTime = "%s-%05d" % ((wbTime.strftime("%Y%m%d")), wbDaySeconds)
 
 # Create the workbook and get a handle
 blfname = "%s_%s_%s.xlsx" % (control['wbname'], control['wbversion'], wbFileNameTime)

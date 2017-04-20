@@ -9,6 +9,8 @@ from openpyxl import load_workbook
 
 import pprint
 
+eventtypes = ('eventsApp', 'eventsTrap', 'eventsTrapVarbind')
+
 pp = pprint.PrettyPrinter(indent = 1, depth = 4)
 
 def createTitleWS(wb, revtime, uuidstr, FormatWB=True, generator='emed-blgen.py'):
@@ -115,8 +117,7 @@ def createWS(wb, s, dbh, FormatWB=True):
 	#style_header = NamedStyle(name='VS_Header')
 	#style_data1 = NamedStyle(name='VS_Data0')
 	#style_data2 = NamedStyle(name='VS_Data1')
-	
-	
+		
 	
 	severityMapping = ["Healthy" \
 	,'Informational' \
@@ -189,16 +190,21 @@ def createWS(wb, s, dbh, FormatWB=True):
 	row = formatPalette[palette]['firstdatarow']
 
 	# Get the list of events for each sheet and type in the sheet
-	eventtypes = ('eventsApp', 'eventsTrap')
 
 	for eventtype in eventtypes:
 		event_prequery = '';
 		if 'eventsApp' == eventtype:
 			event_prequery = "SELECT EventName, AlertMessage, ThresholdValue, ThresholdUnit, EventSeverity, AppName \
 			from eventsApp where EventGUID = '%s'"
-		if 'eventsTrap' == eventtype:
+		elif 'eventsTrap' == eventtype:
 			event_prequery = "SELECT EventName, EventMessage as AlertMessage, EventSeverity \
 			from eventsTrap where EventGUID = '%s'"
+		elif 'eventsTrapVarbind' == eventtype:
+			event_prequery = "SELECT trapName as EventName, trapMessage as AlertMessage,\
+				trapSeverity as EventSeverity from %s"
+		else:
+			print "Unidentified Event Type: %s" % (eventtype)
+			sys.exit(1)
 			
 		try:
 			for eventID in s[eventtype]:
@@ -218,6 +224,7 @@ def createWS(wb, s, dbh, FormatWB=True):
 				try:
 					event_cur = dbh.cursor(mdb.cursors.DictCursor)
 					event_query = event_prequery % (eventID)
+					pp.pprint(event_query)
 					event_cur.execute(event_query)
 				except mdb.Error, e:
 					print "Error %d: %s" % (e.args[0], e.args[1])
@@ -231,7 +238,7 @@ def createWS(wb, s, dbh, FormatWB=True):
 				
 				event_cur.close()
 				
-				if 'eventsTrap' == eventtype:
+				if 'eventsTrap' == eventtype or 'eventsTrapVarbind' == eventtype:
 					event['ThresholdValue'] = ''
 					event['ThresholdUnit'] = ''
 					event['AppName'] = 'SNMP Trap'
@@ -252,8 +259,12 @@ def createWS(wb, s, dbh, FormatWB=True):
 					ws[cellD_ID] = event['ThresholdUnit']
 				c=ws[cellD_ID]
 				if FormatWB:
-					c.fill = PatternFill('solid', fgColor=rowfillcolor)
-				ws[cellE_ID] = severityMapping[event['EventSeverity']]
+					c.fill = PatternFill('solid', fgColor=rowfillcolor) 
+#				# eventsTrapVarbind severities are already strings
+				if isinstance(event['EventSeverity'], int):
+					ws[cellE_ID] = severityMapping[event['EventSeverity']]
+				else:
+					ws[cellE_ID] = event['EventSeverity']
 				c=ws[cellE_ID]
 				if FormatWB:
 					c.fill = PatternFill('solid', fgColor=rowfillcolor)
