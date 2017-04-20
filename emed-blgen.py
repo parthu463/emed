@@ -13,6 +13,7 @@ from datetime import datetime
 
 from emedUtil import createWS, createTitleWS, eventtypes
 from emedUtil import emed_getEventsTrapVarbindTableName
+from emedUtil import emed_getEventDetails
 
 pp = pprint.PrettyPrinter(indent = 1)
 
@@ -126,7 +127,8 @@ for sheet in sheets:
 			sheet[eventtype]['data'] = {}
 			for event in events:
 				#print "    %s" % ( event['EventGUID'])
-				sheet[eventtype]['data'][event['EventGUID']] = {}
+				#sheet[eventtype]['data'][event['EventGUID']] = {}
+				emed_getEventDetails(dbh, eventtype, event['EventGUID'], sheet[eventtype])
 		else:
 			sheet.pop(eventtype)
 
@@ -136,8 +138,8 @@ for sheet in sheets:
 					
 # sheets contains the ordered list of sheets to create and the list of events for each sheet.
 # uncomment pretty print, sys.exit lines below and run to see format
-# pp.pprint(sheets)
-# sys.exit(0)
+#pp.pprint(sheets)
+#sys.exit(0)
 
 # Data structures populated
 # Create time strings for embedding and in file name

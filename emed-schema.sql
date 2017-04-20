@@ -51,6 +51,7 @@ CREATE TABLE `sheets` (
     `active` boolean DEFAULT TRUE,
 	`SheetName` VARCHAR(32) NOT NULL,
 	`SheetDesc` VARCHAR(64) NOT NULL,
+	`SheetType` VARCHAR(32) NOT NULL DEFAULT 'standard',
 	PRIMARY KEY (SheetGUID)
 )
 COLLATE='latin1_swedish_ci'

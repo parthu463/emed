@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import MySQLdb as mdb
-import sys
+import sys, copy
 
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Font, NamedStyle
@@ -72,7 +72,7 @@ def createTitleWS(wb, revtime, uuidstr, FormatWB=True, generator='emed-blgen.py'
 	ws.column_dimensions['A'].width = 16
 	ws.column_dimensions['B'].width = 50
 	
-def createWS(wb, s, dbh, FormatWB=True):
+def createWS(wb, s, FormatWB=True):
 	pp = pprint.PrettyPrinter(indent = 1)
 	# pp.pprint(s)
 
@@ -192,25 +192,6 @@ def createWS(wb, s, dbh, FormatWB=True):
 	# Get the list of events for each sheet and type in the sheet
 
 	for eventtype in eventtypes:
-		event_prequery = '';
-		execute = True
-		if 'eventsApp' == eventtype:
-			event_prequery = "SELECT EventName, AlertMessage, ThresholdValue, ThresholdUnit, EventSeverity, AppName \
-			from eventsApp where EventGUID = '%s'"
-		elif 'eventsTrap' == eventtype:
-			event_prequery = "SELECT EventName, EventMessage as AlertMessage, EventSeverity \
-			from eventsTrap where EventGUID = '%s'"
-		elif 'eventsTrapVarbind' == eventtype:
-			try: 
-				s[eventtype]['source']['tablename']
-				event_prequery = "SELECT trapName as EventName, trapMessage as AlertMessage,\
-					trapSeverity as EventSeverity from %s where trapCode = '%%s'" % (s[eventtype]['source']['tablename'])
-			except KeyError:
-				execute = False
-		else:
-			print "Unidentified Event Type: %s" % (eventtype)
-			sys.exit(1)
-			
 		try:
 			for eventID in s[eventtype]['data']:
 				cellA_ID = 'A%d'% (row)
@@ -225,61 +206,36 @@ def createWS(wb, s, dbh, FormatWB=True):
 				else:
 					rowfillcolor = formatPalette[palette]['data1fillcolor']
 
-				# Get the data for the row from the eventsApp table
-				if execute:
-					try:
-						event_cur = dbh.cursor(mdb.cursors.DictCursor)
-						event_query = event_prequery % (eventID)
-						#pp.pprint(event_query)
-						event_cur.execute(event_query)
-					except mdb.Error, e:
-						print "Error %d: %s" % (e.args[0], e.args[1])
-						sys.exit(1)
+				ws[cellA_ID] = s[eventtype]['data'][eventID]['EventName']
+				c=ws[cellA_ID]
+				if FormatWB:
+					c.fill = PatternFill('solid', fgColor=rowfillcolor)
+				ws[cellB_ID] = s[eventtype]['data'][eventID]['AlertMessage']
+				c=ws[cellB_ID]
+				if FormatWB:
+					c.fill = PatternFill('solid', fgColor=rowfillcolor)
+				ws[cellC_ID] = s[eventtype]['data'][eventID]['ThresholdValue']
+				c=ws[cellC_ID]
+				if FormatWB:
+					c.fill = PatternFill('solid', fgColor=rowfillcolor)
+				ws[cellD_ID] = s[eventtype]['data'][eventID]['ThresholdUnit']
+				c=ws[cellD_ID]
+				if FormatWB:
+					c.fill = PatternFill('solid', fgColor=rowfillcolor) 
+				# eventsTrapVarbind severities are already strings
+				if isinstance(s[eventtype]['data'][eventID]['EventSeverity'], int):
+					ws[cellE_ID] = severityMapping[s[eventtype]['data'][eventID]['EventSeverity']]
+				else:
+					ws[cellE_ID] = s[eventtype]['data'][eventID]['EventSeverity']
+				c=ws[cellE_ID]
+				if FormatWB:
+					c.fill = PatternFill('solid', fgColor=rowfillcolor)
+				ws[cellF_ID] = s[eventtype]['data'][eventID]['AppName']
+				c=ws[cellF_ID]
+				if FormatWB:
+					c.fill = PatternFill('solid', fgColor=rowfillcolor)
 	
-					try:
-						event = event_cur.fetchone()
-					except mdb.Error, e:
-						print "Error %d: %s" % (e.args[0], e.args[1])
-						sys.exit(1)
-				
-					event_cur.close()
-				
-					if 'eventsTrap' == eventtype or 'eventsTrapVarbind' == eventtype:
-						event['ThresholdValue'] = ''
-						event['ThresholdUnit'] = ''
-						event['AppName'] = 'SNMP Trap'
-				
-					ws[cellA_ID] = event['EventName']
-					c=ws[cellA_ID]
-					if FormatWB:
-						c.fill = PatternFill('solid', fgColor=rowfillcolor)
-					ws[cellB_ID] = event['AlertMessage']
-					c=ws[cellB_ID]
-					if FormatWB:
-						c.fill = PatternFill('solid', fgColor=rowfillcolor)
-					ws[cellC_ID] = event['ThresholdValue']
-					c=ws[cellC_ID]
-					if FormatWB:
-						c.fill = PatternFill('solid', fgColor=rowfillcolor)
-					if event['ThresholdUnit'] != 'NULL':
-						ws[cellD_ID] = event['ThresholdUnit']
-					c=ws[cellD_ID]
-					if FormatWB:
-						c.fill = PatternFill('solid', fgColor=rowfillcolor) 
-					# eventsTrapVarbind severities are already strings
-					if isinstance(event['EventSeverity'], int):
-						ws[cellE_ID] = severityMapping[event['EventSeverity']]
-					else:
-						ws[cellE_ID] = event['EventSeverity']
-					c=ws[cellE_ID]
-					if FormatWB:
-						c.fill = PatternFill('solid', fgColor=rowfillcolor)
-					ws[cellF_ID] = event['AppName']
-					c=ws[cellF_ID]
-					if FormatWB:
-						c.fill = PatternFill('solid', fgColor=rowfillcolor)
-		
-					row = row + 1
+				row = row + 1
 
 		except KeyError:
 			continue
@@ -376,3 +332,68 @@ def emed_getEventsTrapVarbindTableName(dbh, SheetGUID, current_type):
 	
 	tablename_cur.close()
 	return tablename
+	
+def	emed_getEventDetailsFromSQL(dbh, event_query):
+	#pp.pprint('emed_getEventDetailsFromSQL')
+	try:
+		event_cur = dbh.cursor(mdb.cursors.DictCursor)
+		#pp.pprint(event_query)
+		event_cur.execute(event_query)
+	except mdb.Error, e:
+		print "Error %d: %s" % (e.args[0], e.args[1])
+		sys.exit(1)
+	
+	try:
+		event = event_cur.fetchone()
+	except mdb.Error, e:
+		print "Error %d: %s" % (e.args[0], e.args[1])
+		sys.exit(1)
+				
+	event_cur.close()
+	
+	#pp.pprint(event)
+	return event
+
+	
+def	emed_getEventDetails_App(dbh, eventGUID, eventRoot):
+	#pp.pprint('emed_getEventDetails_App')
+	event_prequery = "SELECT EventName, AlertMessage, ThresholdValue, ThresholdUnit, EventSeverity, AppName \
+	from eventsApp where EventGUID = '%s'"
+	event_query = event_prequery % (eventGUID)
+	return emed_getEventDetailsFromSQL(dbh,event_query)
+
+def emed_getEventDetails_Trap(dbh, eventGUID, eventRoot):
+	#pp.pprint('emed_getEventDetails_Trap')
+	event_prequery = "SELECT EventName, EventMessage as AlertMessage, EventSeverity \
+	from eventsTrap where EventGUID = '%s'"
+	event_query = event_prequery % (eventGUID)
+	return emed_getEventDetailsFromSQL(dbh,event_query)
+
+def emed_getEventDetails_TrapVarbind(dbh, eventGUID, eventRoot, tablename):
+	#pp.pprint('emed_getEventDetails_TrapVarbind')
+	#pp.pprint(tablename)
+	event_prequery = "SELECT trapName as EventName, trapMessage as AlertMessage,\
+		trapSeverity as EventSeverity from %s where trapCode = '%%s'" % (tablename)
+	event_query = event_prequery % (eventGUID)
+	return emed_getEventDetailsFromSQL(dbh,event_query)
+
+def emed_getEventDetails(dbh, eventtype, eventGUID, eventRoot):
+	eventRoot['data'][eventGUID] = {}
+	if 'eventsApp' == eventtype:
+		eventRoot['data'][eventGUID] = emed_getEventDetails_App(dbh, eventGUID, eventRoot)
+	elif 'eventsTrap' == eventtype:
+		eventRoot['data'][eventGUID] = emed_getEventDetails_Trap(dbh, eventGUID, eventRoot)
+	elif 'eventsTrapVarbind' == eventtype:
+		eventRoot['data'][eventGUID] = emed_getEventDetails_TrapVarbind(dbh, eventGUID, eventRoot, eventRoot['source']['tablename'])
+	else:
+		print "Unidentified Event Type: %s" % (eventtype)
+		sys.exit(1)
+
+	if 'eventsTrap' == eventtype or 'eventsTrapVarbind' == eventtype:
+		eventRoot['data'][eventGUID]['ThresholdValue'] = ''
+		eventRoot['data'][eventGUID]['ThresholdUnit'] = ''
+		eventRoot['data'][eventGUID]['AppName'] = 'SNMP Trap'
+
+	
+def emed_getEventsDetails(dbh, eventtype, eventGUID, eventRoot):
+	emed_getEventDetails(dbh, eventtype, eventGUID, eventRoot)

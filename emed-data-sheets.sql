@@ -17,7 +17,7 @@ insert into sheets
 (SheetName, displayOrder, SheetDesc) VALUES ('Isilon', '6', 'EMC Isilon');
 
 insert into sheets
-(SheetName, displayOrder, SheetDesc) VALUES ('XMS', '7', 'EMC XtremIO');
+(SheetName, displayOrder, SheetDesc, SheetType) VALUES ('XMS', '7', 'EMC XtremIO', 'XMS');
 
 insert into sheets
 (SheetName, displayOrder, SheetDesc) VALUES ('Cisco Switch', '8', 'Cisco Switch Chassis, PSU, Fan and Temperature');
