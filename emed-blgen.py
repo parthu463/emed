@@ -140,22 +140,6 @@ for sheet in sheets:
 # sys.exit(0)
 
 # Data structures populated
-
-# Get the data out of the control table
-try:
-	control_cur = dbh.cursor(mdb.cursors.DictCursor)
-	control_query = "SELECT wbname, wbversion from control where wbtype like 'baseline'"
-	control_cur.execute(control_query)
-except mdb.Error, e:
-	print "Error %d: %s" % (e.args[0], e.args[1])
-	sys.exit(1)
-
-try:
-	control = control_cur.fetchone()
-except mdb.Error, e:
-	print "Error %d: %s" % (e.args[0], e.args[1])
-	sys.exit(1)
-	
 # Create time strings for embedding and in file name
 wbTime = datetime.utcnow()
 wbRevisionTime = wbTime.strftime("%Y-%b-%d %H:%M:%S") # Embedded in Workbook
@@ -164,8 +148,40 @@ wbDaySeconds = (int(wbTime.strftime("%H"),10)*3600)\
 + int(wbTime.strftime("%S"),10)
 wbFileNameTime = "%s-%05d" % ((wbTime.strftime("%Y%m%d")), wbDaySeconds)
 
+
+# Get the data out of the control table for types 'baseline' and 'procedure'
+doctypes = ('baseline', 'procedure')
+for doctype in doctypes:
+	try:
+		control_cur = dbh.cursor(mdb.cursors.DictCursor)
+		control_query = "SELECT wbname, wbversion from control where wbtype like '%s'" % (doctype)
+		control_cur.execute(control_query)
+	except mdb.Error, e:
+		print "Error %d: %s" % (e.args[0], e.args[1])
+		sys.exit(1)
+	
+	try:
+		control = control_cur.fetchone()
+	except mdb.Error, e:
+		print "Error %d: %s" % (e.args[0], e.args[1])
+		sys.exit(1)
+	
+	control_cur.close()
+	if doctype == 'baseline':
+		bl_control = control
+	elif doctype == 'procedure':
+		sop_control = control
+	else:
+		print "Unidentified Document Type: %s" % (doctype)
+		sys.exit(1)
+	
+
 # Create the workbook and get a handle
-blfname = "%s_%s_%s.xlsx" % (control['wbname'], control['wbversion'], wbFileNameTime)
+blfname = "%s_%s_%s.xlsx" % (bl_control['wbname'], bl_control['wbversion'], wbFileNameTime)
+sopfname = "%s_%s_%s.xlsx" % (sop_control['wbname'], sop_control['wbversion'], wbFileNameTime)
+#print ("blfname : %s" % (blfname))
+#print ("sopfname : %s" % (sopfname))
+
 wb = Workbook()
 
 createTitleWS(wb, wbRevisionTime, str(uuid.uuid4()))
