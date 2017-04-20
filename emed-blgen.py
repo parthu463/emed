@@ -12,6 +12,7 @@ import time
 from datetime import datetime
 
 from emedUtil import createWS, createTitleWS, eventtypes
+from emedUtil import emed_getEventsTrapVarbindTableName
 
 pp = pprint.PrettyPrinter(indent = 1)
 
@@ -75,7 +76,8 @@ for sheet in sheets:
 
 	for current_type in range(0, len(eventtypes)):
 		eventtype = eventtypes[current_type]
-		events_prequery = '';
+		events_prequery = "";
+		sheet[eventtype] = {}
 		if 'eventsApp' == eventtype:
 			events_prequery = "select distinct EventGUID from eventsApp\
 				INNER JOIN sheetMapping on eventsApp.AppGUID = sheetMapping.DataIdentifier\
@@ -89,35 +91,48 @@ for sheet in sheets:
 				where sheetMapping.DataType = %d and sheets.SheetGUID = %s and EventSeverity != 0"
 
 		elif 'eventsTrapVarbind' == eventtype:
-			events_prequery = "select dataIdentifier as EventGUID from sheetMapping\
-				where sheetMapping.DataType = %d and sheetMapping.SheetGUID = %s"
+			tablename = emed_getEventsTrapVarbindTableName(dbh, sheet['SheetGUID'], current_type)
+			try:
+				tablename['dataIdentifier']
+				sheet[eventtype]['source'] = {}
+				sheet[eventtype]['source']['tablename'] = tablename['dataIdentifier']
+				events_query = "select distinct trapCode as EventGUID from %s" % (sheet[eventtype]['source']['tablename'])
+			except TypeError:
+				sheet[eventtype]['execute'] = False
 
 		else:
 			print "Unidentified Event Type: %s" % (eventtype)
 			sys.exit(1)
-
+			
 		try:
-			events_cur = dbh.cursor(mdb.cursors.DictCursor)
-			events_query =  events_prequery % ( current_type, sheet['SheetGUID'] )
+			sheet[eventtype].pop('execute')
+		except KeyError:
+			try:
+				events_cur = dbh.cursor(mdb.cursors.DictCursor)
+				if events_prequery:
+					events_query = events_prequery % ( current_type, sheet['SheetGUID'] )
+				events_cur.execute(events_query)
+			except mdb.Error, e:
+				print "Error %d: %s" % (e.args[0], e.args[1])
+				sys.exit(1)
 	
-			events_cur.execute(events_query)
-		except mdb.Error, e:
-			print "Error %d: %s" % (e.args[0], e.args[1])
-			sys.exit(1)
-
-		try:
-			events = events_cur.fetchall()
-		except mdb.Error, e:
-			print "Error %d: %s" % (e.args[0], e.args[1])
-			sys.exit(1)
-
+			try:
+				events = events_cur.fetchall()
+			except mdb.Error, e:
+				print "Error %d: %s" % (e.args[0], e.args[1])
+				sys.exit(1)
+	
 		if events:
-			sheet[eventtype] = {}
+			sheet[eventtype]['data'] = {}
 			for event in events:
 				#print "    %s" % ( event['EventGUID'])
-				sheet[eventtype][event['EventGUID']] = {}
-		
+				sheet[eventtype]['data'][event['EventGUID']] = {}
+		else:
+			sheet.pop(eventtype)
+
+		events = None
 		events_cur.close()
+		
 					
 # sheets contains the ordered list of sheets to create and the list of events for each sheet.
 # uncomment pretty print, sys.exit lines below and run to see format
