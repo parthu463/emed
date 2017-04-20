@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import MySQLdb as mdb
-import sys, copy
+import sys
 
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Font, NamedStyle
@@ -17,23 +17,7 @@ def createTitleWS(wb, revtime, uuidstr, FormatWB=True, generator='emed-blgen.py'
 	ws = wb.active
 	ws.title = "Title"
 	
-	formatPalette = {}
-	formatPalette['virtustream'] = {}
-
-	formatPalette['virtustream']['titlefontsize'] = 14
-	formatPalette['virtustream']['titlefillcolor'] = 'bd1e30'
-
-	formatPalette['virtustream']['labelfontsize'] = 12
-	formatPalette['virtustream']['labelfillcolor'] = '1a4b5f'
-	
-	formatPalette['soft'] = {}
-
-	formatPalette['soft']['titlefontsize'] = 14
-	formatPalette['soft']['titlefillcolor'] = 'f6273e'
-
-	formatPalette['soft']['labelfontsize'] = 12
-	formatPalette['soft']['labelfillcolor'] = '21627c'
-
+	formatPalette = createPalette()
 	palette = 'virtustream'
 	palette = 'soft'
 	
@@ -72,52 +56,50 @@ def createTitleWS(wb, revtime, uuidstr, FormatWB=True, generator='emed-blgen.py'
 	ws.column_dimensions['A'].width = 16
 	ws.column_dimensions['B'].width = 50
 	
+def createPalette():
+	palette = {}
+	palette['virtustream'] = {}
+
+	palette['virtustream']['titlerow'] = 1
+	palette['virtustream']['titlefontsize'] = 14
+	palette['virtustream']['titlefillcolor'] = 'bd1e30'
+
+
+	palette['virtustream']['headerrow'] = 2
+	palette['virtustream']['headerfontsize'] = 12
+	palette['virtustream']['headerfillcolor'] = '1a4b5f'
+
+	palette['virtustream']['firstdatarow'] = 3
+
+	palette['virtustream']['data0fillcolor'] = '586a6f'
+	palette['virtustream']['data1fillcolor'] = 'b5b9bb'
+	
+	palette['soft'] = {}
+
+	palette['soft']['titlerow'] = 1
+	palette['soft']['titlefontsize'] = 14
+	palette['soft']['titlefillcolor'] = 'f6273e'
+
+
+	palette['soft']['headerrow'] = 2
+	palette['soft']['headerfontsize'] = 12
+	palette['soft']['headerfillcolor'] = '21627c'
+
+	palette['soft']['firstdatarow'] = 3
+
+	palette['soft']['data0fillcolor'] = '728a90'
+	palette['soft']['data1fillcolor'] = 'd9d9d9'
+	
+	return palette
+	
 def createWS(wb, s, FormatWB=True):
 	pp = pprint.PrettyPrinter(indent = 1)
 	# pp.pprint(s)
 
 	# Create styles and positions in worksheets
-	formatPalette = {}
-	formatPalette['virtustream'] = {}
-
-	formatPalette['virtustream']['titlerow'] = 1
-	formatPalette['virtustream']['titlefontsize'] = 14
-	formatPalette['virtustream']['titlefillcolor'] = 'bd1e30'
-
-
-	formatPalette['virtustream']['headerrow'] = 2
-	formatPalette['virtustream']['headerfontsize'] = 12
-	formatPalette['virtustream']['headerfillcolor'] = '1a4b5f'
-
-	formatPalette['virtustream']['firstdatarow'] = 3
-
-	formatPalette['virtustream']['data0fillcolor'] = '586a6f'
-	formatPalette['virtustream']['data1fillcolor'] = 'b5b9bb'
-	
-	formatPalette['soft'] = {}
-
-	formatPalette['soft']['titlerow'] = 1
-	formatPalette['soft']['titlefontsize'] = 14
-	formatPalette['soft']['titlefillcolor'] = 'f6273e'
-
-
-	formatPalette['soft']['headerrow'] = 2
-	formatPalette['soft']['headerfontsize'] = 12
-	formatPalette['soft']['headerfillcolor'] = '21627c'
-
-	formatPalette['soft']['firstdatarow'] = 3
-
-	formatPalette['soft']['data0fillcolor'] = '728a90'
-	formatPalette['soft']['data1fillcolor'] = 'd9d9d9'
-
+	formatPalette = createPalette()
 	palette = 'virtustream'
 	palette = 'soft'
-	
-	# create styles
-	#style_header = NamedStyle(name='VS_Header')
-	#style_data1 = NamedStyle(name='VS_Data0')
-	#style_data2 = NamedStyle(name='VS_Data1')
-		
 	
 	severityMapping = ["Healthy" \
 	,'Informational' \
@@ -181,7 +163,7 @@ def createWS(wb, s, FormatWB=True):
 	if FormatWB:
 		c.font = Font(bold = True, size=formatPalette[palette]['headerfontsize'])
 		c.fill = PatternFill('solid', fgColor=formatPalette[palette]['headerfillcolor'])
-	ws[cellF_ID] = 'Dynamic App'
+	ws[cellF_ID] = 'Dyn App Name'
 	c = ws[cellF_ID]
 	if FormatWB:
 		c.font = Font(bold = True, size=formatPalette[palette]['headerfontsize'])
