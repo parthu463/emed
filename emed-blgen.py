@@ -1,21 +1,31 @@
 #!/usr/bin/env python
 
 import MySQLdb as mdb
-import sys
+import sys, os
 import json
+
+from datetime import datetime
+import time
 
 import pprint
 import uuid
 
-from openpyxl import Workbook
-import time
-from datetime import datetime
-
 from emedUtil import createWS, createTitleWS, eventtypes
 from emedUtil import emed_getEventsTrapVarbindTableName
 from emedUtil import emed_getEventDetails
+from emedUtil import createDocSet
 
 pp = pprint.PrettyPrinter(indent = 1)
+
+# List of the doctypes being generated
+# (doctypes could be generated from emed with active/inactive keys in the 'control' table)
+doctypes = ('baseline', 'procedure')
+docMetaData = {}
+for doctype in doctypes:
+	docMetaData[doctype] = {}
+
+# name of the generator program
+generator = os.path.basename(sys.argv[0])
 
 # Database connectivity
 dbname = 'emed'
@@ -142,17 +152,23 @@ for sheet in sheets:
 #sys.exit(0)
 
 # Data structures populated
+
+
 # Create time strings for embedding and in file name
+# Store in docMetaData
 wbTime = datetime.utcnow()
-wbRevisionTime = wbTime.strftime("%Y-%b-%d %H:%M:%S") # Embedded in Workbook
+docMetaData['revisionTime'] = wbTime.strftime("%Y-%b-%d %H:%M:%S (UTC)") # Embedded in Workbook
+#pp.pprint(wbRevisionTime)
 wbDaySeconds = (int(wbTime.strftime("%H"),10)*3600)\
 + int(wbTime.strftime("%M"),10)*60\
 + int(wbTime.strftime("%S"),10)
-wbFileNameTime = "%s-%05d" % ((wbTime.strftime("%Y%m%d")), wbDaySeconds)
+docMetaData['fileNameTime'] = "%s-%05d" % ((wbTime.strftime("%Y%m%d")), wbDaySeconds)
+
+#UUID into docMetaData
+docMetaData['uuid'] = str(uuid.uuid4())
 
 
-# Get the data out of the control table for types 'baseline' and 'procedure'
-doctypes = ('baseline', 'procedure')
+# Get the data out of the control table for the different doctypes
 for doctype in doctypes:
 	try:
 		control_cur = dbh.cursor(mdb.cursors.DictCursor)
@@ -169,30 +185,21 @@ for doctype in doctypes:
 		sys.exit(1)
 	
 	control_cur.close()
-	if doctype == 'baseline':
-		bl_control = control
-	elif doctype == 'procedure':
-		sop_control = control
-	else:
+	try:
+		docMetaData[doctype]['control'] = control
+		docMetaData[doctype]['fname'] = "%s_%s_%s.xlsx" % (control['wbname'], control['wbversion'], docMetaData['fileNameTime'])
+	except KeyError:
 		print "Unidentified Document Type: %s" % (doctype)
 		sys.exit(1)
 	
-
-# Create the workbook and get a handle
-blfname = "%s_%s_%s.xlsx" % (bl_control['wbname'], bl_control['wbversion'], wbFileNameTime)
-sopfname = "%s_%s_%s.xlsx" % (sop_control['wbname'], sop_control['wbversion'], wbFileNameTime)
-#print ("blfname : %s" % (blfname))
-#print ("sopfname : %s" % (sopfname))
-
-wb = Workbook()
-
-createTitleWS(wb, wbRevisionTime, str(uuid.uuid4()))
-for sheet in sheets:
-	createWS(wb, sheet, dbh)
-	
-wb.save(blfname)
-
+# Everything is in memory.  Done with the database.
 if dbh:
 	dbh.close()
+
+# create the workbooks
+createDocSet(doctypes, docMetaData, sheets, generator=generator)
+
+
+
 	
 sys.exit(0)

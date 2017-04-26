@@ -54,7 +54,7 @@ def createPalette(style):
 	
 	return palette[style]
 	
-def createTitleWS(wb, revtime, uuidstr, FormatWB=True, generator='emed-blgen.py'):
+def createTitleWS(wb, revtime, uuidstr, generator='emed-blgen.py', FormatWB=True):
 	ws = wb.active
 	ws.title = "Title"
 
@@ -142,12 +142,8 @@ def createWS(wb, s, FormatWB=True):
 	columnList = ('A', 'B', 'F')
 	labelList = ('Virtustream', s['SheetDesc'], '')
 	createWSTitleRow(ws, palette, columnList, labelList, format=FormatWB, mergeStart = 'B', mergeEnd = 'F')
-#	cellB_ID = 'B%d'% (formatPalette[palette]['titlerow'])
-#	cellF_ID = 'F%d'% (formatPalette[palette]['titlerow'])
-#	ws.merge_cells('%s:%s' % (cellB_ID, cellF_ID))
 	
 	# Create the Worksheet Header
-	
 	columnList = ('A', 'B', 'C', 'D', 'E', 'F')
 	labelList = ('Event Name', 'Message Format', 'Threshold', 'Unit', 'Severity', 'Dyn App Name')
 	createWSHeaderRow(ws, palette, columnList, labelList, format=FormatWB)
@@ -362,3 +358,14 @@ def emed_getEventDetails(dbh, eventtype, eventGUID, eventRoot):
 	
 def emed_getEventsDetails(dbh, eventtype, eventGUID, eventRoot):
 	emed_getEventDetails(dbh, eventtype, eventGUID, eventRoot)
+
+def createDocSet(doctypes, docMetaData, sheets, generator='emed-blgen.py'):
+	for doctype in doctypes:
+		metaData = docMetaData[doctype]
+		wb = Workbook()
+	
+		createTitleWS(wb, docMetaData['revisionTime'], docMetaData['uuid'], generator=generator)
+		for sheet in sheets:
+			createWS(wb, sheet)
+	
+		wb.save(metaData['fname'])
