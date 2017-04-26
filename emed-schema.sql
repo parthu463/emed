@@ -86,27 +86,30 @@ COLLATE='latin1_swedish_ci'
 ENGINE=InnoDB
 ;	
 
-DROP TABLE IF EXISTS `control`;
+DROP TABLE IF EXISTS `docControl`;
 
-CREATE TABLE `control` (
-	`wbtype` VARCHAR(64) NOT NULL DEFAULT 'baseline',
-	`wbformat` VARCHAR(64) NOT NULL DEFAULT 'xlsx',
-	`wbname` VARCHAR(64) NOT NULL DEFAULT 'VSBTH',
-	`wbversion` VARCHAR(16) NOT NULL DEFAULT '0.91'
+CREATE TABLE `docControl` (
+	`docType` VARCHAR(64) NOT NULL DEFAULT 'baseline',
+	`docFormat` VARCHAR(64) NOT NULL DEFAULT 'xlsx',
+	`docBaseName` VARCHAR(64) NOT NULL DEFAULT 'VSBTH',
+	`docVersion` VARCHAR(16) NOT NULL DEFAULT '0.91',
+	`docDescTitle` VARCHAR(128) NOT NULL DEFAULT 'Title',
+	`docPalette` VARCHAR(32) NOT NULL DEFAULT 'soft',
+	`docFormatted` BOOLEAN DEFAULT FALSE
 )
 COLLATE='latin1_swedish_ci'
 ENGINE=InnoDB
 ;	
 
-INSERT INTO `control` 
-(`wbtype`, `wbformat`, `wbname`, `wbversion`)
+INSERT INTO `docControl` 
+(`docType`, `docFormat`, `docBaseName`, `docVersion`, `docDescTitle`, `docPalette`, `docFormatted`)
 VALUES
-('baseline', 'xlsx', 'vsblth', '0.91');
+('baseline', 'xlsx', 'vsblth', '0.91', 'Monitored Objects and Thresholds for Vblock Systems', 'soft', TRUE);
 
-INSERT INTO `control` 
-(`wbtype`, `wbformat`, `wbname`, `wbversion`)
+INSERT INTO `docControl` 
+(`docType`, `docFormat`, `docBaseName`, `docVersion`, `docDescTitle`, `docPalette`, `docFormatted`)
 VALUES
-('procedure', 'xlsx', 'vssop', '0.91');
+('procedure', 'xlsx', 'vssop', '0.91', 'Procedures for Identified Events for Vblock Systems', 'soft', FALSE);
 
 
 DROP TABLE IF EXISTS `severityMapping`;

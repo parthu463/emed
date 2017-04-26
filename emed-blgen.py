@@ -25,7 +25,7 @@ for doctype in doctypes:
 	docMetaData[doctype] = {}
 
 # name of the generator program
-generator = os.path.basename(sys.argv[0])
+docMetaData['generator'] = os.path.basename(sys.argv[0])
 
 # Database connectivity
 dbname = 'emed'
@@ -172,7 +172,8 @@ docMetaData['uuid'] = str(uuid.uuid4())
 for doctype in doctypes:
 	try:
 		control_cur = dbh.cursor(mdb.cursors.DictCursor)
-		control_query = "SELECT wbname, wbversion from control where wbtype like '%s'" % (doctype)
+		control_query = "SELECT * from docControl where docType like '%s'" % (doctype)
+		#pp.pprint(control_query)
 		control_cur.execute(control_query)
 	except mdb.Error, e:
 		print "Error %d: %s" % (e.args[0], e.args[1])
@@ -186,8 +187,13 @@ for doctype in doctypes:
 	
 	control_cur.close()
 	try:
-		docMetaData[doctype]['control'] = control
-		docMetaData[doctype]['fname'] = "%s_%s_%s.xlsx" % (control['wbname'], control['wbversion'], docMetaData['fileNameTime'])
+		docMetaData[doctype]['docControl'] = control
+		docMetaData[doctype]['isFormatted'] = False
+		# True/False can't be stored in SQL, normalize the 'isFormatted' parameter
+		if int(docMetaData[doctype]['docControl']['docFormatted']) == 1:
+					docMetaData[doctype]['isFormatted'] = True
+		docMetaData[doctype]['fname'] = "%s_%s_%s.xlsx" %\
+			(control['docBaseName'], control['docVersion'], docMetaData['fileNameTime'])
 	except KeyError:
 		print "Unidentified Document Type: %s" % (doctype)
 		sys.exit(1)
@@ -197,7 +203,7 @@ if dbh:
 	dbh.close()
 
 # create the workbooks
-createDocSet(doctypes, docMetaData, sheets, generator=generator)
+createDocSet(doctypes, docMetaData, sheets)
 
 
 

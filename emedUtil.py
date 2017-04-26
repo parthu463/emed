@@ -13,121 +13,57 @@ eventtypes = ('eventsApp', 'eventsTrap', 'eventsTrapVarbind')
 
 pp = pprint.PrettyPrinter(indent = 1, depth = 4)
 
-def createPalette(style):
-	palette = {}
-	palette['virtustream'] = {}
-
-	palette['virtustream']['titlerow'] = 1
-	palette['virtustream']['titlefontsize'] = 14
-	palette['virtustream']['titlefillcolor'] = 'bd1e30'
-
-	palette['virtustream']['labelfontsize'] = 12
-	palette['virtustream']['labelfillcolor'] = '1a4b5f'
-
-
-	palette['virtustream']['headerrow'] = 2
-	palette['virtustream']['headerfontsize'] = 12
-	palette['virtustream']['headerfillcolor'] = '1a4b5f'
-
-	palette['virtustream']['firstdatarow'] = 3
-
-	palette['virtustream']['data0fillcolor'] = '586a6f'
-	palette['virtustream']['data1fillcolor'] = 'b5b9bb'
+def createDocSet(doctypes, docMetaData, sheets):
+	for doctype in doctypes:
+		metaData = docMetaData[doctype]
+		wb = Workbook()
 	
-	palette['soft'] = {}
-
-	palette['soft']['titlerow'] = 1
-	palette['soft']['titlefontsize'] = 14
-	palette['soft']['titlefillcolor'] = 'f6273e'
-
-	palette['soft']['labelfontsize'] = 12
-	palette['soft']['labelfillcolor'] = '21627c'
-
-	palette['soft']['headerrow'] = 2
-	palette['soft']['headerfontsize'] = 12
-	palette['soft']['headerfillcolor'] = '21627c'
-
-	palette['soft']['firstdatarow'] = 3
-
-	palette['soft']['data0fillcolor'] = '728a90'
-	palette['soft']['data1fillcolor'] = 'd9d9d9'
+		createTitleWS(wb, docMetaData, metaData)
+		for sheet in sheets:
+			createWS(wb, sheet, paletteName=metaData['docControl']['docPalette'], formatWB=metaData['isFormatted'])
 	
-	return palette[style]
-	
-def createTitleWS(wb, revtime, uuidstr, generator='emed-blgen.py', FormatWB=True):
+		wb.save(metaData['fname'])
+		print('Created file: %s' % (metaData['fname']))
+
+def createTitleWS(wb, docMetaData, metaData):
+
 	ws = wb.active
-	ws.title = "Title"
+	ws.title = "Title"  # This is the tab name in the workbook
 
-	#palette = 'virtustream'
-	#palette = 'soft'
-	palette = createPalette('soft')
+	palette = createPalette(metaData['docControl']['docPalette'])
 	
-	c=ws['A1']
-	c.value = 'Virtustream'
-	if FormatWB:
-		c.font = Font(bold = True, size=palette['titlefontsize'])
-		c.fill = PatternFill('solid', fgColor=palette['titlefillcolor'])
-	ws.merge_cells('A1:B1')
+	# Create the title worksheet title row
+	columnList = ('A', )
+	labelList = ('Virtustream', )
+	createWSTitleRow(ws, palette, columnList, labelList, format=metaData['isFormatted'], merge=('A', 'B'))
 	
-	c=ws['A2']
-	c.value = 'Monitored Objects and Thresholds for Vblock Systems'
-	if FormatWB:
-		c.font = Font(bold = True, size=palette['labelfontsize'])
-		c.fill = PatternFill('solid', fgColor=palette['labelfillcolor'])
-	ws.merge_cells('A2:B2')
-	
-	c=ws['A6']
-	c.value = 'Generator'
-	if FormatWB:
-		c.font = Font(size=palette['labelfontsize'])
-	c=ws['B6']
-	c.value = generator
-	c=ws['A7']
-	c.value = 'Creation Time'
-	if FormatWB:
-		c.font = Font(size=palette['labelfontsize'])
-	c=ws['B7'] = revtime
-	c=ws['A8']
-	c.value = 'Identifier'
-	if FormatWB:
-		c.font = Font(size=palette['labelfontsize'])
-	c=ws['B8']
-	c.value = uuidstr
-	
+	# Create the title worksheet header row
+	columnList = ('A', )
+	labelList = (metaData['docControl']['docDescTitle'], )
+	createWSHeaderRow(ws, palette, columnList, labelList, format=metaData['isFormatted'], merge=('A', 'B'))
+
+	# Create the title worksheet data rows
+	titleSheetRows = (
+	('Generator', docMetaData['generator'], ),
+	('Creation Time', docMetaData['revisionTime'], ),
+	('Identifier', docMetaData['uuid'], ),
+	)
+
+	rownumber = palette['titledatarow']
+	for titleSheetRow in titleSheetRows:
+		columnList = ('A', 'B')
+		dataList = (titleSheetRow[0], titleSheetRow[1], )
+		rownumber = createWSRow(ws, palette, columnList, dataList, 'titledata',\
+			rownumber = rownumber, format=metaData['isFormatted'])
+
 	ws.column_dimensions['A'].width = 16
 	ws.column_dimensions['B'].width = 50
 	
-def createWSRow(ws, palette, columnList, labelList, type, mergeStart = None, mergeEnd = None, format=True):
-	rowname = '%srow' % (type)
-	fontsizename = '%sfontsize' % (type)
-	fillcolorname = '%sfillcolor' % (type)
-	for idx in range(0, len(columnList)):
-		currentCellName = '%s%d' % (columnList[idx], palette[rowname])
-		currentCell = ws[currentCellName]
-		currentCell.value = labelList[idx]
-		if format:
-			currentCell.font = Font(bold = True, size=palette[fontsizename])
-			currentCell.fill = PatternFill('solid', fgColor=palette[fillcolorname])
-			
-	#	ws.merge_cells('%s:%s' % (cellB_ID, cellF_ID))
-	if mergeStart and mergeEnd:
-		mergeRange = '%s%d:%s%d' % (mergeStart, palette[rowname], mergeEnd, palette[rowname])
-		ws.merge_cells(mergeRange)
-
-def createWSTitleRow(ws, palette, columnList, labelList, mergeStart = None, mergeEnd = None, format=True):
-	createWSRow(ws, palette, columnList, labelList, 'title', mergeStart, mergeEnd, format=True)
-
-def createWSHeaderRow(ws, palette, columnList, labelList, mergeStart = None, mergeEnd = None, format=True):
-	createWSRow(ws, palette, columnList, labelList, 'header', mergeStart, mergeEnd, format=True)
-	
-def createWS(wb, s, FormatWB=True):
+def createWS(wb, s, paletteName = 'soft', formatWB=True):
 	pp = pprint.PrettyPrinter(indent = 1)
 	# pp.pprint(s)
 
-	# Create styles and positions in worksheets
-	#palette = 'virtustream'
-	#palette = 'soft'
-	palette = createPalette('soft')
+	palette = createPalette(paletteName)
 	
 	severityMapping = ["Healthy" \
 	,'Informational' \
@@ -138,69 +74,46 @@ def createWS(wb, s, FormatWB=True):
 	
 	ws = wb.create_sheet(s['SheetName'])
 
-	# Create the Worksheet Title Row
-	columnList = ('A', 'B', 'F')
-	labelList = ('Virtustream', s['SheetDesc'], '')
-	createWSTitleRow(ws, palette, columnList, labelList, format=FormatWB, mergeStart = 'B', mergeEnd = 'F')
+	# Create the monitored object worksheet title row
+	columnList = ('A', 'B', 'F', )
+	labelList = ('Virtustream', s['SheetDesc'], '', )
+	createWSTitleRow(ws, palette, columnList, labelList, format=formatWB, merge = ('B','F'))
 	
-	# Create the Worksheet Header
-	columnList = ('A', 'B', 'C', 'D', 'E', 'F')
-	labelList = ('Event Name', 'Message Format', 'Threshold', 'Unit', 'Severity', 'Dyn App Name')
-	createWSHeaderRow(ws, palette, columnList, labelList, format=FormatWB)
+	# Create the monitored object worksheet header row
+	columnList = ('A', 'B', 'C', 'D', 'E', 'F', )
+	labelList = ('Event Name', 'Message Format', 'Threshold', 'Unit', 'Severity', 'Dyn App Name', )
+	createWSHeaderRow(ws, palette, columnList, labelList, format=formatWB)
 	
-	row = palette['firstdatarow']
+	# Create the monitored object worksheet data rows
+
+	rownumber = palette['datarow']
+	columnList = ('A', 'B', 'C', 'D', 'E', 'F', )
 
 	# Get the list of events for each sheet and type in the sheet
-
 	for eventtype in eventtypes:
 		try:
 			for eventID in s[eventtype]['data']:
-				cellA_ID = 'A%d'% (row)
-				cellB_ID = 'B%d'% (row)
-				cellC_ID = 'C%d'% (row)
-				cellD_ID = 'D%d'% (row)
-				cellE_ID = 'E%d'% (row)
-				cellF_ID = 'F%d'% (row)
-		
-				if (row % 2) == 1:
-					rowfillcolor = palette['data0fillcolor']
-				else:
-					rowfillcolor = palette['data1fillcolor']
-
-				ws[cellA_ID] = s[eventtype]['data'][eventID]['EventName']
-				c=ws[cellA_ID]
-				if FormatWB:
-					c.fill = PatternFill('solid', fgColor=rowfillcolor)
-				ws[cellB_ID] = s[eventtype]['data'][eventID]['AlertMessage']
-				c=ws[cellB_ID]
-				if FormatWB:
-					c.fill = PatternFill('solid', fgColor=rowfillcolor)
-				ws[cellC_ID] = s[eventtype]['data'][eventID]['ThresholdValue']
-				c=ws[cellC_ID]
-				if FormatWB:
-					c.fill = PatternFill('solid', fgColor=rowfillcolor)
-				ws[cellD_ID] = s[eventtype]['data'][eventID]['ThresholdUnit']
-				c=ws[cellD_ID]
-				if FormatWB:
-					c.fill = PatternFill('solid', fgColor=rowfillcolor) 
-				# eventsTrapVarbind severities are already strings
 				if isinstance(s[eventtype]['data'][eventID]['EventSeverity'], int):
-					ws[cellE_ID] = severityMapping[s[eventtype]['data'][eventID]['EventSeverity']]
+					loopSeverity = severityMapping[s[eventtype]['data'][eventID]['EventSeverity']]
 				else:
-					ws[cellE_ID] = s[eventtype]['data'][eventID]['EventSeverity']
-				c=ws[cellE_ID]
-				if FormatWB:
-					c.fill = PatternFill('solid', fgColor=rowfillcolor)
-				ws[cellF_ID] = s[eventtype]['data'][eventID]['AppName']
-				c=ws[cellF_ID]
-				if FormatWB:
-					c.fill = PatternFill('solid', fgColor=rowfillcolor)
-	
-				row = row + 1
+					loopSeverity = s[eventtype]['data'][eventID]['EventSeverity']
+				
+				dataList = (s[eventtype]['data'][eventID]['EventName'],
+				s[eventtype]['data'][eventID]['AlertMessage'],
+				str(s[eventtype]['data'][eventID]['ThresholdValue']),
+				s[eventtype]['data'][eventID]['ThresholdUnit'],
+				loopSeverity,
+				s[eventtype]['data'][eventID]['AppName'],
+				)
+				
+				#pp.pprint(dataList)
+				rownumber = createWSRow(ws, palette, columnList, dataList, 'data',\
+					rownumber = rownumber, format=formatWB)
 
 		except KeyError:
 			continue
 
+	# Set the appropriate column widths for this sheet
 	ws.column_dimensions['A'].width = 55
 	ws.column_dimensions['B'].width = 105
 	ws.column_dimensions['C'].width = 10
@@ -208,10 +121,10 @@ def createWS(wb, s, FormatWB=True):
 	ws.column_dimensions['E'].width = 10
 	ws.column_dimensions['F'].width = 35
 
-	filterStart_ID = 'A%d'% (palette['headerrow'])
-	filterEnd_ID = 'F%d' % (row - 1)
-	filterRange = '%s:%s' % (filterStart_ID, filterEnd_ID)
-	ws.auto_filter_ref = filterRange
+#	filterStart_ID = 'A%d'% (palette['headerrow'])
+#	filterEnd_ID = 'F%d' % (row - 1)
+#	filterRange = '%s:%s' % (filterStart_ID, filterEnd_ID)
+#	ws.auto_filter_ref = filterRange
 #	ws.auto_filter.add_filter_column('A')
 #	ws.auto_filter.add_filter_column('B')
 #	ws.auto_filter.add_filter_column('C')
@@ -221,8 +134,104 @@ def createWS(wb, s, FormatWB=True):
 
 #	pp.pprint(ws)
 
+def createWSTitleRow(ws, palette, columnList, labelList, merge = None, format=True):
+	createWSRow(ws, palette, columnList, labelList, 'title', merge=merge, format=format)
 
+def createWSHeaderRow(ws, palette, columnList, labelList, merge = None, format=True):
+	createWSRow(ws, palette, columnList, labelList, 'header', merge=merge, format=format)
+	
+def createWSRow(ws, palette, columnList, labelList, rowtype, rownumber=None, merge=None, format=True):
+	rowname = '%srow' % (rowtype)
+	fontsizename = '%sfontsize' % (rowtype)
+	fontboldname = '%sfontbold' % (rowtype)
+	
+	if rowtype != 'data':
+		fillcolorname = '%sfillcolor' % (rowtype)
+	else:
+		fillcolorname = '%sfillcolor%d' % (rowtype, (rownumber % 2))
 
+	bold = palette[fontboldname]
+		
+	if rownumber:
+		rowvalue = str(rownumber)
+	else:
+		rowvalue = palette[rowname]
+
+	for idx in range(0, len(columnList)):
+		currentCellName = '%s%s' % (columnList[idx], rowvalue)
+		currentCell = ws[currentCellName]
+		currentCell.value = labelList[idx]
+		try:
+			currentCell.font = Font(bold = bold, size=palette[fontsizename])
+		except:
+			print('KeyError: %s not found in palette' % (fontsizename))
+			
+		try:
+			if format:
+				currentCell.fill = PatternFill('solid', fgColor=palette[fillcolorname])
+		except KeyError:
+			print('KeyError: %s not found in palette' % (fillcolorname))
+			
+	#	ws.merge_cells('%s:%s' % (cellB_ID, cellF_ID))
+	if merge:
+		mergeRange = '%s%d:%s%d' % (merge[0], palette[rowname], merge[1], palette[rowname])
+		ws.merge_cells(mergeRange)
+		
+	if rownumber:
+		return int( int(rownumber) + 1)
+
+def createPalette(style):
+	palette = {}
+	palette['virtustream'] = {}
+
+	palette['virtustream']['titlerow'] = 1
+	palette['virtustream']['titlefontsize'] = 14
+	palette['virtustream']['titlefontbold'] = True
+	palette['virtustream']['titlefillcolor'] = 'bd1e30'
+	
+	palette['virtustream']['titledatarow'] = 6
+	palette['virtustream']['titledatafontsize'] = 11
+	palette['virtustream']['titledatafontbold'] = False
+	palette['virtustream']['titledatafillcolor'] = 'ffffff'
+	
+	palette['virtustream']['headerrow'] = 2
+	palette['virtustream']['headerfontsize'] = 12
+	palette['virtustream']['headerfontbold'] = True
+	palette['virtustream']['headerfillcolor'] = '1a4b5f'
+
+	palette['virtustream']['datarow'] = 3
+	palette['virtustream']['datafontsize'] = 11
+	palette['virtustream']['datafontbold'] = False
+
+	palette['virtustream']['datafillcolor0'] = '586a6f'
+	palette['virtustream']['datafillcolor1'] = 'b5b9bb'
+	
+	palette['soft'] = {}
+
+	palette['soft']['titlerow'] = 1
+	palette['soft']['titlefontsize'] = 14
+	palette['soft']['titlefontbold'] = True
+	palette['soft']['titlefillcolor'] = 'f6273e'
+
+	palette['soft']['titledatarow'] = 6
+	palette['soft']['titledatafontsize'] = 11
+	palette['soft']['titledatafontbold'] = False
+	palette['soft']['titledatafillcolor'] = 'ffffff'
+
+	palette['soft']['headerrow'] = 2
+	palette['soft']['headerfontsize'] = 12
+	palette['soft']['headerfontbold'] = True
+	palette['soft']['headerfillcolor'] = '21627c'
+
+	palette['soft']['datarow'] = 3
+	palette['soft']['datafontsize'] = 11
+	palette['soft']['datafontbold'] = False
+
+	palette['soft']['datafillcolor0'] = '728a90'
+	palette['soft']['datafillcolor1'] = 'd9d9d9'
+	
+	return palette[style]
+	
 def loadWStoEMED(type, wsdata, dbh):
 
 	# Get a curstor into the database
@@ -359,13 +368,3 @@ def emed_getEventDetails(dbh, eventtype, eventGUID, eventRoot):
 def emed_getEventsDetails(dbh, eventtype, eventGUID, eventRoot):
 	emed_getEventDetails(dbh, eventtype, eventGUID, eventRoot)
 
-def createDocSet(doctypes, docMetaData, sheets, generator='emed-blgen.py'):
-	for doctype in doctypes:
-		metaData = docMetaData[doctype]
-		wb = Workbook()
-	
-		createTitleWS(wb, docMetaData['revisionTime'], docMetaData['uuid'], generator=generator)
-		for sheet in sheets:
-			createWS(wb, sheet)
-	
-		wb.save(metaData['fname'])
