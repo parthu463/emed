@@ -10,7 +10,7 @@ import time
 import pprint
 import uuid
 
-from emedUtil import createWS, createTitleWS, eventtypes
+from emedUtil import eventtypes
 from emedUtil import emed_getEventsTrapVarbindTableName
 from emedUtil import emed_getEventDetails
 from emedUtil import createDocSet
@@ -148,8 +148,8 @@ for sheet in sheets:
 					
 # sheets contains the ordered list of sheets to create and the list of events for each sheet.
 # uncomment pretty print, sys.exit lines below and run to see format
-pp.pprint(sheets)
-sys.exit(0)
+# pp.pprint(sheets)
+# sys.exit(0)
 
 # Data structures populated
 

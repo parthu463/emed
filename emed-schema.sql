@@ -75,7 +75,7 @@ DROP TABLE IF EXISTS `procText`;
 
 CREATE TABLE `procText` (
     `procTextID` bigint(20) NOT NULL AUTO_INCREMENT,
-	`text` TEXT NOT NULL,
+	`procText` TEXT NOT NULL,
 	PRIMARY KEY (procTextID)
 )
 COLLATE='latin1_swedish_ci'

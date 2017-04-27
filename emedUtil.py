@@ -20,7 +20,10 @@ def createDocSet(doctypes, docMetaData, sheets):
 	
 		createTitleWS(wb, docMetaData, metaData)
 		for sheet in sheets:
-			createWS(wb, sheet, paletteName=metaData['docControl']['docPalette'], formatWB=metaData['isFormatted'])
+			if doctype == 'baseline':
+				createBaselineWS(wb, sheet, paletteName=metaData['docControl']['docPalette'], formatWB=metaData['isFormatted'])
+			elif doctype == 'procedure':
+				createProcedureWS(wb, sheet, paletteName=metaData['docControl']['docPalette'], formatWB=metaData['isFormatted'])
 	
 		wb.save(metaData['fname'])
 		print('Created file: %s' % (metaData['fname']))
@@ -59,7 +62,7 @@ def createTitleWS(wb, docMetaData, metaData):
 	ws.column_dimensions['A'].width = 16
 	ws.column_dimensions['B'].width = 50
 	
-def createWS(wb, s, paletteName = 'soft', formatWB=True):
+def createBaselineWS(wb, s, paletteName = 'soft', formatWB=True):
 	pp = pprint.PrettyPrinter(indent = 1)
 	# pp.pprint(s)
 
@@ -81,13 +84,13 @@ def createWS(wb, s, paletteName = 'soft', formatWB=True):
 	
 	# Create the monitored object worksheet header row
 	columnList = ('A', 'B', 'C', 'D', 'E', 'F', )
-	labelList = ('Event Name', 'Message Format', 'Threshold', 'Unit', 'Severity', 'Dyn App Name', )
+	labelList = ('Event Name', 'Message Format', 'Threshold', 'Unit', 'Severity', 'Inc. Priority', )
 	createWSHeaderRow(ws, palette, columnList, labelList, format=formatWB)
 	
 	# Create the monitored object worksheet data rows
 
 	rownumber = palette['datarow']
-	columnList = ('A', 'B', 'C', 'D', 'E', 'F', 'G', )
+	columnList = ('A', 'B', 'C', 'D', 'E', 'F', )
 
 	# Get the list of events for each sheet and type in the sheet
 	for eventtype in eventtypes:
@@ -97,6 +100,96 @@ def createWS(wb, s, paletteName = 'soft', formatWB=True):
 					loopSeverity = severityMapping[s[eventtype]['data'][eventID]['EventSeverity']]
 				else:
 					loopSeverity = s[eventtype]['data'][eventID]['EventSeverity']
+
+					# Normalize incidentPriority (until traps are supported)
+				if eventtype != 'eventsApp':
+					incidentPriority = ''
+				else:
+					incidentPriority = s[eventtype]['data'][eventID]['incidentPriority']
+				
+				dataList = (s[eventtype]['data'][eventID]['EventName'],
+				s[eventtype]['data'][eventID]['AlertMessage'],
+				str(s[eventtype]['data'][eventID]['ThresholdValue']),
+				s[eventtype]['data'][eventID]['ThresholdUnit'],
+				loopSeverity,
+				incidentPriority, 
+				)
+				
+				#pp.pprint(dataList)
+				rownumber = createWSRow(ws, palette, columnList, dataList, 'data',\
+					rownumber = rownumber, format=formatWB)
+
+		except KeyError:
+			continue
+
+	# Set the appropriate column widths for this sheet
+	ws.column_dimensions['A'].width = 55
+	ws.column_dimensions['B'].width = 105
+	ws.column_dimensions['C'].width = 10
+	ws.column_dimensions['D'].width = 10
+	ws.column_dimensions['E'].width = 10
+	ws.column_dimensions['F'].width = 15
+
+#	filterStart_ID = 'A%d'% (palette['headerrow'])
+#	filterEnd_ID = 'F%d' % (row - 1)
+#	filterRange = '%s:%s' % (filterStart_ID, filterEnd_ID)
+#	ws.auto_filter_ref = filterRange
+#	ws.auto_filter.add_filter_column('A')
+#	ws.auto_filter.add_filter_column('B')
+#	ws.auto_filter.add_filter_column('C')
+#	ws.auto_filter.add_filter_column('D')
+#	ws.auto_filter.add_filter_column('E')
+#	ws.auto_filter.add_filter_column('F')
+
+#	pp.pprint(ws)
+
+def createProcedureWS(wb, s, paletteName = 'soft', formatWB=True):
+	pp = pprint.PrettyPrinter(indent = 1)
+	# pp.pprint(s)
+
+	palette = createPalette(paletteName)
+	
+	severityMapping = ["Healthy" \
+	,'Informational' \
+	,'Warning' \
+	,'Minor' \
+	,'Major' \
+	,'Critical']
+	
+	ws = wb.create_sheet(s['SheetName'])
+
+	# Create the monitored object worksheet title row
+	columnList = ('A', 'B', 'F', )
+	labelList = ('Virtustream', s['SheetDesc'], '', )
+	createWSTitleRow(ws, palette, columnList, labelList, format=formatWB, merge = ('B','F'))
+	
+	# Create the monitored object worksheet header row
+	columnList = ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', )
+	labelList = ('Event Name', 'Message Format', 'Threshold', 'Unit', 'Severity', 'Dyn App Name', 'Inc. Priority', 'Procedure', 'Event GUID')
+	createWSHeaderRow(ws, palette, columnList, labelList, format=formatWB)
+	
+	# Create the monitored object worksheet data rows
+
+	rownumber = palette['datarow']
+	columnList = ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', )
+	
+	# Get the list of events for each sheet and type in the sheet
+	for eventtype in eventtypes:
+		try:
+			for eventID in s[eventtype]['data']:
+				# Normalize loop severity
+				if isinstance(s[eventtype]['data'][eventID]['EventSeverity'], int):
+					loopSeverity = severityMapping[s[eventtype]['data'][eventID]['EventSeverity']]
+				else:
+					loopSeverity = s[eventtype]['data'][eventID]['EventSeverity']
+
+				# Normalize incidentPriority and procText (until traps are supported)
+				if eventtype != 'eventsApp':
+					incidentPriority = ''
+					procText = ''
+				else:
+					incidentPriority = s[eventtype]['data'][eventID]['incidentPriority']
+					procText = 	s[eventtype]['data'][eventID]['procText']
 				
 				dataList = (s[eventtype]['data'][eventID]['EventName'],
 				s[eventtype]['data'][eventID]['AlertMessage'],
@@ -104,7 +197,9 @@ def createWS(wb, s, paletteName = 'soft', formatWB=True):
 				s[eventtype]['data'][eventID]['ThresholdUnit'],
 				loopSeverity,
 				s[eventtype]['data'][eventID]['AppName'],
-				str(eventID),
+				incidentPriority,
+				procText, 
+				eventID
 				)
 				
 				#pp.pprint(dataList)
@@ -121,6 +216,9 @@ def createWS(wb, s, paletteName = 'soft', formatWB=True):
 	ws.column_dimensions['D'].width = 10
 	ws.column_dimensions['E'].width = 10
 	ws.column_dimensions['F'].width = 35
+	ws.column_dimensions['G'].width = 15
+	ws.column_dimensions['H'].width = 35
+	ws.column_dimensions['I'].width = 35
 
 #	filterStart_ID = 'A%d'% (palette['headerrow'])
 #	filterEnd_ID = 'F%d' % (row - 1)
@@ -328,8 +426,14 @@ def	emed_getEventDetailsFromSQL(dbh, event_query):
 	
 def	emed_getEventDetails_App(dbh, eventGUID, eventRoot):
 	#pp.pprint('emed_getEventDetails_App')
+	#event_prequery = "SELECT EventName, AlertMessage, ThresholdValue, ThresholdUnit, EventSeverity, AppName \
+	#from eventsApp where EventGUID = '%s'"
 	event_prequery = "SELECT EventName, AlertMessage, ThresholdValue, ThresholdUnit, EventSeverity, AppName \
-	from eventsApp where EventGUID = '%s'"
+		, incidentPriority, procText.procText \
+		from eventsApp \
+		LEFT OUTER JOIN eventProcMapping on eventsApp.EventGUID = eventProcMapping.EventGUID \
+		LEFT OUTER JOIN procText on procText.procTextID = eventProcMapping.procTextID \
+		where eventsApp.EventGUID = '%s'"
 	event_query = event_prequery % (eventGUID)
 	return emed_getEventDetailsFromSQL(dbh,event_query)
 
