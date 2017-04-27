@@ -63,9 +63,32 @@ DROP TABLE IF EXISTS `sheetMapping`;
 CREATE TABLE `sheetMapping` (
     `SheetGUID` bigint(20) NOT NULL
 	,`DataType` bigint(20) NOT NULL 
-	,`DataIdentifier` CHAR(64) NULL DEFAULT NULL
+	,`DataIdentifier` VARCHAR(64) NULL DEFAULT NULL
 	,CONSTRAINT sheets_SheetGUID FOREIGN KEY (SheetGUID) REFERENCES sheets (SheetGUID)
 	-- ,CONSTRAINT events_AppGUID FOREIGN KEY (AppGUID) REFERENCES events (AppGUID)
+)
+COLLATE='latin1_swedish_ci'
+ENGINE=InnoDB
+;	
+
+DROP TABLE IF EXISTS `procText`;
+
+CREATE TABLE `procText` (
+    `procTextID` bigint(20) NOT NULL AUTO_INCREMENT,
+	`text` TEXT NOT NULL,
+	PRIMARY KEY (procTextID)
+)
+COLLATE='latin1_swedish_ci'
+ENGINE=InnoDB
+;	
+
+DROP TABLE IF EXISTS `eventProcMapping`;
+
+CREATE TABLE `eventProcMapping` (
+	`EventGUID` CHAR(32) NULL DEFAULT NULL,
+    `procTextID` bigint(20) NOT NULL AUTO_INCREMENT,
+	`incidentPriority` VARCHAR(20) NOT NULL
+	,CONSTRAINT procText_procTextID FOREIGN KEY (procTextID) REFERENCES procText (procTextID)
 )
 COLLATE='latin1_swedish_ci'
 ENGINE=InnoDB

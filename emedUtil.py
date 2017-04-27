@@ -87,7 +87,7 @@ def createWS(wb, s, paletteName = 'soft', formatWB=True):
 	# Create the monitored object worksheet data rows
 
 	rownumber = palette['datarow']
-	columnList = ('A', 'B', 'C', 'D', 'E', 'F', )
+	columnList = ('A', 'B', 'C', 'D', 'E', 'F', 'G', )
 
 	# Get the list of events for each sheet and type in the sheet
 	for eventtype in eventtypes:
@@ -104,6 +104,7 @@ def createWS(wb, s, paletteName = 'soft', formatWB=True):
 				s[eventtype]['data'][eventID]['ThresholdUnit'],
 				loopSeverity,
 				s[eventtype]['data'][eventID]['AppName'],
+				str(eventID),
 				)
 				
 				#pp.pprint(dataList)
