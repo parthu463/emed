@@ -1,85 +1,133 @@
 use emed;
 
-insert into `procText` (procText) VALUES ('? Connect to the switch using SSH. ? Check the status of the PSUs using the command:  • show environment power ? If the status of the PSU is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the PSU is not OK, raise a P3 to INFRA L3 and page on-call support to check if it needs to be replaced.');
-insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (1, 'P3/P4','D0DBD97B710A81434388031BF178E9F9');
-insert into `procText` (procText) VALUES ('? Connect to the switch using SSH. ? Check the status of the PSUs using the command:  • show environment power ? If the status of the PSU is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the PSU is not OK, raise a P3 to INFRA L3 and page on-call support to check if it needs to be replaced.');
+insert into `procText` (procText) VALUES ('Connect to the switch using SSH. ? Check the status of the PSUs using the command:  • show environment power ? If the status of the PSU is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the PSU is not OK, raise a P3 to INFRA L2.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (1, 'P3/P4', 'D0DBD97B710A81434388031BF178E9F9');
+insert into `procText` (procText) VALUES ('Connect to the switch using SSH. ? Check the status of the PSUs using the command:  • show environment power ? If the status of the PSU is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the PSU is not OK, raise a P3 to INFRA L2.');
 insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (2, 'P3/P4', 'B8F3A9B7A520DD7090BB5AB25E87F926');
-insert into `procText` (procText) VALUES ('? Connect to the switch using SSH. ? Check the status of the PSUs using the command:  • show environment power ? If the status of the PSU is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the PSU is not OK, raise a P3 to INFRA L3 and page on-call support to check if it needs to be replaced.');
-insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (3, 'P3/P4', '360C961A7F2967BD9AC7A96A07E22011');
-insert into `procText` (procText) VALUES ('? Connect to the switch using SSH. ? Check the status of the fan using the command:  • show environment fan ? If the status of the FAN module is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the fan is not OK, raise a P3 to INFRA L3 and page on-call support to check if the fan needs to be replaced.');
-insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (4, 'P3/P4', '7DF1CDB35123B188E506F9D6026B47F9');
-insert into `procText` (procText) VALUES ('? Connect to the switch using SSH. ? Check the status of the fan using the command:  • show environment fan ? If the status of the FAN module is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the fan is not OK, raise a P3 to INFRA L3 and page on-call support to check if the fan needs to be replaced.');
-insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (5, 'P3/P4', '6AE3AEFF23C07D1EA470856A96D701FE');
-insert into `procText` (procText) VALUES ('? Connect to the switch using SSH. ? Check the status of the fan using the command:  • show environment fan ? If the status of the FAN module is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the fan is not OK, raise a P3 to INFRA L3 and page on-call support to check if the fan needs to be replaced.');
-insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (6, 'P3/P4', '2178341D754953C09EAFC442A3823E51');
-insert into `procText` (procText) VALUES ('? Connect to the switch using SSH. ? Check the status of the fan using the command:  • show environment fan ? If the status of the FAN module is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the fan is not OK, raise a P3 to INFRA L3 and page on-call support to check if the fan needs to be replaced.');
-insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (7, 'P3/P4', 'BBE95FC2F486D27D2ECF12AB587B58FF');
-insert into `procText` (procText) VALUES ('? Connect to the switch using SSH. ? Check the status of the fan using the command:  • show environment fan ? If the status of the FAN module is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the fan is not OK, raise a P3 to INFRA L3 and page on-call support to check if the fan needs to be replaced.');
-insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (8, 'P3/P4', 'C691A05796A4FDE5AFB4DD3743A8C7A3');
-insert into `procText` (procText) VALUES ('? Connect to the switch using SSH. ? Check the status of the PSUs using the command:  • show environment power ? If the status of the PSU is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the PSU is not OK, raise a P3 to INFRA L3 and page on-call support to check if it needs to be replaced.');
-insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (9, 'P3/P4', '569E8FC031E5EF227091496D4E24C4AF');
-insert into `procText` (procText) VALUES ('? Connect to the switch using SSH. ? Check the status of the fan using the command:  • show environment fan ? If the status of the FAN module is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the fan is not OK, raise a P3 to INFRA L3 and page on-call support to check if the fan needs to be replaced.');
-insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (10, 'P3/P4', '880C49BC5CBC675A10294207F7A52778');
-insert into `procText` (procText) VALUES ('? Connect to the switch using SSH. ? Check the status of the fan using the command:  • show environment fan ? If the status of the FAN module is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the fan is not OK, raise a P3 to INFRA L3 and page on-call support to check if the fan needs to be replaced.');
-insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (11, 'P3/P4', 'DDFCABB292D1972D8AD3F4C328819395');
-insert into `procText` (procText) VALUES ('? Connect to the switch using SSH. ? Check the status of the PSUs using the command:  • show environment power ? If the status of the PSU is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the PSU is not OK, raise a P3 to INFRA L3 and page on-call support to check if it needs to be replaced.');
-insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (12, 'P3/P4', 'D292C9A205E94AD9ADC6A4F851803258');
-insert into `procText` (procText) VALUES ('? Connect to the switch using SSH. ? Check the status of the fan using the command:  • show environment fan ? If the status of the FAN module is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the fan is not OK, raise a P3 to INFRA L3 and page on-call support to check if the fan needs to be replaced.');
-insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (13, 'P3/P4', '722BF0426301EA61FF692AC4475B4735');
+insert into `procText` (procText) VALUES ('Connect to UCS GUI. ? Check the status of the fabric interconnect memory ? If the status of the memory is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the Memory is not OK, raise a P3 to INFRA L2.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (3, 'P3/P4', '323AA806419C1EA1817DED17FB86A1A3');
+insert into `procText` (procText) VALUES ('Connect to the switch using SSH. ? Check the status of the PSUs using the command:  • show environment power ? If the status of the PSU is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the PSU is not OK, raise a P3 to INFRA L2.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (4, 'P3/P4', '360C961A7F2967BD9AC7A96A07E22011');
+insert into `procText` (procText) VALUES ('Connect to UCS GUI. ? Check the status of the fabric interconnect mainBoardOutlet1 or Temperature alerts ? If the status of the mainBoardOutlet1 or Temperature alerts is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the mainBoardOutlet1 or Temperature alerts is not OK, raise a P3 to INFRA L2.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (5, 'P3/P4', '9932CE7B39488D1043DFB6CE72B60EFF');
+insert into `procText` (procText) VALUES ('Connect to UCS GUI. ? Check the status of the fabric interconnect Ethernet Resets for specific port idintified ? If the status of the Ethernet Resets is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the Ethernet Resets is not OK, raise a P3 to INFRA L2.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (6, 'P3/P4', '92CEC5FF69FAFF51AE6B5C316B30E37B');
+insert into `procText` (procText) VALUES ('Connect to the switch using SSH. ? Check the status of the fan using the command:  • show environment fan ? If the status of the FAN module is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the fan is not OK, raise a P3 to INFRA L2.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (7, 'P3/P4', '7DF1CDB35123B188E506F9D6026B47F9');
+insert into `procText` (procText) VALUES ('Connect to UCS GUI. ? Check the status of theC series fan in console ? If the status of the FAN module is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the fan is not OK, raise a P3 to INFRA L2.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (8, 'P3/P4', '5CA071386770A2A27EA469A9341445EF');
+insert into `procText` (procText) VALUES ('Connect to UCS GUI. ? Check the status of the fabric interconnect mainBoardOutlet2 or Temperature alerts ? If the status of the mainBoardOutlet2 or Temperature alerts is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the mainBoardOutlet2 or Temperature alerts is not OK, raise a P3 to INFRA L2.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (9, 'P3/P4', '5AE680DE1D3BC9B728DA26C3E0A3D40C');
+insert into `procText` (procText) VALUES ('Connect to the switch using SSH. ? Check the status of the fan using the command:  • show environment fan ? If the status of the FAN module is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the fan is not OK, raise a P3 to INFRA L3 and page on-call support to check if the fan needs to be replaced.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (10, 'P3/P4', '6AE3AEFF23C07D1EA470856A96D701FE');
+insert into `procText` (procText) VALUES ('Connect to the switch using SSH. ? Check the status of the fan using the command:  • show environment fan ? If the status of the FAN module is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the fan is not OK, raise a P3 to INFRA L3 and page on-call support to check if the fan needs to be replaced.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (11, 'P3/P4', '2178341D754953C09EAFC442A3823E51');
+insert into `procText` (procText) VALUES ('Connect to UCS GUI. ? Check the status of the chassis power ? If the status of the chassis power is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the chassis power is not OK, raise a P3 to INFRA L2.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (12, 'P3/P4', '54EA544762D7A9730AC4275B01B9F2DD');
+insert into `procText` (procText) VALUES ('Connect to the switch using SSH. ? Check the status of the fan using the command:  • show environment fan ? If the status of the FAN module is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the fan is not OK, raise a P3 to INFRA L3 and page on-call support to check if the fan needs to be replaced.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (13, 'P3/P4', 'BBE95FC2F486D27D2ECF12AB587B58FF');
+insert into `procText` (procText) VALUES ('Connect to UCS GUI. ? Check the status of the fabric interconnect Ethernet Discards for specific port idintified ? If the status of the Ethernet Discards is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the Ethernet Discards is not OK, raise a P3 to INFRA L2.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (14, 'P3/P4', 'C9E1182EDAD486B06920C8F830AB1D76');
+insert into `procText` (procText) VALUES ('Connect to the switch using SSH. ? Check the status of the fan using the command:  • show environment fan ? If the status of the FAN module is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the fan is not OK, raise a P3 to INFRA L3 and page on-call support to check if the fan needs to be replaced.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (15, 'P3/P4', 'C691A05796A4FDE5AFB4DD3743A8C7A3');
+insert into `procText` (procText) VALUES ('Connect to UCS GUI. ? Check the status of the fabric interconnect Ethernet Collisions for specific port idintified ? If the status of the Ethernet Collisions is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the Ethernet Collisions is not OK, raise a P3 to INFRA L2.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (16, 'P3/P4', '324EC7A3F68731D3BEDC950BD0D2E2C5');
+insert into `procText` (procText) VALUES ('Connect to UCS GUI. ? Check the status of the fabric interconnect Load for specific Fabric Interconnect ? If the status of the abric interconnect Load is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the abric interconnect Load is not OK, raise a P3 to INFRA L2.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (17, 'P3/P4', 'DED8A1475BFF9428CDBF1713D93B423C');
+insert into `procText` (procText) VALUES ('Connect to the switch using SSH. ? Check the status of the PSUs using the command:  • show environment power ? If the status of the PSU is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the PSU is not OK, raise a P3 to INFRA L3 and page on-call support to check if it needs to be replaced.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (18, 'P3/P4', '569E8FC031E5EF227091496D4E24C4AF');
+insert into `procText` (procText) VALUES ('Connect to UCS GUI. ? Check the status of the fabric interconnect Ethernet Pauses for specific port idintified ? If the status of the Ethernet Pauses is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the Ethernet Pauses is not OK, raise a P3 to INFRA L2.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (19, 'P3/P4', 'DBF5525268BEA1918EAAF7008A98C572');
+insert into `procText` (procText) VALUES ('Connect to the switch using SSH. ? Check the status of the fan using the command:  • show environment fan ? If the status of the FAN module is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the fan is not OK, raise a P3 to INFRA L3 and page on-call support to check if the fan needs to be replaced.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (20, 'P3/P4', '880C49BC5CBC675A10294207F7A52778');
+insert into `procText` (procText) VALUES ('Connect to the switch using SSH. ? Check the status of the fan using the command:  • show environment fan ? If the status of the FAN module is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the fan is not OK, raise a P3 to INFRA L3 and page on-call support to check if the fan needs to be replaced.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (21, 'P3/P4', 'DDFCABB292D1972D8AD3F4C328819395');
+insert into `procText` (procText) VALUES ('Connect to UCS GUI. ? Check the status of the chassis power ? If the status of the chassis power is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the chassis power is not OK, raise a P3 to INFRA L2.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (22, 'P3/P4', '60DA86BE64C293C137C86C96764E72F5');
+insert into `procText` (procText) VALUES ('Connect to the switch using SSH. ? Check the status of the PSUs using the command:  • show environment power ? If the status of the PSU is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the PSU is not OK, raise a P3 to INFRA L3 and page on-call support to check if it needs to be replaced.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (23, 'P3/P4', 'D292C9A205E94AD9ADC6A4F851803258');
+insert into `procText` (procText) VALUES ('Connect to the switch using SSH. ? Check the status of the fan using the command:  • show environment fan ? If the status of the FAN module is OK, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the status of the fan is not OK, raise a P3 to INFRA L3 and page on-call support to check if the fan needs to be replaced.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (24, 'P3/P4', '722BF0426301EA61FF692AC4475B4735');
 
-insert into `procText` (procText) VALUES
-('? Connect to the switch using SSH. ? Check memory usage using the command:  • show system resources ? Raise a P3 to INFRA L3 with a screenshot of the result of the above command.');
-insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (14, 'P3', '85ABF1239B370F7DBC039886D35E27D1');
 
-insert into `procText` (procText) VALUES
-('? Connect to the switch using SSH. ? Check memory usage using the command:  • show system resources ? Raise a P3 to INFRA L3 with a screenshot of the result of the above command.');
-insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (15, 'P3', '0604C69E9B7197C31E6AFB2B239C7990');
+insert into `procText` (procText) VALUES ('Connect to VMAX Unisphere. ? Check the status of the VMAX response time write is degraded in Alarm console  ? If the status of the VMAX response time write is degraded does not exist, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the VMAX response time write is degraded exists, raise a P3 to INFRA L2.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (25, 'P3', 'FB6AE79ADDB33C3FA2736CB50FF867C4');
+insert into `procText` (procText) VALUES ('Connect to VMAX Unisphere. ? Check the status of the VMAX storage pool utilization is 80% to 89% in Alarm console  ? If the status of the VMAX storage pool utilization is 80% to 89% does not exist, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the VMAX storage pool utilization is 80% to 89% exists, raise a P3 to INFRA L2.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (26, 'P3', '56C48A6A29C3CE91752A5D23AEADA6B2');
+insert into `procText` (procText) VALUES ('Connect to VMAX Unisphere. ? Check the status of the VMAX storage pool utilization is 90% to 94% in Alarm console  ? If the status of the VMAX storage pool utilization is below 80%, raise a P3 incident to the INFRA team to check for code bugs that may cause this. ? If the VMAX storage pool utilization is 90% to 94% exists, raise a P2 to INFRA L2 and follow P2 situation management protocol and enage On-call if neccessary.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (27, 'P2', 'ADAD0A218C7814ED39D7448CEB16B232');
+insert into `procText` (procText) VALUES ('Connect to VMAX Unisphere. ? Check the status of the VMAX storage pool utilization is 95% or higher in Alarm console  ? If the status of the VMAX storage pool utilization is below 80%, raise a P3 incident to the INFRA team to check for code bugs that may cause this. ? If the VMAX storage pool utilization is 95% or higher, raise a P2 to INFRA L2 and follow P2 situation management protocol and enage On-call if neccessary.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (28, 'P2', 'E044B40E62B2121A307E474551E71430');
+insert into `procText` (procText) VALUES ('Connect to VMAX Unisphere. ? Check the status of the VMAX response time read is degraded in Alarm console  ? If the status of the VMAX response time read is degraded does not exist, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the VMAX response time read is degraded exists, raise a P3 to INFRA L2.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (29, 'P3', 'E626DA60FDC67466F87A0B7B7D2C69B7');
 
-insert into `procText` (procText) VALUES
-('? Connect to the switch using SSH. ? Check memory usage using the command:  • show system resources ? Raise a P3 to INFRA L3 with a screenshot of the result of the above command.');
-insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (16, 'P3', 'EA79F1B2B7ACA4BC20AF69676942EAAC');
 
-insert into `procText` (procText) VALUES
-('? Connect to the switch using SSH. ? Check memory usage using the command:  • show system resources ? Raise a P3 to INFRA L3 with a screenshot of the result of the above command.');
-insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (17, 'P3', '9FAFAEE7937740C3D573DA80F6355FD7');
+insert into `procText` (procText) VALUES ('Connect to VNX Unisphere. ? Check the status of the VNX Raid group utilization is 95% in Alarm console  ? If the status of the VNX Raid group utilization is below80%, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the VNX Raid group utilization is 95% exists, raise a P2 to INFRA L2 and follow P2 situation management protocol and enage On-call if neccessary');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (30, 'P2', '08615D909E33669D1B04626CB66A609F');
+insert into `procText` (procText) VALUES ('Connect to VNX Unisphere. ? Check the status of the VNX Storage Pool utilization is 90% in Alarm console  ? If the status of the VNX Storage Pool utilization is below 80%, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the VNX Storage Pool utilization is 90% exists, raise a P2 to INFRA L2 and follow P2 situation management protocol and enage On-call if neccessary');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (31, 'P2', '4EEC52DD65190D43C7CE45F8E6A43401');
+insert into `procText` (procText) VALUES ('Connect to VNX Unisphere. ? Check the status of the VNX power supply status is degraded in Alarm console  ? If the status of the VNX power supply status is degraded is not present, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the VNX power supply status is degraded exists, raise a P3 to INFRA L2');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (32, 'P3', '63A89828836DC632CBBD74E409A226E0');
+insert into `procText` (procText) VALUES ('Connect to VNX Unisphere. ? Check the status of the VNX Raid group utilization is 80% in Alarm console  ? If the status of the VNX Raid group utilization is below  80%, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the VNX Raid group utilization is 80% exists, raise a P3 to INFRA L2');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (33, 'P3', 'FA299F046EBC9F26EAE56BB95EE49897');
+insert into `procText` (procText) VALUES ('Connect to VNX Unisphere. ? Check the status of the VNX File System utilization is 95% in Alarm console  ? If the status of the VNX File System utilization is below 80%, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the VNX File System utilization is 95% exists, raise a P2 to INFRA L2 and follow P2 situation management protocol and enage On-call if neccessary');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (34, 'P2', '686A2332382AFB1AF5CEB26CBB3B46D0');
+insert into `procText` (procText) VALUES ('Connect to VNX Unisphere. ? Check the status of the VNX array status is critical in Alarm console  ? If the status of the VNX array status is critical is not present, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the VNX array status is critical exists, raise a P2 to INFRA L2 and follow P2 situation management protocol and enage On-call if neccessary.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (35, 'P2', 'AFE51D378541AD96947A40A654367A94');
+insert into `procText` (procText) VALUES ('Connect to VNX Unisphere. ? Check the status of the VNX Storage Pool utilization is 90% in Alarm console  ? If the status of the VNX Storage Pool utilization is below 80%, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the VNX Storage Pool utilization is 80% exists, raise a P3 to INFRA L2');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (36, 'P3', 'FD64AD55AC38489686FEC04C0DD7CEBE');
+insert into `procText` (procText) VALUES ('Connect to VNX Unisphere. ? Check the status of the VNX Storage Pool utilization is 95% in Alarm console  ? If the status of the VNX Storage Pool utilization is below 80%, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the VNX Storage Pool utilization is 95% exists, raise a P2 to INFRA L2 and follow P2 situation management protocol and enage On-call if neccessary');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (37, 'P2', 'E8AB4920D8A3BD06042E507EAE3E0A58');
+insert into `procText` (procText) VALUES ('Connect to VNX Unisphere. ? Check the status of the VNX power supply status is Unknown in Alarm console  ? If the status of the VNX power supply status is Unknown is not present, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the VNX power supply status is Unknown exists, raise a P3 to INFRA L2');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (38, 'P3', '2A318ADB5287FAA46EACD0E3BD8C83B5');
+insert into `procText` (procText) VALUES ('Connect to VNX Unisphere. ? Check the status of the VNX enclosure health status is degraded in Alarm console  ? If the status of the VNX enclosure health status is degraded is not present, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the VNX enclosure health status is degraded exists, raise a P3 to INFRA L2');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (39, 'P3', '954BE7CDC6C328245ECB033003574039');
+insert into `procText` (procText) VALUES ('Connect to VNX Unisphere. ? Check the status of the VNX File System utilization is 95% in Alarm console  ? If the status of the VNX File System utilization is below 80%, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the VNX File System utilization is 95% exists, raise a P2 to INFRA L2 and follow P2 situation management protocol and enage On-call if neccessary');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (40, 'P2', '692F61D2C3E94FB0D0614704D72D46DD');
+insert into `procText` (procText) VALUES ('Connect to VNX Unisphere. ? Check the status of the VNX array status is degraded in Alarm console  ? If the status of the VNX array status is degraded is not present, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the VNX array status is degraded exists, raise a P3 to INFRA L2');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (41, 'P3', 'A06B36A67C690E7272ADA8BAA915FB4E');
+insert into `procText` (procText) VALUES ('Connect to VNX Unisphere. ? Check the status of the VNX enclosure health status is critical in Alarm console  ? If the status of the VNX enclosure health status is critical is not present, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the VNX enclosure health status is critical exists, raise a P2 to INFRA L2 and follow P2 situation management protocol and enage On-call if neccessary');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (42, 'P2', '115B03DD71BE9576C216C6DD27741736');
+insert into `procText` (procText) VALUES ('Connect to VNX Unisphere. ? Check the status of the VNX power supply status is critical in Alarm console  ? If the status of the VNX power supply status is critical is not present, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the VNX power supply status is critical exists, raise a P2 to INFRA L2 and follow P2 situation management protocol and enage On-call if neccessary');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (43, 'P3', 'EBB3C708AF6C58565A39D62248D529F8');
+insert into `procText` (procText) VALUES ('Connect to VNX Unisphere. ? Check the status of the VNX snapview pool utilization has exceeded critical threshold is 80% in Alarm console  ? If the status of the VNX snapview pool utilization has exceeded critical threshold is below 80%, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the VNX snapview pool utilization has exceeded critical threshold is 80% exists, raise a P3 to INFRA L2');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (44, 'P3', '16E3F690DBE2725D4174CDE17D211067');
+insert into `procText` (procText) VALUES ('Connect to VNX Unisphere. ? Check the status of the VNX enclosure inlet temperature exceeded threshold in Alarm console  ? If the status of the VNX enclosure inlet temperature exceeded threshold is not present, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the VNX enclosure inlet temperature exceeded threshold exists, raise a P3 to INFRA L2');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (45, 'P3', 'EC37134EBECDFB93DB670EAEDDC1EA08');
+insert into `procText` (procText) VALUES ('Connect to VNX Unisphere. ? Check the status of the VNX Raid group utilization is 95% in Alarm console  ? If the status of the VNX Raid group utilization is below80%, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the VNX Raid group utilization is 95% exists, raise a P2 to INFRA L2 and follow P2 situation management protocol and enage On-call if neccessary');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (46, 'P2', 'C1C64CC2F31298A963DB2168641B0C88');
+insert into `procText` (procText) VALUES ('Connect to VNX Unisphere. ? Check the status of the VNX statistics logging Interval has exceeded threshold in Alarm console  ? If the status of the VNX statistics logging Interval has exceeded threshold is not present, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the VNX statistics logging Interval has exceeded threshold exists, raise a P3 to INFRA L2');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (47, 'P3', '957575423CF80596471E55AE516784D5');
 
-insert into `procText` (procText) VALUES
-('? Connect to the switch using SSH. ? Check memory usage using the command:  • show system resources ? Raise a P3 to INFRA L3 with a screenshot of the result of the above command.');
-insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (18, 'P3', 'C0D9C240A1C072220DF6FABD393B80DF');
 
-insert into `procText` (procText) VALUES
-('? Check CPU usage history for the host on vCenter. ? Document your findings and raise a P3 to INFRA L3 with this information.');
-insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (19, 'P3', 'C8C344738D2E17B18B0BFBE64FFECF54');
+insert into `procText` (procText) VALUES ('Connect to the switch using SSH. ? Check memory usage using the command:  • show system resources ? Raise a P3 to INFRA L3 with a screenshot of the result of the above command.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (48, 'P3', '85ABF1239B370F7DBC039886D35E27D1');
+insert into `procText` (procText) VALUES ('Connect to the switch using SSH. ? Check memory usage using the command:  • show system resources ? Raise a P3 to INFRA L3 with a screenshot of the result of the above command.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (49, 'P3', '0604C69E9B7197C31E6AFB2B239C7990');
+insert into `procText` (procText) VALUES ('Connect to the switch using SSH. ? Check memory usage using the command:  • show system resources ? Raise a P3 to INFRA L3 with a screenshot of the result of the above command.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (50, 'P3', 'EA79F1B2B7ACA4BC20AF69676942EAAC');
+insert into `procText` (procText) VALUES ('Connect to the switch using SSH. ? Check memory usage using the command:  • show system resources ? Raise a P3 to INFRA L3 with a screenshot of the result of the above command.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (51, 'P3', '9FAFAEE7937740C3D573DA80F6355FD7');
+insert into `procText` (procText) VALUES ('Connect to the switch using SSH. ? Check memory usage using the command:  • show system resources ? Raise a P3 to INFRA L3 with a screenshot of the result of the above command.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (52, 'P3', 'C0D9C240A1C072220DF6FABD393B80DF');
 
-insert into `procText` (procText) VALUES
-('? Check Memory usage history for the host on vCenter. ? Document your findings and raise a P3 to INFRA L3 with this information.');
-insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (20, 'P3', '1BB1E3BCC297796F60CAD9A056A9C923');
 
-insert into `procText` (procText) VALUES
-('? Check CPU usage history for the host on vCenter. ? Document your findings and raise a P3 to INFRA L3 with this information.');
-insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (21, 'P3', '1BDBC1139763B129EBC0A52C5C000A47');
+insert into `procText` (procText) VALUES ('Check CPU usage history for the host on vCenter. ? Document your findings and raise a P3 to INFRA L3 with this information.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (53, 'P3', 'C8C344738D2E17B18B0BFBE64FFECF54');
+insert into `procText` (procText) VALUES ('Check Host Free Memory Has Dropped Below High Threshold for the host on vCenter. ? Document your findings and raise a P3 to INFRA L3 with this information.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (54, 'P3', '5A18283E1ECFBDC6A793A3EC331681FA');
+insert into `procText` (procText) VALUES ('Check Memory usage history for the host on vCenter. ? Document your findings and raise a P3 to INFRA L3 with this information.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (55, 'P3', '1BB1E3BCC297796F60CAD9A056A9C923');
+insert into `procText` (procText) VALUES ('Check CPU usage history for the host on vCenter. ? Document your findings and raise a P3 to INFRA L3 with this information.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (56, 'P3', '1BDBC1139763B129EBC0A52C5C000A47');
 
-insert into `procText` (procText) VALUES
-('? Check the status of the datastor on vCenter and Unisphere. ? Document your findings and raise a P3 to INFRA L3 with this information.');
-insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (22, 'P3', 'A29279EE1201EBC8C437DB700D1CC78F');
 
-insert into `procText` (procText) VALUES
-('? Check memory usage history for the VM on vCenter. ? Document your findings and raise a P3 to INFRA L3 with this information.');
-insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (23, 'P3', '15CC898BC33BCECA83F1E1AB2CFF9909');
+insert into `procText` (procText) VALUES ('Check the status of the datastor on vCenter and Unisphere. ? Document your findings and raise a P3 to INFRA L3 with this information.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (57, 'P3', 'A29279EE1201EBC8C437DB700D1CC78F');
 
-insert into `procText` (procText) VALUES
-('? Check CPU usage history for the VM on vCenter. ? Document your findings and raise a P3 to INFRA L3 with this information.');
-insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (24, 'P3', 'B3E8274E12C9E13A4D893A28EA82B5CC');
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+insert into `procText` (procText) VALUES ('Check memory usage history for the VM on vCenter. ? Document your findings and raise a P3 to INFRA L3 with this information.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (58, 'P3', '15CC898BC33BCECA83F1E1AB2CFF9909');
+insert into `procText` (procText) VALUES ('Check CPU usage history for the VM on vCenter. ? Document your findings and raise a P3 to INFRA L3 with this information.');
+insert into `eventProcMapping` (`procTextID`, `incidentPriority`, `EventGUID`) VALUES (59, 'P3', 'B3E8274E12C9E13A4D893A28EA82B5CC');
+
