@@ -48,7 +48,7 @@ EventTypeData = {}
 EventTypeData['App'] = {}
 EventTypeData['Trap'] = {}
 
-EventTypeData['App']['fname'] = 'Events-App_20170403-1849.xlsx'
+EventTypeData['App']['fname'] = 'Events-App_20170502-59119.xlsx'
 EventTypeData['App']['input_sheetname'] = 'eventsApp'
 
 EventTypeData['Trap']['fname'] = 'Events-Trap_20170329-01.xlsx'

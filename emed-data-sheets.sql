@@ -290,6 +290,33 @@ insert into sheetMapping
 
 -- EMC XtremIO Sheet
 
+insert into sheetMapping (SheetGUID, DataType, DataIdentifier) VALUES
+(5, 0, '091C42E681C6DC0CCEBAEFFA8F9006C3');
+insert into sheetMapping (SheetGUID, DataType, DataIdentifier) VALUES
+(5, 0, '7F22A38C78DBB8AE30CEB433C701FA54');
+insert into sheetMapping (SheetGUID, DataType, DataIdentifier) VALUES
+(5, 0, '762A2B2C84EA66941D08A6F6EAC1D0D8');
+insert into sheetMapping (SheetGUID, DataType, DataIdentifier) VALUES
+(5, 0, '8F4801FE9DB45A78855135E7F79FFFEE');
+insert into sheetMapping (SheetGUID, DataType, DataIdentifier) VALUES
+(5, 0, '2E57B0F6E731DD13C7FF54705F2E9694');
+insert into sheetMapping (SheetGUID, DataType, DataIdentifier) VALUES
+(5, 0, '67E9EB6C63BA4905B28E3831AB106853');
+insert into sheetMapping (SheetGUID, DataType, DataIdentifier) VALUES
+(5, 0, 'C860410C0D6E88917ABAB5537EDA2168');
+insert into sheetMapping (SheetGUID, DataType, DataIdentifier) VALUES
+(5, 0, 'D81B566EBFEF174F7EF2A42115D96670');
+insert into sheetMapping (SheetGUID, DataType, DataIdentifier) VALUES
+(5, 0, 'DF9A40EC4AD405AF5D3BD51713A73F78');
+insert into sheetMapping (SheetGUID, DataType, DataIdentifier) VALUES
+(5, 0, 'E0CB7B6E28729033A2347D8D2F71FBB0');
+insert into sheetMapping (SheetGUID, DataType, DataIdentifier) VALUES
+(5, 0, 'E45A6A3C669796392F104BFD4FE9BC9B');
+insert into sheetMapping (SheetGUID, DataType, DataIdentifier) VALUES
+(5, 0, 'F22791C37800860FB5F7EED5AEB7B3DC');
+insert into sheetMapping (SheetGUID, DataType, DataIdentifier) VALUES
+(5, 0, 'F93D9E675AC3B03AB02823EDBB6CB689');
+
 insert into sheetMapping
 (SheetGUID, DataType, DataIdentifier) VALUES
 (6, 2, 'trapDataXMS');
