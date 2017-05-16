@@ -439,16 +439,26 @@ def	emed_getEventDetails_App(dbh, eventGUID, eventRoot):
 
 def emed_getEventDetails_Trap(dbh, eventGUID, eventRoot):
 	#pp.pprint('emed_getEventDetails_Trap')
-	event_prequery = "SELECT EventName, EventMessage as AlertMessage, EventSeverity \
-	from eventsTrap where EventGUID = '%s'"
+	#event_prequery = "SELECT EventName, EventMessage as AlertMessage, EventSeverity \
+	#from eventsTrap where EventGUID = '%s'"
+	event_prequery = "SELECT EventName, EventMessage as AlertMessage, EventSeverity, incidentPriority, procText.procText \
+	from eventsTrap \
+	LEFT OUTER JOIN eventProcMapping on eventsTrap.EventGUID = eventProcMapping.EventGUID \
+	LEFT OUTER JOIN procText on procText.procTextID = eventProcMapping.procTextID \
+	where eventsTrap.EventGUID = '%s'"
 	event_query = event_prequery % (eventGUID)
 	return emed_getEventDetailsFromSQL(dbh,event_query)
 
 def emed_getEventDetails_TrapVarbind(dbh, eventGUID, eventRoot, tablename):
 	#pp.pprint('emed_getEventDetails_TrapVarbind')
 	#pp.pprint(tablename)
-	event_prequery = "SELECT trapName as EventName, trapMessage as AlertMessage,\
-		trapSeverity as EventSeverity from %s where trapCode = '%%s'" % (tablename)
+	#event_prequery = "SELECT trapName as EventName, trapMessage as AlertMessage,\
+	#	trapSeverity as EventSeverity from %s where trapCode = '%%s'" % (tablename)
+	event_prequery = "SELECT trapName as EventName, trapMessage as AlertMessage, trapSeverity as EventSeverity \
+	, incidentPriority, procText from %s \
+	LEFT OUTER JOIN eventProcMapping on %s.trapCode = eventProcMapping.EventGUID \
+	LEFT OUTER JOIN procText on procText.procTextID = eventProcMapping.procTextID \
+	where trapCode = '%%s'" % (tablename, tablename)
 	event_query = event_prequery % (eventGUID)
 	return emed_getEventDetailsFromSQL(dbh,event_query)
 
