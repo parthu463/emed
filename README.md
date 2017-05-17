@@ -97,4 +97,21 @@ Additonal Notes:
 			from policies_events as ev
 			--where ppguid = '5479472A416E160702305726EB03F8F7'
 			order by EventMessage;
+			
+		Note:  2017-05-17(kcc): Evaluate this query with esource as an option and look at master.definitions_event_sources
 
+	d) Events-Internal_*.xlsx is generated with the following query against any production stack
+		use master;
+		select ename as EventName
+			,eseverity as EventSeverity
+			,definitions_internal_messages.msg_txt as EventMessage
+			,event_guid as EventGUID
+			,ppguid as PowerpackGUID
+			from policies_events
+			RIGHT OUTER JOIN definitions_internal_messages on msg_id = Xoid
+			where esource = 2
+			and eseverity != 0
+			ORDER BY ename
+			;
+		Note: The Events-Trap and Events-Internal currently look very similar but the messages are stored differently
+		This might be able to be merged into a single table in EMED at some point.
