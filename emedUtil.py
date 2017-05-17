@@ -101,11 +101,7 @@ def createBaselineWS(wb, s, paletteName = 'soft', formatWB=True):
 				else:
 					loopSeverity = s[eventtype]['data'][eventID]['EventSeverity']
 
-					# Normalize incidentPriority (until traps are supported)
-				if eventtype != 'eventsApp':
-					incidentPriority = ''
-				else:
-					incidentPriority = s[eventtype]['data'][eventID]['incidentPriority']
+				incidentPriority = s[eventtype]['data'][eventID]['incidentPriority']
 				
 				dataList = (s[eventtype]['data'][eventID]['EventName'],
 				s[eventtype]['data'][eventID]['AlertMessage'],
@@ -183,13 +179,8 @@ def createProcedureWS(wb, s, paletteName = 'soft', formatWB=True):
 				else:
 					loopSeverity = s[eventtype]['data'][eventID]['EventSeverity']
 
-				# Normalize incidentPriority and procText (until traps are supported)
-				if eventtype != 'eventsApp':
-					incidentPriority = ''
-					procText = ''
-				else:
-					incidentPriority = s[eventtype]['data'][eventID]['incidentPriority']
-					procText = 	s[eventtype]['data'][eventID]['procText']
+				incidentPriority = s[eventtype]['data'][eventID]['incidentPriority']
+				procText = 	s[eventtype]['data'][eventID]['procText']
 				
 				dataList = (s[eventtype]['data'][eventID]['EventName'],
 				s[eventtype]['data'][eventID]['AlertMessage'],
