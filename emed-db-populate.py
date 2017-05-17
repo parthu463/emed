@@ -9,7 +9,7 @@ import pprint
 import time
 from datetime import datetime
 
-from emedUtil import loadWStoEMED
+from emedLoadUtil import loadWStoEMED
 
 pp = pprint.PrettyPrinter(indent = 1)
 
@@ -47,6 +47,7 @@ except mdb.Error, e:
 EventTypeData = {}
 EventTypeData['App'] = {}
 EventTypeData['Trap'] = {}
+EventTypeData['Internal'] = {}
 
 EventTypeData['App']['fname'] = 'Events-App_20170502-59119.xlsx'
 EventTypeData['App']['input_sheetname'] = 'eventsApp'
@@ -54,7 +55,11 @@ EventTypeData['App']['input_sheetname'] = 'eventsApp'
 EventTypeData['Trap']['fname'] = 'Events-Trap_20170329-01.xlsx'
 EventTypeData['Trap']['input_sheetname'] = 'eventsTrap'
 
+EventTypeData['Internal']['fname'] = 'Events-Internal_20170517-01.xlsx'
+EventTypeData['Internal']['input_sheetname'] = 'eventsInternal'
+
 loadWStoEMED('App', EventTypeData, dbh)
 loadWStoEMED('Trap', EventTypeData, dbh)
+loadWStoEMED('Internal', EventTypeData, dbh)
 
 dbh.close()

@@ -43,6 +43,19 @@ COLLATE='latin1_swedish_ci'
 ENGINE=InnoDB
 ;	
 
+DROP TABLE IF EXISTS eventsInternal;
+
+CREATE TABLE `eventsInternal` (
+	`EventName` VARCHAR(128) NOT NULL,
+	`EventSeverity` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
+	`EventMessage` VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
+	`EventGUID` CHAR(32) NULL DEFAULT NULL,
+	`PowerpackGUID` CHAR(32) NOT NULL
+)
+COLLATE='latin1_swedish_ci'
+ENGINE=InnoDB
+;	
+
 DROP TABLE IF EXISTS sheets;
 
 CREATE TABLE `sheets` (
