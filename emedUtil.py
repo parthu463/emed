@@ -2,6 +2,7 @@
 
 import MySQLdb as mdb
 import sys
+import traceback
 
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Font, NamedStyle
@@ -9,9 +10,9 @@ from openpyxl import load_workbook
 
 import pprint
 
-eventtypes = ('eventsApp', 'eventsTrap', 'eventsTrapVarbind')
+eventtypes = ('eventsApp', 'eventsTrap', 'eventsTrapVarbind', 'eventsInternal')
 
-pp = pprint.PrettyPrinter(indent = 1, depth = 4)
+pp = pprint.PrettyPrinter(indent = 1, depth = 6)
 
 def createDocSet(doctypes, docMetaData, sheets):
 	for doctype in doctypes:
@@ -95,12 +96,20 @@ def createBaselineWS(wb, s, paletteName = 'soft', formatWB=True):
 	# Get the list of events for each sheet and type in the sheet
 	for eventtype in eventtypes:
 		try:
+			localEventTree = s[eventtype]['data']
+			#pp.pprint(localEventTree)
+
+		except KeyError, e:
+			# Not all sheets will have all event types so continue
+			continue
+
+		try:
 			for eventID in s[eventtype]['data']:
 				if isinstance(s[eventtype]['data'][eventID]['EventSeverity'], int):
 					loopSeverity = severityMapping[s[eventtype]['data'][eventID]['EventSeverity']]
 				else:
 					loopSeverity = s[eventtype]['data'][eventID]['EventSeverity']
-
+				
 				incidentPriority = s[eventtype]['data'][eventID]['incidentPriority']
 				
 				dataList = (s[eventtype]['data'][eventID]['EventName'],
@@ -114,10 +123,13 @@ def createBaselineWS(wb, s, paletteName = 'soft', formatWB=True):
 				#pp.pprint(dataList)
 				rownumber = createWSRow(ws, palette, columnList, dataList, 'data',\
 					rownumber = rownumber, format=formatWB)
-
-		except KeyError:
-			continue
-
+		except KeyError, e:
+			# A key error here means we didn't get all the data back from the data structure
+			# Print the key and exit
+			print "KeyError: Missing field %s" % (str(e))
+			traceback.print_stack()
+			sys.exit(1)
+			
 	# Set the appropriate column widths for this sheet
 	ws.column_dimensions['A'].width = 55
 	ws.column_dimensions['B'].width = 105
@@ -172,6 +184,14 @@ def createProcedureWS(wb, s, paletteName = 'soft', formatWB=True):
 	# Get the list of events for each sheet and type in the sheet
 	for eventtype in eventtypes:
 		try:
+			localEventTree = s[eventtype]['data']
+			#pp.pprint(localEventTree)
+
+		except KeyError, e:
+			# Not all sheets will have all event types so continue
+			continue
+
+		try:
 			for eventID in s[eventtype]['data']:
 				# Normalize loop severity
 				if isinstance(s[eventtype]['data'][eventID]['EventSeverity'], int):
@@ -197,8 +217,12 @@ def createProcedureWS(wb, s, paletteName = 'soft', formatWB=True):
 				rownumber = createWSRow(ws, palette, columnList, dataList, 'data',\
 					rownumber = rownumber, format=formatWB)
 
-		except KeyError:
-			continue
+		except KeyError, e:
+			# A key error here means we didn't get all the data back from the data structure
+			# Print the key and exit
+			print "KeyError: Missing field %s" % (str(e))
+			traceback.print_stack()
+			sys.exit(1)
 
 	# Set the appropriate column widths for this sheet
 	ws.column_dimensions['A'].width = 55
@@ -402,6 +426,18 @@ def emed_getEventDetails_TrapVarbind(dbh, eventGUID, eventRoot, tablename):
 	event_query = event_prequery % (eventGUID)
 	return emed_getEventDetailsFromSQL(dbh,event_query)
 
+def emed_getEventDetails_Internal(dbh, eventGUID, eventRoot):
+	#pp.pprint('emed_getEventDetails_Internal')
+	#event_prequery = "SELECT EventName, EventMessage as AlertMessage, EventSeverity \
+	#from eventsTrap where EventGUID = '%s'"
+	event_prequery = "SELECT EventName, EventMessage as AlertMessage, EventSeverity, incidentPriority, procText.procText \
+	from eventsInternal \
+	LEFT OUTER JOIN eventProcMapping on eventsInternal.EventGUID = eventProcMapping.EventGUID \
+	LEFT OUTER JOIN procText on procText.procTextID = eventProcMapping.procTextID \
+	where eventsInternal.EventGUID = '%s'"
+	event_query = event_prequery % (eventGUID)
+	return emed_getEventDetailsFromSQL(dbh,event_query)
+
 def emed_getEventDetails(dbh, eventtype, eventGUID, eventRoot):
 	eventRoot['data'][eventGUID] = {}
 	if 'eventsApp' == eventtype:
@@ -410,6 +446,8 @@ def emed_getEventDetails(dbh, eventtype, eventGUID, eventRoot):
 		eventRoot['data'][eventGUID] = emed_getEventDetails_Trap(dbh, eventGUID, eventRoot)
 	elif 'eventsTrapVarbind' == eventtype:
 		eventRoot['data'][eventGUID] = emed_getEventDetails_TrapVarbind(dbh, eventGUID, eventRoot, eventRoot['source']['tablename'])
+	elif 'eventsInternal' == eventtype:
+		eventRoot['data'][eventGUID] = emed_getEventDetails_Internal(dbh, eventGUID, eventRoot)
 	else:
 		print "Unidentified Event Type: %s" % (eventtype)
 		sys.exit(1)
@@ -418,6 +456,11 @@ def emed_getEventDetails(dbh, eventtype, eventGUID, eventRoot):
 		eventRoot['data'][eventGUID]['ThresholdValue'] = ''
 		eventRoot['data'][eventGUID]['ThresholdUnit'] = ''
 		eventRoot['data'][eventGUID]['AppName'] = 'SNMP Trap'
+
+	if 'eventsInternal' == eventtype:
+		eventRoot['data'][eventGUID]['ThresholdValue'] = ''
+		eventRoot['data'][eventGUID]['ThresholdUnit'] = ''
+		eventRoot['data'][eventGUID]['AppName'] = 'Internal'
 
 	
 def emed_getEventsDetails(dbh, eventtype, eventGUID, eventRoot):

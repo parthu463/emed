@@ -17,12 +17,8 @@ from emedUtil import createDocSet
 
 pp = pprint.PrettyPrinter(indent = 1)
 
-# List of the doctypes being generated
-# (doctypes could be generated from emed with active/inactive keys in the 'control' table)
-doctypes = ('baseline', 'procedure')
+#docMetaData keeps data needed for the current run
 docMetaData = {}
-for doctype in doctypes:
-	docMetaData[doctype] = {}
 
 # name of the generator program
 docMetaData['generator'] = os.path.basename(sys.argv[0])
@@ -57,9 +53,11 @@ except mdb.Error, e:
 	print "Error %d: %s" % (e.args[0], e.args[1])
 	sys.exit(1)
 
-# Get a curstor into the database
-# cur = dbh.cursor(mdb.cursors.DictCursor)
-
+# List of the doctypes being generated
+# (doctypes could be generated from emed with active/inactive keys in the 'control' table)
+doctypes = ('baseline', 'procedure')
+for doctype in doctypes:
+	docMetaData[doctype] = {}
 
 # Get the list of sheets
 try:
@@ -111,8 +109,14 @@ for sheet in sheets:
 			except TypeError:
 				sheet[eventtype]['execute'] = False
 
+		elif 'eventsInternal' == eventtype:
+			events_prequery = "select distinct EventGUID from eventsInternal\
+				INNER JOIN sheetMapping on eventsInternal.EventGUID = sheetMapping.DataIdentifier\
+				INNER JOIN sheets on sheetMapping.SheetGUID = sheets.SheetGUID\
+				where sheetMapping.DataType = %d and sheets.SheetGUID = %s and EventSeverity != 0"
+
 		else:
-			print "Unidentified Event Type: %s" % (eventtype)
+			print "Unidentified Event Type: %s : Line 120" % (eventtype)
 			sys.exit(1)
 			
 		try:
@@ -205,7 +209,4 @@ if dbh:
 # create the workbooks
 createDocSet(doctypes, docMetaData, sheets)
 
-
-
-	
 sys.exit(0)

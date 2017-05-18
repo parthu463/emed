@@ -7,7 +7,7 @@ use emed;
 --  Create a temporary working table  (dropped at end of script)
 DROP TABLE IF EXISTS working;
 CREATE TABLE `working` (
-	`displayOrder` TINYINT(3) UNSIGNED NOT NULL DEFAULT '2'
+	`displayOrder` TINYINT UNSIGNED NOT NULL DEFAULT '2'
 )
 COLLATE='latin1_swedish_ci'
 ENGINE=InnoDB;	
