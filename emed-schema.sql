@@ -71,6 +71,18 @@ COLLATE='latin1_swedish_ci'
 ENGINE=InnoDB
 ;	
 
+-- sheetMapping is used to control the inclusion of an event or events
+-- on a particular sheet in the generated document
+-- The datatype is as follows:
+--   DataType = 0 : The events come from a dynamic app, DataIdentifier is the DynamicAPP GUID
+--   DataType = 1 : The events come from SNMP Traps defined from a power pack where each Trap maps to a single event policy
+--                : DataIdentifier is the PowerPack GUID defining the events
+--   DataType = 2 : The events come from SNMP Traps with overloaded VarBinds.
+--                : An EMED table must be created to map the varbinds to required fields for EM7
+--                : DataIdentifier is the name of the EMED table containing the datatype
+--   DataType = 3 : A single Event without threshold information to be included on the sheet
+--                : DataIdentifier is the Event GUID to be included
+
 DROP TABLE IF EXISTS `sheetMapping`;
 
 CREATE TABLE `sheetMapping` (
