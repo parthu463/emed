@@ -173,7 +173,7 @@ def createProcedureWS(wb, s, paletteName = 'soft', formatWB=True):
 	
 	# Create the monitored object worksheet header row
 	columnList = ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', )
-	labelList = ('Event Name', 'Message Format', 'Threshold', 'Unit', 'Severity', 'Dyn App Name', 'Inc. Priority', 'Procedure', 'Event GUID')
+	labelList = ('Event Name', 'Message Format', 'Threshold', 'Unit', 'Severity', 'Source', 'Inc. Priority', 'Procedure', 'Event GUID')
 	createWSHeaderRow(ws, palette, columnList, labelList, format=formatWB)
 	
 	# Create the monitored object worksheet data rows
@@ -452,16 +452,26 @@ def emed_getEventDetails(dbh, eventtype, eventGUID, eventRoot):
 		print "Unidentified Event Type: %s" % (eventtype)
 		sys.exit(1)
 
-	if 'eventsTrap' == eventtype or 'eventsTrapVarbind' == eventtype:
+	if 'eventsApp' == eventtype:
+		eventRoot['data'][eventGUID]['AppName'] = "%s (DynApp)" % (eventRoot['data'][eventGUID]['AppName'])
+
+	elif 'eventsTrap' == eventtype:
 		eventRoot['data'][eventGUID]['ThresholdValue'] = ''
 		eventRoot['data'][eventGUID]['ThresholdUnit'] = ''
-		eventRoot['data'][eventGUID]['AppName'] = 'SNMP Trap'
+		eventRoot['data'][eventGUID]['AppName'] = 'SNMP Trap by OID'
 
-	if 'eventsInternal' == eventtype:
+	elif 'eventsTrapVarbind' == eventtype:
+		eventRoot['data'][eventGUID]['ThresholdValue'] = ''
+		eventRoot['data'][eventGUID]['ThresholdUnit'] = ''
+		eventRoot['data'][eventGUID]['AppName'] = 'SNMP Trap by Varbind'
+
+	elif 'eventsInternal' == eventtype:
 		eventRoot['data'][eventGUID]['ThresholdValue'] = ''
 		eventRoot['data'][eventGUID]['ThresholdUnit'] = ''
 		eventRoot['data'][eventGUID]['AppName'] = 'Internal'
-
+	
+	else:
+		raise TypeError
 	
 def emed_getEventsDetails(dbh, eventtype, eventGUID, eventRoot):
 	emed_getEventDetails(dbh, eventtype, eventGUID, eventRoot)
