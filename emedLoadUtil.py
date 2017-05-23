@@ -52,9 +52,14 @@ def loadWStoEMED(type, wsdata, dbh):
 		#print "Row %d" % (rowcount)
 		for cell in row:
 			if skip_header == True and rowcount != 1:
-				#print sql_values
+				#pp.pprint(cell.value)
+				#pp.pprint(sql_values)
+				if isinstance(cell.value, basestring):
+					newvalue = cell.value.replace("'", "")
+				else:
+					newvalue = cell.value
 				#sql_values = sql_values + ' \'' + cell.value + '\','
-				sql_values = '%s \'%s\',' % (sql_values, cell.value)
+				sql_values = '%s \'%s\',' % (sql_values, newvalue)
 				#print(cell.value)
 		rowcount = rowcount + 1
 		sql_values = sql_values[:-1]

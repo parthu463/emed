@@ -95,11 +95,10 @@ Additonal Notes:
 			,event_guid as EventGUID
 			,ppguid as PowerPackGUID
 			from policies_events as ev
-			--where ppguid = '5479472A416E160702305726EB03F8F7'
-			order by EventMessage;
-			
-		Note:  2017-05-17(kcc): Evaluate this query with esource as an option and look at master.definitions_event_sources
-
+			where esource = (select esource from master.definitions_event_sources where descr = 'Trap')
+			and ppguid is not null
+			order by EventName, EventSeverity desc;
+	
 	d) Events-Internal_*.xlsx is generated with the following query against any production stack
 		use master;
 		select ename as EventName
