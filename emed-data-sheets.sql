@@ -332,6 +332,24 @@ insert into sheetMapping
 (SheetGUID, DataType, DataIdentifier) VALUES
 (@SHEETGUID, 2, 'trapDataXMS');
 
+-- EMC Unity 
+SET @SHEETNAME = 'Unity';
+SELECT displayOrder INTO @DISPLAYORDER from working;
+UPDATE working SET displayOrder = @DISPLAYORDER + 10;
+insert into sheets (SheetName, displayOrder, SheetDesc)
+VALUES (@SHEETNAME, @DISPLAYORDER, 'EMC Unity');
+
+SELECT `SheetGUID` INTO @SHEETGUID FROM sheets WHERE SheetName = @SHEETNAME;
+
+--insert into sheetMapping
+--(SheetGUID, DataType, DataIdentifier) VALUES
+--(@SHEETGUID, 0, '603736D666A4A105D34AC00AE53D08E1');
+
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
+(@SHEETGUID, 1, '210B40A74036E39216C12D2E49A6C864');
+
+
 -- Cisco Switch Sheet
 SET @SHEETNAME = 'Cisco Switch';
 SELECT displayOrder INTO @DISPLAYORDER from working;
