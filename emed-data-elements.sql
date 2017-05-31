@@ -4,15 +4,6 @@ use emed;
 --   The sheetMapping.DataType value corresponds to where the event data is coming from
 --     see additional nots in emed-schema.sql for value meanings
 
---  Create a temporary working table  (dropped at end of script)
-DROP TABLE IF EXISTS working;
-CREATE TABLE `working` (
-	`displayOrder` TINYINT UNSIGNED NOT NULL DEFAULT '2'
-)
-COLLATE='latin1_swedish_ci'
-ENGINE=InnoDB;	
-INSERT INTO working (displayOrder) VALUES (2);
-
 
 -- UCS Sheet
 SET @SHEETNAME = 'UCS';
@@ -387,6 +378,9 @@ insert into sheetMapping
 insert into sheetMapping
 (SheetGUID, DataType, DataIdentifier) VALUES
 (@SHEETGUID, 3, '31941A48398DE7245BAACD21A5B70716');
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
+(@SHEETGUID, 3, 'E0495B7C3267D5FCE354C5D8100F3A3C');
 
 -- Cisco Switch Sheet
 SET @SHEETNAME = 'Cisco Switch';
@@ -538,7 +532,3 @@ insert into sheetMapping
 insert into sheetMapping
 (SheetGUID, DataType, DataIdentifier) VALUES
 (@SHEETGUID, 0, '8A980A54AA30B3A3201B42691048D63E');
-
-
---  Done with the temporary table
-DROP TABLE IF EXISTS working;

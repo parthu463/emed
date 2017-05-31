@@ -108,7 +108,7 @@ Additonal Notes:
 			,ppguid as PowerpackGUID
 			from policies_events
 			RIGHT OUTER JOIN definitions_internal_messages on msg_id = Xoid
-			where esource = 2
+			where esource = (select esource from master.definitions_event_sources where descr = 'Internal')
 			and eseverity != 0
 			ORDER BY ename
 			;

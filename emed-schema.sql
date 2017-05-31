@@ -195,3 +195,11 @@ INSERT INTO `severityMapping`
 VALUES
 (5, 'Critical');	
 
+--  Create a temporary working table  (dropped at end of script)
+DROP TABLE IF EXISTS working;
+CREATE TABLE `working` (
+	`displayOrder` TINYINT UNSIGNED NOT NULL DEFAULT '2'
+)
+COLLATE='latin1_swedish_ci'
+ENGINE=InnoDB;	
+INSERT INTO working (displayOrder) VALUES (2);
