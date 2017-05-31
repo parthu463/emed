@@ -52,7 +52,7 @@ EventTypeData['Internal'] = {}
 EventTypeData['App']['fname'] = 'Events-App_20170502-59119.xlsx'
 EventTypeData['App']['input_sheetname'] = 'eventsApp'
 
-EventTypeData['Trap']['fname'] = 'Events-Trap_20170523-02.xlsx'
+EventTypeData['Trap']['fname'] = 'Events-Trap_20170531-01.xlsx'
 EventTypeData['Trap']['input_sheetname'] = 'eventsTrap'
 
 EventTypeData['Internal']['fname'] = 'Events-Internal_20170517-01.xlsx'

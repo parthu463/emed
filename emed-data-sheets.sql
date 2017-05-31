@@ -350,31 +350,6 @@ insert into sheetMapping
 (@SHEETGUID, 1, '210B40A74036E39216C12D2E49A6C864');
 
 
--- Cisco Switch Sheet
-SET @SHEETNAME = 'Cisco Switch';
-SELECT displayOrder INTO @DISPLAYORDER from working;
-UPDATE working SET displayOrder = @DISPLAYORDER + 10;
-insert into sheets (SheetName, displayOrder, SheetDesc)
-VALUES (@SHEETNAME, @DISPLAYORDER, 'Cisco Switch Chassis, PSU, Fan and Temperature');
-
-SELECT `SheetGUID` INTO @SHEETGUID FROM sheets WHERE SheetName = @SHEETNAME;
-
-insert into sheetMapping
-(SheetGUID, DataType, DataIdentifier) VALUES
-(@SHEETGUID, 0, '645A45434787F06A9625D86C68CF59E1');
-
-insert into sheetMapping
-(SheetGUID, DataType, DataIdentifier) VALUES
-(@SHEETGUID, 0, '6E511AD041262B6437BBE3B8C2D7B4D8');
-
-insert into sheetMapping
-(SheetGUID, DataType, DataIdentifier) VALUES
-(@SHEETGUID, 0, '2B2DE3560233FD6F773A350A215D1916');
-
-insert into sheetMapping
-(SheetGUID, DataType, DataIdentifier) VALUES
-(@SHEETGUID, 0, 'FA9707E3F4F286D3B267C6DAF3CC4000');
-
 -- Network Interfaces Sheet
 
 SET @SHEETNAME = 'Switch iFace';
@@ -412,6 +387,44 @@ insert into sheetMapping
 insert into sheetMapping
 (SheetGUID, DataType, DataIdentifier) VALUES
 (@SHEETGUID, 3, '31941A48398DE7245BAACD21A5B70716');
+
+-- Cisco Switch Sheet
+SET @SHEETNAME = 'Cisco Switch';
+SELECT displayOrder INTO @DISPLAYORDER from working;
+UPDATE working SET displayOrder = @DISPLAYORDER + 10;
+insert into sheets (SheetName, displayOrder, SheetDesc)
+VALUES (@SHEETNAME, @DISPLAYORDER, 'Cisco Switch Chassis, PSU, Fan and Temperature');
+
+SELECT `SheetGUID` INTO @SHEETGUID FROM sheets WHERE SheetName = @SHEETNAME;
+
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
+(@SHEETGUID, 0, '645A45434787F06A9625D86C68CF59E1');
+
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
+(@SHEETGUID, 0, '6E511AD041262B6437BBE3B8C2D7B4D8');
+
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
+(@SHEETGUID, 0, '2B2DE3560233FD6F773A350A215D1916');
+
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
+(@SHEETGUID, 0, 'FA9707E3F4F286D3B267C6DAF3CC4000');
+
+-- VMware NSX
+SET @SHEETNAME = 'NSX';
+SELECT displayOrder INTO @DISPLAYORDER from working;
+UPDATE working SET displayOrder = @DISPLAYORDER + 10;
+insert into sheets (SheetName, displayOrder, SheetDesc)
+VALUES (@SHEETNAME, @DISPLAYORDER, 'VMware NSX');
+
+SELECT `SheetGUID` INTO @SHEETGUID FROM sheets WHERE SheetName = @SHEETNAME;
+
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
+(@SHEETGUID, 1, 'E372735453F9EF44379A4C61CC7C67A7');
 
 -- vSphere Host Sheet
 SET @SHEETNAME = 'vSphere Hosts';
