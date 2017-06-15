@@ -467,6 +467,10 @@ insert into sheetMapping
 (SheetGUID, DataType, DataIdentifier) VALUES
 (@SHEETGUID, 0, 'E0326A53EFDCDD3BF395904B0F640D1B');
 
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
+(@SHEETGUID, 0, '00FDBDCD12EA565B496FD6240C61A62B');
+
 -- vSphere CMOS VM App Sheet
 SET @SHEETNAME = 'CMOS (Tenant)';
 SELECT displayOrder INTO @DISPLAYORDER from working;
@@ -483,6 +487,10 @@ insert into sheetMapping
 insert into sheetMapping
 (SheetGUID, DataType, DataIdentifier) VALUES
 (@SHEETGUID, 0, 'E0326A53EFDCDD3BF395904B0F640D1B');
+
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
+(@SHEETGUID, 0, '00FDBDCD12EA565B496FD6240C61A62B');
 
 insert into sheetMapping
 (SheetGUID, DataType, DataIdentifier) VALUES
@@ -519,6 +527,10 @@ insert into sheetMapping
 
 insert into sheetMapping
 (SheetGUID, DataType, DataIdentifier) VALUES
+(@SHEETGUID, 0, '00FDBDCD12EA565B496FD6240C61A62B');
+
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
 (@SHEETGUID, 0, '232296730F74319D6765D79118603276');
 
 insert into sheetMapping
@@ -532,3 +544,16 @@ insert into sheetMapping
 insert into sheetMapping
 (SheetGUID, DataType, DataIdentifier) VALUES
 (@SHEETGUID, 0, '8A980A54AA30B3A3201B42691048D63E');
+
+-- DPA Sheet
+SET @SHEETNAME = 'DPA';
+SELECT displayOrder INTO @DISPLAYORDER from working;
+UPDATE working SET displayOrder = @DISPLAYORDER + 10;
+insert into sheets (SheetName, displayOrder, SheetDesc)
+VALUES (@SHEETNAME, @DISPLAYORDER, 'EMC Data Protection Advisor');
+
+SELECT `SheetGUID` INTO @SHEETGUID FROM sheets WHERE SheetName = @SHEETNAME;
+
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
+(@SHEETGUID, 1, 'A7A9A4FE36067AF05FC41C16FED25CF4');
