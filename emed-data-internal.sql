@@ -11,6 +11,8 @@ UPDATE working SET displayOrder = @DISPLAYORDER + 10;
 insert into sheets (SheetName, displayOrder, SheetDesc)
 VALUES (@SHEETNAME, @DISPLAYORDER, 'EM7 Internal Events');
 
+UPDATE sheets set active = FALSE where SheetName = @SHEETNAME;
+
 -- SELECT @SHEETGUID := `SheetGUID` FROM sheets WHERE SheetName = @SHEETNAME;
 SELECT `SheetGUID` INTO @SHEETGUID FROM sheets WHERE SheetName = @SHEETNAME;
 

@@ -47,6 +47,19 @@ insert into sheetMapping
 (SheetGUID, DataType, DataIdentifier) VALUES
 (@SHEETGUID, 0, 'E1CADD030364B5BBDA98BD86ABB2CC37');
 
+-- Quanta Nodes Sheet
+SET @SHEETNAME = 'Quanta';
+SELECT displayOrder INTO @DISPLAYORDER from working;
+UPDATE working SET displayOrder = @DISPLAYORDER + 10;
+insert into sheets (SheetName, displayOrder, SheetDesc)
+VALUES (@SHEETNAME, @DISPLAYORDER, 'Quanta Nodes');
+
+SELECT `SheetGUID` INTO @SHEETGUID FROM sheets WHERE SheetName = @SHEETNAME;
+
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
+(@SHEETGUID, 1, 'A5DD819A2F01A152801C7943391829EE');
+
 -- EMC VMAX Sheet
 SET @SHEETNAME = 'VMAX';
 SELECT displayOrder INTO @DISPLAYORDER from working;
@@ -450,12 +463,12 @@ insert into sheetMapping
 (SheetGUID, DataType, DataIdentifier) VALUES
 (@SHEETGUID, 0, 'DD16CF364267AE0AFEB56C4D2BC53C79');
 
--- vSphere Guest VM (Tenant) Sheet
-SET @SHEETNAME = 'vSphere Guest VM (Tenant)';
+-- vSphere Guest Resource Monitoring (GRM) (Tenant VM) Sheet
+SET @SHEETNAME = 'vSphere GRM (Tenant)';
 SELECT displayOrder INTO @DISPLAYORDER from working;
 UPDATE working SET displayOrder = @DISPLAYORDER + 10;
 insert into sheets (SheetName, displayOrder, SheetDesc)
-VALUES (@SHEETNAME, @DISPLAYORDER, 'vSphere Guest VM for Tenant Stack (GRM)');
+VALUES (@SHEETNAME, @DISPLAYORDER, 'vSphere Guest Resource Monitoring for Tenant Stack (GRM)');
 
 SELECT `SheetGUID` INTO @SHEETGUID FROM sheets WHERE SheetName = @SHEETNAME;
 
@@ -471,7 +484,9 @@ insert into sheetMapping
 (SheetGUID, DataType, DataIdentifier) VALUES
 (@SHEETGUID, 0, '00FDBDCD12EA565B496FD6240C61A62B');
 
--- vSphere CMOS VM App Sheet
+
+
+-- vSphere CMOS VM Sheet
 SET @SHEETNAME = 'CMOS (Tenant)';
 SELECT displayOrder INTO @DISPLAYORDER from working;
 UPDATE working SET displayOrder = @DISPLAYORDER + 10;
@@ -508,7 +523,7 @@ insert into sheetMapping
 (SheetGUID, DataType, DataIdentifier) VALUES
 (@SHEETGUID, 0, '8A980A54AA30B3A3201B42691048D63E');
 
--- vSphere AMP VM App Sheet
+-- vSphere AMP VM Sheet
 SET @SHEETNAME = 'AMP VM';
 SELECT displayOrder INTO @DISPLAYORDER from working;
 UPDATE working SET displayOrder = @DISPLAYORDER + 10;
@@ -557,3 +572,16 @@ SELECT `SheetGUID` INTO @SHEETGUID FROM sheets WHERE SheetName = @SHEETNAME;
 insert into sheetMapping
 (SheetGUID, DataType, DataIdentifier) VALUES
 (@SHEETGUID, 1, 'A7A9A4FE36067AF05FC41C16FED25CF4');
+
+-- VMware Site Recovery Manager (SRM)
+SET @SHEETNAME = 'VM-SRM';
+SELECT displayOrder INTO @DISPLAYORDER from working;
+UPDATE working SET displayOrder = @DISPLAYORDER + 10;
+insert into sheets (SheetName, displayOrder, SheetDesc)
+VALUES (@SHEETNAME, @DISPLAYORDER, 'VMware Site Recovery Manager');
+
+SELECT `SheetGUID` INTO @SHEETGUID FROM sheets WHERE SheetName = @SHEETNAME;
+
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
+(@SHEETGUID, 1, 'A75B987BD0E14BAEA62EAA6040930784');
