@@ -806,12 +806,12 @@ insert into `procText` (procText) VALUES ('Check CPU usage history for the host 
 insert into `eventProcMapping` (`procTextID`, `EventGUID`, `incidentPriority`) VALUES (394,'1BDBC1139763B129EBC0A52C5C000A47','P3');
 
 -- vSphere Datastores
---insert into `procText` (procText) VALUES ('Check the status of the datastor on vCenter and Unisphere. ? Document your findings and raise a P3 to INFRA L3 with this information.');
+insert into `procText` (procText) VALUES ('Check the status of the datastor on vCenter and Unisphere. ? Document your findings and raise a P3 to INFRA L3 with this information.');
 --insert into `eventProcMapping` (`procTextID`, `EventGUID`, `incidentPriority`) VALUES (395,'A29279EE1201EBC8C437DB700D1CC78F','P1');
 -- Temporary by KCC to fix CHI priority issue  2017-May-16
 insert into `eventProcMapping` (`procTextID`, `EventGUID`, `incidentPriority`) VALUES (395,'A29279EE1201EBC8C437DB700D1CC78F','P3');
-insert into `procText` (procText) VALUES ('Check the status of the datastor on vCenter and Unisphere. ? Document your findings and raise a P3 to INFRA L3 with this information.');
 
+--insert into `procText` (procText) VALUES ('Check the status of the datastor on vCenter and Unisphere. ? Document your findings and raise a P3 to INFRA L3 with this information.');
 --insert into `eventProcMapping` (`procTextID`, `EventGUID`, `incidentPriority`) VALUES (395,'C6030E3D4DEEE0C0329C74DA7B78A88E','P3');
 --insert into `procText` (procText) VALUES ('Check the status of the datastor on vCenter and Unisphere. ? Document your findings and raise a P2 to INFRA L3 with this information.');
 --insert into `eventProcMapping` (`procTextID`, `EventGUID`, `incidentPriority`) VALUES (395,'D9649FB7DE26CE88EA1B5C7F0A80D77D','P2');

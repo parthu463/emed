@@ -116,6 +116,7 @@ for sheet in sheets:
 				where sheetMapping.DataType = %d and sheets.SheetGUID = %s and EventSeverity != 0"
 
 		else:
+			# stupid to put line number in the output. FIX!!!
 			print "Unidentified Event Type: %s : Line 120" % (eventtype)
 			sys.exit(1)
 			

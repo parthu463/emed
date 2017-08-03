@@ -49,8 +49,9 @@ EventTypeData['App'] = {}
 EventTypeData['Trap'] = {}
 EventTypeData['Internal'] = {}
 
-EventTypeData['App']['fname'] = 'Events-App_20170615-1335.xlsx'
-EventTypeData['App']['input_sheetname'] = 'eventsApp'
+daEvents = 'getDAEvents-stack08-20170802-1559'
+EventTypeData['App']['fname'] = "%s.xlsx" % (daEvents)
+EventTypeData['App']['input_sheetname'] = daEvents[:31]  # Excel limits the sheet name to 31 characters
 
 EventTypeData['Trap']['fname'] = 'Events-Trap_20170531-01.xlsx'
 EventTypeData['Trap']['input_sheetname'] = 'eventsTrap'

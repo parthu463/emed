@@ -86,7 +86,6 @@ def createWS(wb, s, dbh, FormatWB=True):
 	
 	severityMapping = ["Healthy" \
 	,'Informational' \
-	,'Warning' \
 	,'Minor' \
 	,'Major' \
 	,'Critical']

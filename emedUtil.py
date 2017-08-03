@@ -71,7 +71,6 @@ def createBaselineWS(wb, s, paletteName = 'soft', formatWB=True):
 	
 	severityMapping = ["Healthy" \
 	,'Informational' \
-	,'Warning' \
 	,'Minor' \
 	,'Major' \
 	,'Critical']
@@ -159,7 +158,6 @@ def createProcedureWS(wb, s, paletteName = 'soft', formatWB=True):
 	
 	severityMapping = ["Healthy" \
 	,'Informational' \
-	,'Warning' \
 	,'Minor' \
 	,'Major' \
 	,'Critical']
