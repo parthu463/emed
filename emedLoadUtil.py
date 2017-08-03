@@ -31,7 +31,8 @@ def loadWStoEMED(type, wsdata, dbh):
 	if type == 'App':
 		sql_preamble = 'INSERT INTO `eventsApp` ( AppName, EventName, AlertMessage, \
 			ThresholdValue, ThresholdUnit, EventSeverity, EventID, EventMessage, \
-			AlertName, ThresholdName, EventGUID, AppGUID, AlertGUID, ThresholdGUID \
+			AlertName, ThresholdName, EventGUID, AppGUID, AlertGUID, ThresholdGUID, \
+			ThresholdLocalID, Formula \
 			) VALUES ('
 	
 	if type == 'Trap':
