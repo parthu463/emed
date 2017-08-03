@@ -134,6 +134,21 @@ COLLATE='latin1_swedish_ci'
 ENGINE=InnoDB
 ;	
 
+DROP TABLE IF EXISTS `trapDataDPA`;
+
+CREATE TABLE `trapDataDPA` (
+    `trapIndex` bigint(20) NOT NULL AUTO_INCREMENT,
+	`trapName` VARCHAR(64) NULL DEFAULT NULL,
+    `trapCode` VARCHAR(64) NOT NULL DEFAULT '',
+	`trapMessage` VARCHAR(128) NOT NULL DEFAULT '',
+	`trapFieldValues` VARCHAR(128) NOT NULL DEFAULT '',
+	`trapSeverity` CHAR(32) NULL DEFAULT NULL,
+	PRIMARY KEY (trapIndex)
+)
+COLLATE='latin1_swedish_ci'
+ENGINE=InnoDB
+;	
+
 DROP TABLE IF EXISTS `docControl`;
 
 CREATE TABLE `docControl` (

@@ -569,9 +569,15 @@ VALUES (@SHEETNAME, @DISPLAYORDER, 'EMC Data Protection Advisor');
 
 SELECT `SheetGUID` INTO @SHEETGUID FROM sheets WHERE SheetName = @SHEETNAME;
 
+-- insert into sheetMapping
+-- (SheetGUID, DataType, DataIdentifier) VALUES
+-- (@SHEETGUID, 1, 'A7A9A4FE36067AF05FC41C16FED25CF4');
+
 insert into sheetMapping
 (SheetGUID, DataType, DataIdentifier) VALUES
-(@SHEETGUID, 1, 'A7A9A4FE36067AF05FC41C16FED25CF4');
+(@SHEETGUID, 2, 'trapDataDPA');
+
+
 
 -- VMware Site Recovery Manager (SRM)
 SET @SHEETNAME = 'VM-SRM';
