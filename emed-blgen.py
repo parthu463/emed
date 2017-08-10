@@ -105,7 +105,7 @@ for sheet in sheets:
 				tablename['dataIdentifier']
 				sheet[eventtype]['source'] = {}
 				sheet[eventtype]['source']['tablename'] = tablename['dataIdentifier']
-				events_query = "select distinct trapCode as EventGUID from %s" % (sheet[eventtype]['source']['tablename'])
+				events_query = "select distinct trapCode as EventGUID from %s where eventActive = TRUE" % (sheet[eventtype]['source']['tablename'])
 			except TypeError:
 				sheet[eventtype]['execute'] = False
 
