@@ -47,6 +47,20 @@ insert into sheetMapping
 (SheetGUID, DataType, DataIdentifier) VALUES
 (@SHEETGUID, 0, 'E1CADD030364B5BBDA98BD86ABB2CC37');
 
+-- Recoverpoint Appliance
+SET @SHEETNAME = 'Recoverpoint';
+SELECT displayOrder INTO @DISPLAYORDER from working;
+UPDATE working SET displayOrder = @DISPLAYORDER + 10;
+insert into sheets (SheetName, displayOrder, SheetDesc)
+VALUES (@SHEETNAME, @DISPLAYORDER, 'Recoverpoint Appliance');
+
+SELECT `SheetGUID` INTO @SHEETGUID FROM sheets WHERE SheetName = @SHEETNAME;
+
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
+(@SHEETGUID, 2, 'trapDataRecoverpoint');
+
+
 -- Quanta Nodes Sheet
 SET @SHEETNAME = 'Quanta';
 SELECT displayOrder INTO @DISPLAYORDER from working;

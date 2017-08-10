@@ -130,6 +130,7 @@ CREATE TABLE `trapDataXMS` (
 	`trapMessage` VARCHAR(128) NOT NULL DEFAULT '',
 	`trapFieldValues` VARCHAR(128) NOT NULL DEFAULT '',
 	`trapSeverity` CHAR(32) NULL DEFAULT NULL,
+    `eventActive` boolean DEFAULT TRUE,
 	PRIMARY KEY (trapIndex)
 )
 COLLATE='latin1_swedish_ci'
@@ -145,6 +146,23 @@ CREATE TABLE `trapDataDPA` (
 	`trapMessage` VARCHAR(128) NOT NULL DEFAULT '',
 	`trapFieldValues` VARCHAR(128) NOT NULL DEFAULT '',
 	`trapSeverity` CHAR(32) NULL DEFAULT NULL,
+    `eventActive` boolean DEFAULT TRUE,
+	PRIMARY KEY (trapIndex)
+)
+COLLATE='latin1_swedish_ci'
+ENGINE=InnoDB
+;	
+
+DROP TABLE IF EXISTS `trapDataRecoverpoint`;
+
+CREATE TABLE `trapDataRecoverpoint` (
+    `trapIndex` bigint(20) NOT NULL AUTO_INCREMENT,
+	`trapName` VARCHAR(64) NULL DEFAULT NULL,
+    `trapCode` VARCHAR(64) NOT NULL DEFAULT '',
+	`trapMessage` VARCHAR(128) NOT NULL DEFAULT '',
+	`trapFieldValues` VARCHAR(128) NOT NULL DEFAULT '',
+	`trapSeverity` CHAR(32) NULL DEFAULT NULL,
+    `eventActive` boolean DEFAULT TRUE,
 	PRIMARY KEY (trapIndex)
 )
 COLLATE='latin1_swedish_ci'
@@ -187,30 +205,16 @@ COLLATE='latin1_swedish_ci'
 ENGINE=InnoDB
 ;
 
-INSERT INTO `severityMapping`
-(`EventSeverity`, `EventDisplay`)
-VALUES
-(0, 'Healthy');	
-INSERT INTO `severityMapping`
-(`EventSeverity`, `EventDisplay`)
-VALUES
-(1, 'Informational');	
-INSERT INTO `severityMapping`
-(`EventSeverity`, `EventDisplay`)
-VALUES
-(2, 'Warning');	
-INSERT INTO `severityMapping`
-(`EventSeverity`, `EventDisplay`)
-VALUES
-(3, 'Minor');	
-INSERT INTO `severityMapping`
-(`EventSeverity`, `EventDisplay`)
-VALUES
-(4, 'Major');	
-INSERT INTO `severityMapping`
-(`EventSeverity`, `EventDisplay`)
-VALUES
-(5, 'Critical');	
+INSERT INTO `severityMapping` (`EventSeverity`, `EventDisplay`)
+VALUES (0, 'Healthy');	
+INSERT INTO `severityMapping` (`EventSeverity`, `EventDisplay`)
+VALUES (1, 'Informational');	
+INSERT INTO `severityMapping` (`EventSeverity`, `EventDisplay`)
+VALUES (2, 'Minor');	
+INSERT INTO `severityMapping` (`EventSeverity`, `EventDisplay`)
+VALUES (3, 'Major');	
+INSERT INTO `severityMapping` (`EventSeverity`, `EventDisplay`)
+VALUES (4, 'Critical');	
 
 --  Create a temporary working table  (dropped at end of script)
 DROP TABLE IF EXISTS working;

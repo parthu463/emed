@@ -8,6 +8,8 @@ source emed-data-traps-xms.sql;
 
 source emed-data-traps-dpa.sql;
 
+source emed-data-traps-recoverpoint.sql;
+
 source emed-data-proc.sql;
 
 source emed-schema-cleanup.sql;
