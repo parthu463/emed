@@ -451,6 +451,17 @@ def emed_getEventDetails(dbh, eventtype, eventGUID, eventRoot):
 		sys.exit(1)
 
 	if 'eventsApp' == eventtype:
+		if eventRoot['data'][eventGUID]['ThresholdUnit'] == 'None' and eventRoot['data'][eventGUID]['AppName'][:4] == 'VNXe':
+			eventRoot['data'][eventGUID]['ThresholdUnit'] = ''
+			eventRoot['data'][eventGUID]['ThresholdValue'] = ''
+
+		if eventRoot['data'][eventGUID]['ThresholdUnit'] == '&#8451':
+			eventRoot['data'][eventGUID]['ThresholdUnit'] = 'Celsius'
+		if eventRoot['data'][eventGUID]['ThresholdUnit'] == 'NULL':
+			eventRoot['data'][eventGUID]['ThresholdUnit'] = ''
+		if eventRoot['data'][eventGUID]['ThresholdUnit'] == 'None':
+			eventRoot['data'][eventGUID]['ThresholdUnit'] = ''
+
 		eventRoot['data'][eventGUID]['AppName'] = "%s (DynApp)" % (eventRoot['data'][eventGUID]['AppName'])
 
 	elif 'eventsTrap' == eventtype:

@@ -137,7 +137,7 @@ SELECT max(procTextID) INTO @PROCTEXTID from procText;
 insert into `eventProcMapping` (`procTextID`, `EventGUID`, `incidentPriority`) VALUES (@PROCTEXTID,'115B03DD71BE9576C216C6DD27741736','P2');
 insert into `procText` (procText) VALUES ('Connect to VNX Unisphere. ? Check the status of the VNX power supply status is critical in Alarm console  ? If the status of the VNX power supply status is critical is not present, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the VNX power supply status is critical exists, raise a P2 to INFRA L2 and follow P2 situation management protocol and enage On-call if neccessary');
 SELECT max(procTextID) INTO @PROCTEXTID from procText;
-insert into `eventProcMapping` (`procTextID`, `EventGUID`, `incidentPriority`) VALUES (@PROCTEXTID,'EBB3C708AF6C58565A39D62248D529F8','P3');
+insert into `eventProcMapping` (`procTextID`, `EventGUID`, `incidentPriority`) VALUES (@PROCTEXTID,'EBB3C708AF6C58565A39D62248D529F8','P2');
 insert into `procText` (procText) VALUES ('Connect to VNX Unisphere. ? Check the status of the VNX snapview pool utilization has exceeded critical threshold is 80% in Alarm console  ? If the status of the VNX snapview pool utilization has exceeded critical threshold is below 80%, raise a P4 incident to the INFRA team to check for code bugs that may cause this. ? If the VNX snapview pool utilization has exceeded critical threshold is 80% exists, raise a P3 to INFRA L2');
 SELECT max(procTextID) INTO @PROCTEXTID from procText;
 insert into `eventProcMapping` (`procTextID`, `EventGUID`, `incidentPriority`) VALUES (@PROCTEXTID,'16E3F690DBE2725D4174CDE17D211067','P3');
