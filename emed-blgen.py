@@ -2,7 +2,6 @@
 
 import MySQLdb as mdb
 import sys, os
-import json
 
 from datetime import datetime
 import time
@@ -10,10 +9,11 @@ import time
 import pprint
 import uuid
 
-from emedUtil import eventtypes
+from emedUtil import emed_ConnectToSQL
 from emedUtil import emed_getEventsTrapVarbindTableName
 from emedUtil import emed_getEventDetails
 from emedUtil import createDocSet
+from emedUtil import emed_getEventTypesFromSQL
 
 pp = pprint.PrettyPrinter(indent = 1)
 
@@ -23,36 +23,38 @@ docMetaData = {}
 # name of the generator program
 docMetaData['generator'] = os.path.basename(sys.argv[0])
 
-# Database connectivity
-dbname = 'emed'
-crd_fname = "EVTM.crd"
+# # Database connectivity
+# dbname = 'emed'
+# crd_fname = "EVTM.crd"
 
-# Get credentials
-try:
-	dbcreds = json.loads(open(crd_fname).read())
-except IOError as e:
-	print "Error %d: Database Credentials file %s not found" % (e.args[0], crd_fname)
-	sys.exit(1)
+# # Get credentials
+# try:
+	# dbcreds = json.loads(open(crd_fname).read())
+# except IOError as e:
+	# print "Error %d: Database Credentials file %s not found" % (e.args[0], crd_fname)
+	# sys.exit(1)
 
-# the database must exist in the crd file
-try: 
-	uname = dbcreds[dbname]['uname']
-	pword = dbcreds[dbname]['pword']
-	try:
-		dbhost = dbcreds[dbname]['dbhost']
-	except KeyError, e:
-		dbhost = 'localhost'
-except KeyError, e:
-	print "Database named %s not found in %s. No credentials available." % (e, crd_fname)
-	sys.exit(1)
+# # the database must exist in the crd file
+# try: 
+	# uname = dbcreds[dbname]['uname']
+	# pword = dbcreds[dbname]['pword']
+	# try:
+		# dbhost = dbcreds[dbname]['dbhost']
+	# except KeyError, e:
+		# dbhost = 'localhost'
+# except KeyError, e:
+	# print "Database named %s not found in %s. No credentials available." % (e, crd_fname)
+	# sys.exit(1)
 
-# can we connect?
-try:
-	dbh = mdb.connect(host = dbhost, user = uname,  passwd = pword, db = dbname)
-except mdb.Error, e:
-	print "Error %d: %s" % (e.args[0], e.args[1])
-	sys.exit(1)
+# # can we connect?
+# try:
+	# dbh = mdb.connect(host = dbhost, user = uname,  passwd = pword, db = dbname)
+# except mdb.Error, e:
+	# print "Error %d: %s" % (e.args[0], e.args[1])
+	# sys.exit(1)
 
+dbh = emed_ConnectToSQL('emed', 'EVTM.crd')
+	
 # List of the doctypes being generated
 # (doctypes could be generated from emed with active/inactive keys in the 'control' table)
 doctypes = ('baseline', 'procedure')
@@ -75,58 +77,67 @@ except mdb.Error, e:
 	sys.exit(1)
 	
 #pp.pprint(sheets)
-#print sheet['displayOrder']
-#print "Sheet: %s; SheetGUID: %s" (sheet['SheetName'], sheet['SheetGUID'])
 #sys.exit(0)	
 
+# Get the event types from the database to loop through them and process
+eventtypes = emed_getEventTypesFromSQL(dbh)
+
+
+#pp.pprint(eventtypes)
+#sys.exit(0)
+
 for sheet in sheets:
-	# pp.pprint(sheet)
+	#pp.pprint(sheet)
 	# Get the list of events for each sheet and type in the sheet
 
-	for current_type in range(0, len(eventtypes)):
-		eventtype = eventtypes[current_type]
+	for eventtype in eventtypes:
 		events_prequery = "";
-		sheet[eventtype] = {}
-		if 'eventsApp' == eventtype:
+		sheet[eventtype['descr']] = {}
+		if 'Dynamic' == eventtype['descr']:
 			events_prequery = "select distinct EventGUID from eventsApp\
 				INNER JOIN sheetMapping on eventsApp.AppGUID = sheetMapping.DataIdentifier\
 				INNER JOIN sheets on sheetMapping.SheetGUID = sheets.SheetGUID\
 				where sheetMapping.DataType = %d and sheets.SheetGUID = %s and EventSeverity != 0"
 
-		elif 'eventsTrap' == eventtype:
+		elif 'TrapByOID' == eventtype['descr']:
 			events_prequery = "select distinct EventGUID from eventsTrap\
 				INNER JOIN sheetMapping on eventsTrap.PowerpackGUID = sheetMapping.DataIdentifier\
 				INNER JOIN sheets on sheetMapping.SheetGUID = sheets.SheetGUID\
 				where sheetMapping.DataType = %d and sheets.SheetGUID = %s and EventSeverity != 0"
 
-		elif 'eventsTrapVarbind' == eventtype:
-			tablename = emed_getEventsTrapVarbindTableName(dbh, sheet['SheetGUID'], current_type)
+		elif 'TrapByVarbind' == eventtype['descr']:
+			tablename = emed_getEventsTrapVarbindTableName(dbh, sheet['SheetGUID'], eventtype['esource'])
 			try:
 				tablename['dataIdentifier']
-				sheet[eventtype]['source'] = {}
-				sheet[eventtype]['source']['tablename'] = tablename['dataIdentifier']
-				events_query = "select distinct trapCode as EventGUID from %s where eventActive = TRUE" % (sheet[eventtype]['source']['tablename'])
+				sheet[eventtype['descr']]['source'] = {}
+				sheet[eventtype['descr']]['source']['tablename'] = tablename['dataIdentifier']
+				events_query = "select distinct trapCode as EventGUID from %s where eventActive = TRUE" % (sheet[eventtype['descr']]['source']['tablename'])
 			except TypeError:
-				sheet[eventtype]['execute'] = False
+				sheet[eventtype['descr']]['execute'] = False
 
-		elif 'eventsInternal' == eventtype:
+		elif 'Internal' == eventtype['descr']:
 			events_prequery = "select distinct EventGUID from eventsInternal\
 				INNER JOIN sheetMapping on eventsInternal.EventGUID = sheetMapping.DataIdentifier\
 				INNER JOIN sheets on sheetMapping.SheetGUID = sheets.SheetGUID\
 				where sheetMapping.DataType = %d and sheets.SheetGUID = %s and EventSeverity != 0"
 
+		elif 'SingleEvents' == eventtype['descr']:
+			sheet[eventtype['descr']]['execute'] = False
+			#pass
+
 		else:
 			# stupid to put line number in the output. FIX!!!
-			print "Unidentified Event Type: %s : Line 120" % (eventtype)
+			print "Processing Top Level Sheets Directives: Unidentified Event Type: %s" % (eventtype['descr'])
 			sys.exit(1)
 			
 		try:
-			sheet[eventtype].pop('execute')
+			sheet[eventtype['descr']].pop('execute')
 		except KeyError:
 			try:
 				events_cur = dbh.cursor(mdb.cursors.DictCursor)
 				if events_prequery:
-					events_query = events_prequery % ( current_type, sheet['SheetGUID'] )
+					events_query = events_prequery % ( eventtype['esource'], sheet['SheetGUID'] )
+				#pp.pprint(events_query)
 				events_cur.execute(events_query)
 			except mdb.Error, e:
 				print "Error %d: %s" % (e.args[0], e.args[1])
@@ -137,19 +148,24 @@ for sheet in sheets:
 			except mdb.Error, e:
 				print "Error %d: %s" % (e.args[0], e.args[1])
 				sys.exit(1)
+			
+			#pp.pprint(eventtype['descr'])
+			#pp.pprint(events)
+		
 	
 		if events:
-			sheet[eventtype]['data'] = {}
+			sheet[eventtype['descr']]['data'] = {}
 			for event in events:
 				#print "    %s" % ( event['EventGUID'])
 				#sheet[eventtype]['data'][event['EventGUID']] = {}
-				emed_getEventDetails(dbh, eventtype, event['EventGUID'], sheet[eventtype])
+				emed_getEventDetails(dbh, eventtype['descr'], event['EventGUID'], sheet[eventtype['descr']])
 		else:
-			sheet.pop(eventtype)
+			sheet.pop(eventtype['descr'])
 
 		events = None
 		events_cur.close()
 		
+#sys.exit(0)
 					
 # sheets contains the ordered list of sheets to create and the list of events for each sheet.
 # uncomment pretty print, sys.exit lines below and run to see format
@@ -202,11 +218,18 @@ for doctype in doctypes:
 	except KeyError:
 		print "Unidentified Document Type: %s" % (doctype)
 		sys.exit(1)
+
+#
+#pp.pprint(docMetaData)
+#sys.exit(0)
 	
 # Everything is in memory.  Done with the database.
 if dbh:
 	dbh.close()
 
+#pp.pprint(doctypes)
+#pp.pprint(docMetaData)
+#sys.exit(0)
 # create the workbooks
 createDocSet(doctypes, docMetaData, sheets)
 

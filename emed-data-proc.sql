@@ -3630,7 +3630,7 @@ SELECT max(procTextID) INTO @PROCTEXTID from procText;
 insert into `eventProcMapping` (`procTextID`, `EventGUID`, `incidentPriority`) VALUES (@PROCTEXTID, '3826D0F77547474E911A91B29865B282', 'NA');
 
 -- DPA Traps by Varbind  2017-Aug-03 
-/* insert into `procText` (procText) VALUES ( 'Check  for existing ticket for alert generating device.  If none found - Create  ticket ASSIGN to BRS team.  If found - Update existing ticket with info received.Notify Backup Admin Group. ');
+insert into `procText` (procText) VALUES ( 'Check  for existing ticket for alert generating device.  If none found - Create  ticket ASSIGN to BRS team.  If found - Update existing ticket with info received.Notify Backup Admin Group. ');
 SELECT max(procTextID) INTO @PROCTEXTID from procText;
 insert into `eventProcMapping` (`procTextID`, `EventGUID`, `incidentPriority`) VALUES (@PROCTEXTID, 'C2F7A30E1520429491ED6A9DE7B2BD48','');
 insert into `procText` (procText) VALUES ( 'Check  for existing ticket for alert generating device.  If none found - Create  ticket.  If found - Update existing ticket with info received.Notify Backup Admin Group. ');
@@ -3876,4 +3876,3 @@ insert into `eventProcMapping` (`procTextID`, `EventGUID`, `incidentPriority`) V
 insert into `procText` (procText) VALUES ( 'Check  for existing ticket for alert generating device.  If none found - Create  ticket ASSIGN to BRS team.  If found - Update existing ticket with info received. Verify if:1 - Volumes available for write2 - Drives available for writeESCALATE to Backup Admin Group.');
 SELECT max(procTextID) INTO @PROCTEXTID from procText;
 insert into `eventProcMapping` (`procTextID`, `EventGUID`, `incidentPriority`) VALUES (@PROCTEXTID, 'E87F43F8A8E140FBAEEC355AE2DE6E19','');
- */

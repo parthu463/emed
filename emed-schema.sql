@@ -85,6 +85,39 @@ ENGINE=InnoDB
 --   DataType = 3 : A single Event without threshold information to be included on the sheet
 --                : DataIdentifier is the Event GUID to be included
 
+-- Modifying sheetMapping to closer align to the internal structure of EM7 as found in master.definitions_event_sources
+-- 1, "Syslog"
+-- 2, "Internal"
+-- 3, "Trap"
+-- 4, "Dynamic"
+-- 6, "API"
+-- 7, "Email"
+-- 10, "ScienceLogic Agent"
+-- Locally defined types (trap by varbind, etc) will use values starting at 64 and have to be moved if there is any conflict
+-- with future ScienceLogic assignments
+
+DROP TABLE IF EXISTS `definitions_event_sources`;
+
+CREATE TABLE `definitions_event_sources` (
+	`esource` TINYINT(4) NOT NULL,
+	`descr` VARCHAR(24) NOT NULL,
+    `eventTypeActive` boolean DEFAULT TRUE,
+	PRIMARY KEY (`esource`)
+)
+COLLATE='latin1_swedish_ci'
+ENGINE=InnoDB
+;
+
+INSERT INTO `definitions_event_sources` (esource, descr, eventTypeActive) VALUES (1, "Syslog", FALSE);
+INSERT INTO `definitions_event_sources` (esource, descr, eventTypeActive) VALUES (2, "Internal", TRUE);
+INSERT INTO `definitions_event_sources` (esource, descr, eventTypeActive) VALUES (3, "TrapByOID", TRUE);
+INSERT INTO `definitions_event_sources` (esource, descr, eventTypeActive) VALUES (4, "Dynamic", TRUE);
+INSERT INTO `definitions_event_sources` (esource, descr, eventTypeActive) VALUES (6, "API", FALSE);
+INSERT INTO `definitions_event_sources` (esource, descr, eventTypeActive) VALUES (7, "Email", FALSE);
+INSERT INTO `definitions_event_sources` (esource, descr, eventTypeActive) VALUES (10, "ScienceLogic Agent", FALSE);
+INSERT INTO `definitions_event_sources` (esource, descr, eventTypeActive) VALUES (64, "TrapByVarbind", TRUE);
+INSERT INTO `definitions_event_sources` (esource, descr, eventTypeActive) VALUES (65, "SingleEvents", TRUE);
+
 DROP TABLE IF EXISTS `sheetMapping`;
 
 CREATE TABLE `sheetMapping` (
@@ -223,4 +256,4 @@ CREATE TABLE `working` (
 )
 COLLATE='latin1_swedish_ci'
 ENGINE=InnoDB;	
-INSERT INTO working (displayOrder) VALUES (2);
+INSERT INTO working (displayOrder) VALUES (5);

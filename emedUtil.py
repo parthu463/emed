@@ -3,6 +3,7 @@
 import MySQLdb as mdb
 import sys
 import traceback
+import json
 
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Font, NamedStyle
@@ -10,7 +11,44 @@ from openpyxl import load_workbook
 
 import pprint
 
-eventtypes = ('eventsApp', 'eventsTrap', 'eventsTrapVarbind', 'eventsInternal')
+def emed_ConnectToSQL(dbname, crd_fname):
+	# Database connectivity
+	#dbname = 'emed'
+	#crd_fname = "EVTM.crd"
+
+	# Get credentials
+	try:
+		dbcreds = json.loads(open(crd_fname).read())
+	except IOError as e:
+		print "Error %d: Database Credentials file %s not found" % (e.args[0], crd_fname)
+		sys.exit(1)
+
+	# the database must exist in the crd file
+	try: 
+		uname = dbcreds[dbname]['uname']
+		pword = dbcreds[dbname]['pword']
+		try:
+			dbhost = dbcreds[dbname]['dbhost']
+		except KeyError, e:
+			dbhost = 'localhost'
+	except KeyError, e:
+		print "Database named %s not found in %s. No credentials available." % (e, crd_fname)
+		sys.exit(1)
+
+	# can we connect?
+	try:
+		dbh = mdb.connect(host = dbhost, user = uname,  passwd = pword, db = dbname)
+	except mdb.Error, e:
+		print "Error %d: %s" % (e.args[0], e.args[1])
+		sys.exit(1)
+
+	return dbh
+	
+
+
+#eventtypes = ('eventsApp', 'eventsTrap', 'eventsTrapVarbind', 'eventsInternal')
+#eventtypes = emed_getEventTypesFromSQL(dbh)
+dbh = emed_ConnectToSQL('emed', 'EVTM.crd')
 
 pp = pprint.PrettyPrinter(indent = 1, depth = 6)
 
@@ -93,9 +131,11 @@ def createBaselineWS(wb, s, paletteName = 'soft', formatWB=True):
 	columnList = ('A', 'B', 'C', 'D', 'E', 'F', )
 
 	# Get the list of events for each sheet and type in the sheet
+	eventtypes = emed_getEventTypesFromSQL(dbh)
+	#pp.pprint(eventtypes)
 	for eventtype in eventtypes:
 		try:
-			localEventTree = s[eventtype]['data']
+			localEventTree = s[eventtype['descr']]['data']
 			#pp.pprint(localEventTree)
 
 		except KeyError, e:
@@ -103,18 +143,18 @@ def createBaselineWS(wb, s, paletteName = 'soft', formatWB=True):
 			continue
 
 		try:
-			for eventID in s[eventtype]['data']:
-				if isinstance(s[eventtype]['data'][eventID]['EventSeverity'], int):
-					loopSeverity = severityMapping[s[eventtype]['data'][eventID]['EventSeverity']]
+			for eventID in s[eventtype['descr']]['data']:
+				if isinstance(s[eventtype['descr']]['data'][eventID]['EventSeverity'], int):
+					loopSeverity = severityMapping[s[eventtype['descr']]['data'][eventID]['EventSeverity']]
 				else:
-					loopSeverity = s[eventtype]['data'][eventID]['EventSeverity']
+					loopSeverity = s[eventtype['descr']]['data'][eventID]['EventSeverity']
 				
-				incidentPriority = s[eventtype]['data'][eventID]['incidentPriority']
+				incidentPriority = s[eventtype['descr']]['data'][eventID]['incidentPriority']
 				
-				dataList = (s[eventtype]['data'][eventID]['EventName'],
-				s[eventtype]['data'][eventID]['AlertMessage'],
-				str(s[eventtype]['data'][eventID]['ThresholdValue']),
-				s[eventtype]['data'][eventID]['ThresholdUnit'],
+				dataList = (s[eventtype['descr']]['data'][eventID]['EventName'],
+				s[eventtype['descr']]['data'][eventID]['AlertMessage'],
+				str(s[eventtype['descr']]['data'][eventID]['ThresholdValue']),
+				s[eventtype['descr']]['data'][eventID]['ThresholdUnit'],
 				loopSeverity,
 				incidentPriority, 
 				)
@@ -180,9 +220,10 @@ def createProcedureWS(wb, s, paletteName = 'soft', formatWB=True):
 	columnList = ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', )
 	
 	# Get the list of events for each sheet and type in the sheet
+	eventtypes = emed_getEventTypesFromSQL(dbh)
 	for eventtype in eventtypes:
 		try:
-			localEventTree = s[eventtype]['data']
+			localEventTree = s[eventtype['descr']]['data']
 			#pp.pprint(localEventTree)
 
 		except KeyError, e:
@@ -190,22 +231,22 @@ def createProcedureWS(wb, s, paletteName = 'soft', formatWB=True):
 			continue
 
 		try:
-			for eventID in s[eventtype]['data']:
+			for eventID in s[eventtype['descr']]['data']:
 				# Normalize loop severity
-				if isinstance(s[eventtype]['data'][eventID]['EventSeverity'], int):
-					loopSeverity = severityMapping[s[eventtype]['data'][eventID]['EventSeverity']]
+				if isinstance(s[eventtype['descr']]['data'][eventID]['EventSeverity'], int):
+					loopSeverity = severityMapping[s[eventtype['descr']]['data'][eventID]['EventSeverity']]
 				else:
-					loopSeverity = s[eventtype]['data'][eventID]['EventSeverity']
+					loopSeverity = s[eventtype['descr']]['data'][eventID]['EventSeverity']
 
-				incidentPriority = s[eventtype]['data'][eventID]['incidentPriority']
-				procText = 	s[eventtype]['data'][eventID]['procText']
+				incidentPriority = s[eventtype['descr']]['data'][eventID]['incidentPriority']
+				procText = 	s[eventtype['descr']]['data'][eventID]['procText']
 				
-				dataList = (s[eventtype]['data'][eventID]['EventName'],
-				s[eventtype]['data'][eventID]['AlertMessage'],
-				str(s[eventtype]['data'][eventID]['ThresholdValue']),
-				s[eventtype]['data'][eventID]['ThresholdUnit'],
+				dataList = (s[eventtype['descr']]['data'][eventID]['EventName'],
+				s[eventtype['descr']]['data'][eventID]['AlertMessage'],
+				str(s[eventtype['descr']]['data'][eventID]['ThresholdValue']),
+				s[eventtype['descr']]['data'][eventID]['ThresholdUnit'],
 				loopSeverity,
-				s[eventtype]['data'][eventID]['AppName'],
+				s[eventtype['descr']]['data'][eventID]['AppName'],
 				incidentPriority,
 				procText, 
 				eventID
@@ -438,50 +479,70 @@ def emed_getEventDetails_Internal(dbh, eventGUID, eventRoot):
 
 def emed_getEventDetails(dbh, eventtype, eventGUID, eventRoot):
 	eventRoot['data'][eventGUID] = {}
-	if 'eventsApp' == eventtype:
+	if 'Dynamic' == eventtype:
 		eventRoot['data'][eventGUID] = emed_getEventDetails_App(dbh, eventGUID, eventRoot)
-	elif 'eventsTrap' == eventtype:
+	elif 'TrapByOID' == eventtype:
 		eventRoot['data'][eventGUID] = emed_getEventDetails_Trap(dbh, eventGUID, eventRoot)
-	elif 'eventsTrapVarbind' == eventtype:
+	elif 'TrapByVarbind' == eventtype:
 		eventRoot['data'][eventGUID] = emed_getEventDetails_TrapVarbind(dbh, eventGUID, eventRoot, eventRoot['source']['tablename'])
-	elif 'eventsInternal' == eventtype:
+	elif 'Internal' == eventtype:
 		eventRoot['data'][eventGUID] = emed_getEventDetails_Internal(dbh, eventGUID, eventRoot)
+	elif 'SingleEvents' == eventtype:
+		pass
 	else:
-		print "Unidentified Event Type: %s" % (eventtype)
+		print "Unidentified Event Type: %s in function emed_getEventDetails" % (eventtype)
 		sys.exit(1)
 
-	if 'eventsApp' == eventtype:
+	if 'Dynamic' == eventtype:
 		if eventRoot['data'][eventGUID]['ThresholdUnit'] == 'None' and eventRoot['data'][eventGUID]['AppName'][:4] == 'VNXe':
 			eventRoot['data'][eventGUID]['ThresholdUnit'] = ''
 			eventRoot['data'][eventGUID]['ThresholdValue'] = ''
-
+	
 		if eventRoot['data'][eventGUID]['ThresholdUnit'] == '&#8451':
 			eventRoot['data'][eventGUID]['ThresholdUnit'] = 'Celsius'
 		if eventRoot['data'][eventGUID]['ThresholdUnit'] == 'NULL':
 			eventRoot['data'][eventGUID]['ThresholdUnit'] = ''
 		if eventRoot['data'][eventGUID]['ThresholdUnit'] == 'None':
 			eventRoot['data'][eventGUID]['ThresholdUnit'] = ''
-
+	
 		eventRoot['data'][eventGUID]['AppName'] = "%s (DynApp)" % (eventRoot['data'][eventGUID]['AppName'])
-
-	elif 'eventsTrap' == eventtype:
+	
+	elif 'TrapByOID' == eventtype:
 		eventRoot['data'][eventGUID]['ThresholdValue'] = ''
 		eventRoot['data'][eventGUID]['ThresholdUnit'] = ''
 		eventRoot['data'][eventGUID]['AppName'] = 'SNMP Trap by OID'
-
-	elif 'eventsTrapVarbind' == eventtype:
+	
+	elif 'TrapByVarbind' == eventtype:
 		eventRoot['data'][eventGUID]['ThresholdValue'] = ''
 		eventRoot['data'][eventGUID]['ThresholdUnit'] = ''
 		eventRoot['data'][eventGUID]['AppName'] = 'SNMP Trap by Varbind'
-
-	elif 'eventsInternal' == eventtype:
+	
+	elif 'Internal' == eventtype:
 		eventRoot['data'][eventGUID]['ThresholdValue'] = ''
 		eventRoot['data'][eventGUID]['ThresholdUnit'] = ''
 		eventRoot['data'][eventGUID]['AppName'] = 'Internal'
 	
+	elif 'SingleEvents' == eventtype:
+		pass
 	else:
 		raise TypeError
 	
 def emed_getEventsDetails(dbh, eventtype, eventGUID, eventRoot):
 	emed_getEventDetails(dbh, eventtype, eventGUID, eventRoot)
+
+def emed_getEventTypesFromSQL(dbh):
+	eventtypes_query = "select esource, descr, eventTypeActive from definitions_event_sources where eventTypeActive = TRUE order by esource"
+	eventtypes_cur = dbh.cursor(mdb.cursors.DictCursor)
+	try:
+		eventtypes_cur.execute(eventtypes_query)
+	except mdb.Error, e:
+		print "Error %d: %s" % (e.args[0], e.args[1])
+		sys.exit(1)
+	try:
+		eventtypes = eventtypes_cur.fetchall()
+	except mdb.Error, e:
+		print "Error %d: %s" % (e.args[0], e.args[1])
+		sys.exit(1)
+	
+	return eventtypes
 
