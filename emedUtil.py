@@ -4,6 +4,7 @@ import MySQLdb as mdb
 import sys
 import traceback
 import json
+import re
 
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Font, NamedStyle
@@ -53,19 +54,76 @@ dbh = emed_ConnectToSQL('emed', 'EVTM.crd')
 pp = pprint.PrettyPrinter(indent = 1, depth = 6)
 
 def createDocSet(doctypes, docMetaData, sheets):
+	#pp.pprint(docMetaData)
 	for doctype in doctypes:
 		metaData = docMetaData[doctype]
-		wb = Workbook()
+		#pp.pprint(metaData)
+		
+		if doctype == 'itsmpriority':
+			createITSMPriorityDoc(sheets, docMetaData, metaData)
+		else:
+			wb = Workbook()
 	
-		createTitleWS(wb, docMetaData, metaData)
-		for sheet in sheets:
-			if doctype == 'baseline':
-				createBaselineWS(wb, sheet, paletteName=metaData['docControl']['docPalette'], formatWB=metaData['isFormatted'])
-			elif doctype == 'procedure':
-				createProcedureWS(wb, sheet, paletteName=metaData['docControl']['docPalette'], formatWB=metaData['isFormatted'])
+			createTitleWS(wb, docMetaData, metaData)
+			for sheet in sheets:
+				if doctype == 'baseline':
+					createBaselineWS(wb, sheet, paletteName=metaData['docControl']['docPalette'], formatWB=metaData['isFormatted'])
+				elif doctype == 'procedure':
+					createProcedureWS(wb, sheet, paletteName=metaData['docControl']['docPalette'], formatWB=metaData['isFormatted'])
 	
-		wb.save(metaData['fname'])
+			#wb.save(metaData['fname'])
+		
 		print('Created file: %s' % (metaData['fname']))
+
+def createITSMPriorityDoc(sheets, docMetaData, metaData):
+	#lpathname = './%s' % (docMetaData['uuid'])
+	#os.makedirs(lpathname)
+	xmlfile = file(metaData['fname'], 'w', 0)
+	#xmlfile.write(('<ITSMPRIORITY uuid=\'%s\' revisionTime='\%s\' fileNameTime=\'%s\'>' % (docMetaData['uuid'], docMetaData['revisionTime'], docMetaData['fileNameTime'])))
+	#xmlfile.write('<ITSMPRIORITY uuid="%s" revisionTime="%s" fileNameTime="%s">\n' % (docMetaData['uuid'], docMetaData['revisionTime'], docMetaData['fileNameTime']))
+	xmlfile.write('<ITSMPRIORITY>\n')
+	xmlfile.write('  <UUID>%s</UUID>\n' % (docMetaData['uuid']))
+	xmlfile.write('  <REVISIONTIME>%s</REVISIONTIME>\n' % (docMetaData['revisionTime']))
+	xmlfile.write('  <FILENAMETIME>%s</FILENAMETIME>\n' % (docMetaData['fileNameTime']))
+	xmlfile.write('  <LOOKUP_TABLE>\n')
+	GUIDAlreadySeen = {}
+	for sheet in sheets:
+		#pp.pprint(sheet)
+		try:
+			for EventGUID in sheet['Dynamic']['data']:
+				try:
+					GUIDAlreadySeen[EventGUID]
+				except KeyError:
+					GUIDAlreadySeen[EventGUID]={}
+					#pp.pprint(sheet['Dynamic']['data'][EventGUID])
+				
+					# extract just the numeric priority
+					m = re.search("\d", sheet['Dynamic']['data'][EventGUID]['incidentPriority'])
+					if m:
+						incPriority = "%c" % (sheet['Dynamic']['data'][EventGUID]['incidentPriority'][m.start()])
+					else:
+						incPriority = '4'
+					
+					xmlfile.write('    <ENTRY>\n')
+					xmlfile.write('      <GLOBAL_POLICY_NAME>\n')
+					xmlfile.write('      %s\n' % (sheet['Dynamic']['data'][EventGUID]['EventName']))
+					xmlfile.write('      </GLOBAL_POLICY_NAME>\n')
+					xmlfile.write('      <GLOBAL_POLICY_ID>\n')
+					xmlfile.write('      %s\n' % (EventGUID))
+					xmlfile.write('      </GLOBAL_POLICY_ID>\n')
+					xmlfile.write('      <GLOBAL_POLICY_INCIDENT_PRIORITY>\n')
+					xmlfile.write('      %s\n' % (incPriority))
+					xmlfile.write('      </GLOBAL_POLICY_INCIDENT_PRIORITY>\n')
+					xmlfile.write('    </ENTRY>\n')
+		except KeyError:
+			pass
+	xmlfile.write('  </LOOKUP_TABLE>\n')
+	xmlfile.write('  <OVERRIDE_TABLE>\n')
+	xmlfile.write('  </OVERRIDE_TABLE>\n')
+	xmlfile.write('</ITSMPRIORITY>\n')
+	xmlfile.close()
+	#createITSMPriorityTitle(xfd, sheets, docMetaData, metaData)
+	#pass
 
 def createTitleWS(wb, docMetaData, metaData):
 

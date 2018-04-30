@@ -57,7 +57,7 @@ dbh = emed_ConnectToSQL('emed', 'EVTM.crd')
 	
 # List of the doctypes being generated
 # (doctypes could be generated from emed with active/inactive keys in the 'control' table)
-doctypes = ('baseline', 'procedure')
+doctypes = ('baseline', 'procedure', 'itsmpriority')
 for doctype in doctypes:
 	docMetaData[doctype] = {}
 
@@ -213,8 +213,8 @@ for doctype in doctypes:
 		# True/False can't be stored in SQL, normalize the 'isFormatted' parameter
 		if int(docMetaData[doctype]['docControl']['docFormatted']) == 1:
 					docMetaData[doctype]['isFormatted'] = True
-		docMetaData[doctype]['fname'] = "%s_%s_%s.xlsx" %\
-			(control['docBaseName'], control['docVersion'], docMetaData['fileNameTime'])
+		docMetaData[doctype]['fname'] = "%s_%s_%s.%s" %\
+			(control['docBaseName'], control['docVersion'], docMetaData['fileNameTime'], control['docFormat'])
 	except KeyError:
 		print "Unidentified Document Type: %s" % (doctype)
 		sys.exit(1)

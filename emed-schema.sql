@@ -220,12 +220,17 @@ ENGINE=InnoDB
 INSERT INTO `docControl` 
 (`docType`, `docFormat`, `docBaseName`, `docVersion`, `docDescTitle`, `docPalette`, `docFormatted`)
 VALUES
-('baseline', 'xlsx', 'vsblth', '0.91', 'Monitored Objects and Thresholds for Vblock Systems', 'soft', TRUE);
+('baseline', 'xlsx', 'sdsblth', '0.92', 'Monitored Objects and Thresholds for Vblock Systems', 'soft', TRUE);
 
 INSERT INTO `docControl` 
 (`docType`, `docFormat`, `docBaseName`, `docVersion`, `docDescTitle`, `docPalette`, `docFormatted`)
 VALUES
-('procedure', 'xlsx', 'vssop', '0.91', 'Procedures for Identified Events for Vblock Systems', 'soft', FALSE);
+('procedure', 'xlsx', 'sdssop', '0.92', 'Procedures for Identified Events for Vblock Systems', 'soft', FALSE);
+
+INSERT INTO `docControl` 
+(`docType`, `docFormat`, `docBaseName`, `docVersion`, `docDescTitle`, `docPalette`, `docFormatted`)
+VALUES
+('itsmpriority', 'xml', 'sdsitsmpriority', '0.92', 'Incident Priority Mapping for Identified Events for Vblock Systems', 'soft', FALSE);
 
 
 DROP TABLE IF EXISTS `severityMapping`;
