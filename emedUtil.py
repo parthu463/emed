@@ -71,14 +71,14 @@ def createDocSet(doctypes, docMetaData, sheets):
 				elif doctype == 'procedure':
 					createProcedureWS(wb, sheet, paletteName=metaData['docControl']['docPalette'], formatWB=metaData['isFormatted'])
 	
-			#wb.save(metaData['fname'])
+			wb.save((('output/%s') % (metaData['fname'])))
 		
 		print('Created file: %s' % (metaData['fname']))
 
 def createITSMPriorityDoc(sheets, docMetaData, metaData):
 	#lpathname = './%s' % (docMetaData['uuid'])
 	#os.makedirs(lpathname)
-	xmlfile = file(metaData['fname'], 'w', 0)
+	xmlfile = file((('output/%s') % (metaData['fname'])), 'w', 0)
 	#xmlfile.write(('<ITSMPRIORITY uuid=\'%s\' revisionTime='\%s\' fileNameTime=\'%s\'>' % (docMetaData['uuid'], docMetaData['revisionTime'], docMetaData['fileNameTime'])))
 	#xmlfile.write('<ITSMPRIORITY uuid="%s" revisionTime="%s" fileNameTime="%s">\n' % (docMetaData['uuid'], docMetaData['revisionTime'], docMetaData['fileNameTime']))
 	xmlfile.write('<ITSMPRIORITY>\n')
@@ -393,6 +393,31 @@ def createWSRow(ws, palette, columnList, labelList, rowtype, rownumber=None, mer
 
 def createPalette(style):
 	palette = {}
+
+	palette['dell'] = {}
+
+	palette['dell']['titlerow'] = 1
+	palette['dell']['titlefontsize'] = 14
+	palette['dell']['titlefontbold'] = True
+	palette['dell']['titlefillcolor'] = 'dcebe1'
+	
+	palette['dell']['titledatarow'] = 6
+	palette['dell']['titledatafontsize'] = 11
+	palette['dell']['titledatafontbold'] = False
+	palette['dell']['titledatafillcolor'] = 'ffffff'
+	
+	palette['dell']['headerrow'] = 2
+	palette['dell']['headerfontsize'] = 12
+	palette['dell']['headerfontbold'] = True
+	palette['dell']['headerfillcolor'] = '007db8'
+
+	palette['dell']['datarow'] = 3
+	palette['dell']['datafontsize'] = 11
+	palette['dell']['datafontbold'] = False
+
+	palette['dell']['datafillcolor0'] = 'ffffff'
+	palette['dell']['datafillcolor1'] = 'dcebe1'	
+
 	palette['virtustream'] = {}
 
 	palette['virtustream']['titlerow'] = 1
