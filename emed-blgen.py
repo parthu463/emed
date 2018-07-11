@@ -55,12 +55,6 @@ docMetaData['generator'] = os.path.basename(sys.argv[0])
 
 dbh = emed_ConnectToSQL('emed', 'EVTM.crd')
 	
-# List of the doctypes being generated
-# (doctypes could be generated from emed with active/inactive keys in the 'control' table)
-doctypes = ('baseline', 'procedure', 'itsmpriority')
-for doctype in doctypes:
-	docMetaData[doctype] = {}
-
 # Get the list of sheets
 try:
 	sheets_cur = dbh.cursor(mdb.cursors.DictCursor)
@@ -174,7 +168,12 @@ for sheet in sheets:
 
 # Data structures populated
 
-
+# List of the doctypes being generated
+# (doctypes could be generated from emed with active/inactive keys in the 'control' table)
+doctypes = ('baseline', 'procedure', 'itsmpriority')
+for doctype in doctypes:
+	docMetaData[doctype] = {}
+	
 # Create time strings for embedding and in file name
 # Store in docMetaData
 wbTime = datetime.utcnow()
