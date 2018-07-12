@@ -76,3 +76,161 @@ def loadWStoEMED(type, wsdata, dbh):
 	dbh.commit()
 	cur.close()
 	
+def loadEM7DataToEMED(eventType, ddict, dbh):
+
+	if eventType == 'Dynamic':
+		validTypeFound = True
+	
+	if eventType == 'Trap':
+		validTypeFound = True
+	
+	if eventType == 'Internal':
+		validTypeFound = True
+	
+	try:
+		validTypeFound
+	except NameError:
+		print "eventType: %s is not defined in function constructSQLForInsertIntoEMED.  Exiting." % (eventType)
+		sys.exit(1)
+
+	# We need to remove any existing entries already read in from 
+	# EM7 on previous runs to prevent doubles in the output
+	cur = dbh.cursor(mdb.cursors.DictCursor)
+	sql_delete = 'DELETE FROM `events%s`;' % (eventType)
+	#print sql_delete
+	try:
+		cur.execute(sql_delete)
+	except mdb.Error, e:
+		print "Error %d: %s" % (e.args[0], e.args[1])
+		print ""
+		print sql_delete
+		dbh.rollback
+		sys.exit(1)
+	
+	dbh.commit()
+	cur.close()
+	cur = dbh.cursor(mdb.cursors.DictCursor)
+	
+	for row in ddict[eventType]['results']:
+		#pp.pprint(row)
+		sql_insert = constructSQLForInsertIntoEMED(eventType, row)
+		#print sql_insert	
+		try:
+			cur.execute(sql_insert)
+		except mdb.Error, e:
+			print "Error %d: %s" % (e.args[0], e.args[1])
+			print ""
+			print sql_insert
+			dbh.rollback
+			sys.exit(1)
+	
+	dbh.commit()
+	cur.close()
+
+def constructSQLForInsertIntoEMED(eventType, d):
+	tableName = "events%s" % (eventType)
+	keys = ''
+	values = ''
+	firstRow = True
+	for k in d:
+		if isinstance(d[k], str):
+			v = d[k].replace('\r','')
+#			v = v.replace('\'','\\\'')
+			v = v.replace('\'','') # remove 
+		else:
+			v = d[k]
+		
+		if firstRow:
+			keys = "(`%s`" % (k)
+			values = "('%s'" % (v)
+			firstRow = False
+		else:
+			keys = "%s, `%s`" % (keys, k)
+			values = "%s, '%s'" % (values, v)
+
+	keys = "%s)" % (keys)
+	values = "%s)" % (values)
+
+	sql = "INSERT INTO `%s` %s VALUES %s" % (tableName, keys, values)
+	
+	return sql
+
+def readEventDataFromEM7(eventType, eventTypeData ,dbh):
+	try:
+		eventTypeData[eventType]['results']
+	except KeyError:
+		eventTypeData[eventType]['results'] = {}
+
+	#print eventType
+	try:
+		events_cur = dbh.cursor(mdb.cursors.DictCursor)
+		events_cur.execute(eventTypeData[eventType]['query'])
+	except mdb.Error, e:
+		print "Error %d: %s" % (e.args[0], e.args[1])
+		sys.exit(1)
+
+	try:
+		eventTypeData[eventType]['results'] = events_cur.fetchall()
+	except mdb.Error, e:
+		print "Error %d: %s" % (e.args[0], e.args[1])
+		sys.exit(1)
+	except KeyError, e:
+		print "Error: Key %s not found" % (e)
+		sys.exit(1)
+
+	#pp.pprint(eventTypeData[eventType]['results'])
+
+def defineEM7ReadQueries(eventTypeList, eventTypeData):
+	for eventType in eventTypeList:
+		try:
+			eventTypeData[eventType]
+		except KeyError:
+			eventTypeData[eventType] = {}
+			eventTypeData[eventType]['query'] = ""
+
+	# Read the event policies related to dynamic apps directly from the database
+
+	eventTypeData['Dynamic']['query'] = "\
+	select ev.ename as EventName, da.name as AppName, aa.message as AlertMessage \
+	,ath.t_value as ThresholdValue, ath.t_unit as ThresholdUnit \
+	,ev.eseverity as EventSeverity \
+	,ev.id as EventID, ev.emessage as EventMessage \
+	,aa.name as AlertName, ath.name as ThresholdName \
+	,ev.event_guid as EventGUID, ev.app_guid as AppGUID \
+	,aa.alert_guid as AlertGUID, ath.thresh_guid as ThresholdGUID \
+	from policies_events as ev \
+	join dynamic_app as da on ev.app_guid = da.app_guid \
+	join dynamic_app_alerts as aa on ev.Xoid = aa.alert_id \
+	join dynamic_app_thresholds as ath on aa.app_guid = ath.app_guid \
+	order by AppName, EventGUID \
+	"
+
+	eventTypeData['Trap']['query'] = "\
+	select ev.ename as EventName \
+	,ev.eseverity as EventSeverity \
+	,ev.emessage as EventMessage \
+	,ev.event_guid as EventGUID \
+	,ev.ppguid as PowerPackGUID \
+	from policies_events as ev \
+	where ev.esource = (select esource from master.definitions_event_sources where descr = 'Trap') \
+	and ev.ppguid is not null \
+	order by EventName, EventSeverity \
+	"
+
+	eventTypeData['Internal']['query'] = "\
+	select policies_events.ename as EventName \
+	,policies_events.eseverity as EventSeverity \
+	,definitions_internal_messages.msg_txt as EventMessage \
+	,policies_events.event_guid as EventGUID \
+	,policies_events.ppguid as PowerpackGUID \
+	from policies_events \
+	RIGHT OUTER JOIN definitions_internal_messages on msg_id = Xoid \
+	where policies_events.esource = (select esource from master.definitions_event_sources where descr = 'Internal') \
+	and policies_events.eseverity != 0 \
+	ORDER BY ename \
+	"
+
+	for eventType in eventTypeData:
+		if len(eventTypeData[eventType]['query']) == 0:
+			raise ValueError, eventType
+			

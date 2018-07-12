@@ -32,13 +32,22 @@ def emed_ConnectToSQL(dbname, crd_fname):
 			dbhost = dbcreds[dbname]['dbhost']
 		except KeyError, e:
 			dbhost = 'localhost'
+		try:
+			dbport = dbcreds[dbname]['dbport']
+		except KeyError, e:
+			dbport = '3306'
+		try:
+			dbname = dbcreds[dbname]['db']
+		except KeyError, e:
+			dbname = 'mysql'
 	except KeyError, e:
 		print "Database named %s not found in %s. No credentials available." % (e, crd_fname)
 		sys.exit(1)
-
+		
 	# can we connect?
+	# print("Connecting with host:%s, user:%s, passwd:%s, port:%s, database:%s" % (dbhost, uname, pword, dbport, dbname))
 	try:
-		dbh = mdb.connect(host = dbhost, user = uname,  passwd = pword, db = dbname)
+		dbh = mdb.connect(host = dbhost, user = uname,  passwd = pword, port = int(dbport), db = dbname)
 	except mdb.Error, e:
 		print "Error %d: %s" % (e.args[0], e.args[1])
 		sys.exit(1)

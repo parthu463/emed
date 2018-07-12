@@ -32,6 +32,30 @@ COLLATE='latin1_swedish_ci'
 ENGINE=InnoDB
 ;	
 
+DROP TABLE IF EXISTS eventsDynamic;
+
+CREATE TABLE `eventsDynamic` (
+	`AppName` VARCHAR(64) NOT NULL,
+	`EventName` VARCHAR(128) NOT NULL,
+	`AlertMessage` VARCHAR(128) NOT NULL DEFAULT '',
+	`ThresholdValue` DECIMAL(13,3) UNSIGNED NOT NULL DEFAULT '95.000',
+	`ThresholdUnit` VARCHAR(25) NULL DEFAULT NULL,
+	`EventSeverity` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
+	`EventId` INT(10) UNSIGNED NOT NULL,
+	`EventMessage` VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
+	`AlertName` VARCHAR(128) NOT NULL,
+	`ThresholdName` VARCHAR(64) NOT NULL,
+	`EventGUID` CHAR(32) NULL DEFAULT NULL,
+	`AppGUID` CHAR(32) NULL DEFAULT NULL,
+	`AlertGUID` CHAR(32) NULL DEFAULT NULL,
+	`ThresholdGUID` CHAR(32) NULL DEFAULT NULL,
+	`ThresholdLocalID` CHAR(32) NULL DEFAULT NULL,
+	`Formula` BLOB(1024) NULL DEFAULT NULL
+)
+COLLATE='latin1_swedish_ci'
+ENGINE=InnoDB
+;	
+
 DROP TABLE IF EXISTS eventsTrap;
 
 CREATE TABLE `eventsTrap` (
@@ -115,6 +139,7 @@ INSERT INTO `definitions_event_sources` (esource, descr, eventTypeActive) VALUES
 INSERT INTO `definitions_event_sources` (esource, descr, eventTypeActive) VALUES (6, "API", FALSE);
 INSERT INTO `definitions_event_sources` (esource, descr, eventTypeActive) VALUES (7, "Email", FALSE);
 INSERT INTO `definitions_event_sources` (esource, descr, eventTypeActive) VALUES (10, "ScienceLogic Agent", FALSE);
+INSERT INTO `definitions_event_sources` (esource, descr, eventTypeActive) VALUES (11, "Rules Engine", FALSE);
 INSERT INTO `definitions_event_sources` (esource, descr, eventTypeActive) VALUES (64, "TrapByVarbind", TRUE);
 INSERT INTO `definitions_event_sources` (esource, descr, eventTypeActive) VALUES (65, "SingleEvents", TRUE);
 

@@ -9,58 +9,38 @@ import pprint
 import time
 from datetime import datetime
 
-from emedLoadUtil import loadWStoEMED
+from emedUtil import emed_ConnectToSQL
+from emedLoadUtil import defineEM7ReadQueries
+from emedLoadUtil import readEventDataFromEM7
+from emedLoadUtil import loadEM7DataToEMED
 
 pp = pprint.PrettyPrinter(indent = 1)
 
 # Database connectivity
-dbname = 'emed'
+dbname = 'staging'
 crd_fname = "EVTM.crd"
+dbh = emed_ConnectToSQL(dbname, crd_fname)
 
-# Get credentials
+eventTypeData = {}
+
+eventTypeList = ['Dynamic', 'Trap', 'Internal']
+#eventTypeList = ['Internal']
+
 try:
-	dbcreds = json.loads(open(crd_fname).read())
-except IOError as e:
-	print "Error %d: Database Credentials file %s not found" % (e.args[0], crd_fname)
+	defineEM7ReadQueries(eventTypeList, eventTypeData)
+except ValueError, e:
+	print "No read query defined for type '%s' in defineEM7ReadQueries()" % (e)
 	sys.exit(1)
 
-# the database must exist in the crd file
-try: 
-	uname = dbcreds[dbname]['uname']
-	pword = dbcreds[dbname]['pword']
-	try:
-		dbhost = dbcreds[dbname]['dbhost']
-	except KeyError, e:
-		dbhost = 'localhost'
-except KeyError, e:
-	print "Database named %s not found in %s. No credentials available." % (e, crd_fname)
-	sys.exit(1)
+for eventType in eventTypeList:
+	readEventDataFromEM7(eventType, eventTypeData, dbh)
 
-# can we connect?
-try:
-	dbh = mdb.connect(host = dbhost, user = uname,  passwd = pword, db = dbname)
-except mdb.Error, e:
-	print "Error %d: %s" % (e.args[0], e.args[1])
-	sys.exit(1)
+dbh.close()
 
+dbname = 'emed'
+dbh = emed_ConnectToSQL(dbname, crd_fname)
 
-EventTypeData = {}
-EventTypeData['App'] = {}
-EventTypeData['Trap'] = {}
-EventTypeData['Internal'] = {}
-
-daEvents = 'getDAEvents-stack08-20170803-2008'
-EventTypeData['App']['fname'] = "%s.xlsx" % (daEvents)
-EventTypeData['App']['input_sheetname'] = daEvents[:31]  # Excel limits the sheet name to 31 characters
-
-EventTypeData['Trap']['fname'] = 'Events-Trap_20170531-01.xlsx'
-EventTypeData['Trap']['input_sheetname'] = 'eventsTrap'
-
-EventTypeData['Internal']['fname'] = 'Events-Internal_20170517-01.xlsx'
-EventTypeData['Internal']['input_sheetname'] = 'eventsInternal'
-
-loadWStoEMED('App', EventTypeData, dbh)
-loadWStoEMED('Trap', EventTypeData, dbh)
-loadWStoEMED('Internal', EventTypeData, dbh)
+for eventType in eventTypeList:
+	loadEM7DataToEMED(eventType, eventTypeData, dbh)
 
 dbh.close()
