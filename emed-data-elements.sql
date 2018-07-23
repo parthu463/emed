@@ -568,7 +568,7 @@ SELECT esource into @ESOURCE from `definitions_event_sources` where `descr` = @E
 
 insert into sheetMapping
 (SheetGUID, DataType, DataIdentifier) VALUES
-(@SHEETGUID, @ESOURCE, 'E28ED8DD41A89F3607DF8A204FF0475E');
+(@SHEETGUID, @ESOURCE, 'E28ED8DD41A89F3607DF8A204FF0475E'); -- DynamicApp Name
 
 insert into sheetMapping
 (SheetGUID, DataType, DataIdentifier) VALUES
@@ -650,7 +650,7 @@ SELECT `SheetGUID` INTO @SHEETGUID FROM sheets WHERE SheetName = @SHEETNAME;
 -- (SheetGUID, DataType, DataIdentifier) VALUES
 -- (@SHEETGUID, @ESOURCE, 'A7A9A4FE36067AF05FC41C16FED25CF4');
 
-set @ETYPE = 'TrapBy';
+set @ETYPE = 'TrapByVarbind';
 SELECT esource into @ESOURCE from `definitions_event_sources` where `descr` = @ETYPE;
 
 insert into sheetMapping
