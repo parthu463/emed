@@ -12,6 +12,12 @@ from openpyxl import load_workbook
 
 import pprint
 
+pp = pprint.PrettyPrinter(indent = 1, depth = 6)
+
+def emed_ConnectToEMED(crd_fname):
+	dbh = emed_ConnectToSQL('emed', crd_fname)
+	return dbh
+
 def emed_ConnectToSQL(dbname, crd_fname):
 	# Database connectivity
 	#dbname = 'emed'
@@ -53,14 +59,6 @@ def emed_ConnectToSQL(dbname, crd_fname):
 		sys.exit(1)
 
 	return dbh
-	
-
-
-#eventtypes = ('eventsApp', 'eventsTrap', 'eventsTrapVarbind', 'eventsInternal')
-#eventtypes = emed_getEventTypesFromSQL(dbh)
-dbh = emed_ConnectToSQL('emed', 'EVTM.crd')
-
-pp = pprint.PrettyPrinter(indent = 1, depth = 6)
 
 def createDocSet(doctypes, docMetaData, sheets):
 	#pp.pprint(docMetaData)
@@ -172,6 +170,9 @@ def createBaselineWS(wb, s, paletteName = 'soft', formatWB=True):
 	pp = pprint.PrettyPrinter(indent = 1)
 	# pp.pprint(s)
 
+	# Get the list of events for each sheet and type in the sheet
+	eventtypes = emed_getEventTypesFromEMED()
+	
 	palette = createPalette(paletteName)
 	
 	severityMapping = ["Healthy" \
@@ -197,8 +198,6 @@ def createBaselineWS(wb, s, paletteName = 'soft', formatWB=True):
 	rownumber = palette['datarow']
 	columnList = ('A', 'B', 'C', 'D', 'E', 'F', )
 
-	# Get the list of events for each sheet and type in the sheet
-	eventtypes = emed_getEventTypesFromSQL(dbh)
 	#pp.pprint(eventtypes)
 	for eventtype in eventtypes:
 		try:
@@ -287,7 +286,7 @@ def createProcedureWS(wb, s, paletteName = 'soft', formatWB=True):
 	columnList = ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', )
 	
 	# Get the list of events for each sheet and type in the sheet
-	eventtypes = emed_getEventTypesFromSQL(dbh)
+	eventtypes = emed_getEventTypesFromEMED()
 	for eventtype in eventtypes:
 		try:
 			localEventTree = s[eventtype['descr']]['data']
@@ -380,7 +379,19 @@ def createWSRow(ws, palette, columnList, labelList, rowtype, rownumber=None, mer
 	for idx in range(0, len(columnList)):
 		currentCellName = '%s%s' % (columnList[idx], rowvalue)
 		currentCell = ws[currentCellName]
-		currentCell.value = labelList[idx]
+		try:
+			currentCell.value = labelList[idx]
+		except UnicodeDecodeError as ex:
+			if idx:
+				eventPolicyCellName = '%s%s' % (columnList[0], rowvalue)
+				eventPolicyCell = ws[eventPolicyCellName]
+				print "Possible error processing event message '%s' on row %s" % (eventPolicyCell.value, rowvalue)
+
+			print currentCell
+			print ex
+			traceback.print_exc()
+			sys.exit(1)
+
 		try:
 			currentCell.font = Font(bold = bold, size=palette[fontsizename])
 		except:
@@ -521,21 +532,17 @@ def	emed_getEventDetailsFromSQL(dbh, event_query):
 	
 def	emed_getEventDetails_App(dbh, eventGUID, eventRoot):
 	#pp.pprint('emed_getEventDetails_App')
-	#event_prequery = "SELECT EventName, AlertMessage, ThresholdValue, ThresholdUnit, EventSeverity, AppName \
-	#from eventsApp where EventGUID = '%s'"
 	event_prequery = "SELECT EventName, AlertMessage, ThresholdValue, ThresholdUnit, EventSeverity, AppName \
 		, incidentPriority, procText.procText \
-		from eventsApp \
-		LEFT OUTER JOIN eventProcMapping on eventsApp.EventGUID = eventProcMapping.EventGUID \
+		from eventsDynamic \
+		LEFT OUTER JOIN eventProcMapping on eventsDynamic.EventGUID = eventProcMapping.EventGUID \
 		LEFT OUTER JOIN procText on procText.procTextID = eventProcMapping.procTextID \
-		where eventsApp.EventGUID = '%s'"
+		where eventsDynamic.EventGUID = '%s'"
 	event_query = event_prequery % (eventGUID)
 	return emed_getEventDetailsFromSQL(dbh,event_query)
 
 def emed_getEventDetails_Trap(dbh, eventGUID, eventRoot):
 	#pp.pprint('emed_getEventDetails_Trap')
-	#event_prequery = "SELECT EventName, EventMessage as AlertMessage, EventSeverity \
-	#from eventsTrap where EventGUID = '%s'"
 	event_prequery = "SELECT EventName, EventMessage as AlertMessage, EventSeverity, incidentPriority, procText.procText \
 	from eventsTrap \
 	LEFT OUTER JOIN eventProcMapping on eventsTrap.EventGUID = eventProcMapping.EventGUID \
@@ -573,7 +580,7 @@ def emed_getEventDetails(dbh, eventtype, eventGUID, eventRoot):
 	eventRoot['data'][eventGUID] = {}
 	if 'Dynamic' == eventtype:
 		eventRoot['data'][eventGUID] = emed_getEventDetails_App(dbh, eventGUID, eventRoot)
-	elif 'TrapByOID' == eventtype:
+	elif 'Trap' == eventtype:
 		eventRoot['data'][eventGUID] = emed_getEventDetails_Trap(dbh, eventGUID, eventRoot)
 	elif 'TrapByVarbind' == eventtype:
 		eventRoot['data'][eventGUID] = emed_getEventDetails_TrapVarbind(dbh, eventGUID, eventRoot, eventRoot['source']['tablename'])
@@ -599,7 +606,7 @@ def emed_getEventDetails(dbh, eventtype, eventGUID, eventRoot):
 	
 		eventRoot['data'][eventGUID]['AppName'] = "%s (DynApp)" % (eventRoot['data'][eventGUID]['AppName'])
 	
-	elif 'TrapByOID' == eventtype:
+	elif 'Trap' == eventtype:
 		eventRoot['data'][eventGUID]['ThresholdValue'] = ''
 		eventRoot['data'][eventGUID]['ThresholdUnit'] = ''
 		eventRoot['data'][eventGUID]['AppName'] = 'SNMP Trap by OID'
@@ -622,9 +629,11 @@ def emed_getEventDetails(dbh, eventtype, eventGUID, eventRoot):
 def emed_getEventsDetails(dbh, eventtype, eventGUID, eventRoot):
 	emed_getEventDetails(dbh, eventtype, eventGUID, eventRoot)
 
-def emed_getEventTypesFromSQL(dbh):
+def emed_getEventTypesFromEMED():
+	ldbh = emed_ConnectToEMED('EVTM.crd')
+	
 	eventtypes_query = "select esource, descr, eventTypeActive from definitions_event_sources where eventTypeActive = TRUE order by esource"
-	eventtypes_cur = dbh.cursor(mdb.cursors.DictCursor)
+	eventtypes_cur = ldbh.cursor(mdb.cursors.DictCursor)
 	try:
 		eventtypes_cur.execute(eventtypes_query)
 	except mdb.Error, e:

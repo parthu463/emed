@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import MySQLdb as mdb
+import traceback
 import sys
 
 from openpyxl import Workbook
@@ -8,7 +9,7 @@ from openpyxl import load_workbook
 
 import pprint
 
-eventtypes = ('eventsApp', 'eventsTrap', 'eventsTrapVarbind')
+from emedUtil import emed_ConnectToEMED
 
 pp = pprint.PrettyPrinter(indent = 1, depth = 4)
 
@@ -29,7 +30,7 @@ def loadWStoEMED(type, wsdata, dbh):
 		skip_header = True
 	
 	if type == 'App':
-		sql_preamble = 'INSERT INTO `eventsApp` ( AppName, EventName, AlertMessage, \
+		sql_preamble = 'INSERT INTO `eventsDynamic` ( AppName, EventName, AlertMessage, \
 			ThresholdValue, ThresholdUnit, EventSeverity, EventID, EventMessage, \
 			AlertName, ThresholdName, EventGUID, AppGUID, AlertGUID, ThresholdGUID, \
 			ThresholdLocalID, Formula \
@@ -76,7 +77,9 @@ def loadWStoEMED(type, wsdata, dbh):
 	dbh.commit()
 	cur.close()
 	
-def loadEM7DataToEMED(eventType, ddict, dbh):
+def loadEM7DataToEMED(eventType, ddict):
+
+	ldbh = emed_ConnectToEMED('EVTM.crd')
 
 	if eventType == 'Dynamic':
 		validTypeFound = True
@@ -95,7 +98,7 @@ def loadEM7DataToEMED(eventType, ddict, dbh):
 
 	# We need to remove any existing entries already read in from 
 	# EM7 on previous runs to prevent doubles in the output
-	cur = dbh.cursor(mdb.cursors.DictCursor)
+	cur = ldbh.cursor(mdb.cursors.DictCursor)
 	sql_delete = 'DELETE FROM `events%s`;' % (eventType)
 	#print sql_delete
 	try:
@@ -104,12 +107,12 @@ def loadEM7DataToEMED(eventType, ddict, dbh):
 		print "Error %d: %s" % (e.args[0], e.args[1])
 		print ""
 		print sql_delete
-		dbh.rollback
+		ldbh.rollback
 		sys.exit(1)
 	
-	dbh.commit()
+	ldbh.commit()
 	cur.close()
-	cur = dbh.cursor(mdb.cursors.DictCursor)
+	cur = ldbh.cursor(mdb.cursors.DictCursor)
 	
 	for row in ddict[eventType]['results']:
 		#pp.pprint(row)
@@ -121,29 +124,59 @@ def loadEM7DataToEMED(eventType, ddict, dbh):
 			print "Error %d: %s" % (e.args[0], e.args[1])
 			print ""
 			print sql_insert
-			dbh.rollback
+			ldbh.rollback
 			sys.exit(1)
-	
-	dbh.commit()
+		except:
+			print sql_insert
+			traceback.print_exc()
+
+			ldbh.rollback
+			sys.exit(1)
+		
+	ldbh.commit()
 	cur.close()
+	ldbh.close()
 
 def constructSQLForInsertIntoEMED(eventType, d):
 	tableName = "events%s" % (eventType)
 	keys = ''
 	values = ''
-	firstRow = True
+	firstIteration = True
 	for k in d:
 		if isinstance(d[k], str):
-			v = d[k].replace('\r','')
-#			v = v.replace('\'','\\\'')
-			v = v.replace('\'','') # remove 
+			try:
+				v = d[k].replace('\r','') # remove CR
+	#			v = v.replace('\'','\\\'') # replace single quote with escaped single quote
+				v = v.replace('\'','') # remove single quote 
+				
+				# Note: 2018-Jul-20
+				# EM7 has embedded unicode characters in the event message that cause issues with 
+				# the mysql library.
+				#
+				# The following decode/replace recodes the unicode as ASCII  and then looks for 
+				# problematic strings that have been observed in the data set being pulled from EM7
+				# 
+				# This may have to be rethought in the future to find a better solution
+				v = v.decode('unicode_escape').encode('ascii','replace')
+				v = v.replace('%T?C', '%T deg. C')
+				v = v.replace('%T?C ', '%T deg. C ')
+				v = v.replace('%V?C', '%V deg. C')
+				v = v.replace('%V?C ', '%V deg. C ')
+				# End of Note:
+			
+			except UnicodeDecodeError as ex:
+				print "Unicode character found on input string: '%s'" % (v)
+				print ex
+				traceback.print_exc()
+				sys.exit(1)
+
 		else:
 			v = d[k]
 		
-		if firstRow:
+		if firstIteration:
 			keys = "(`%s`" % (k)
 			values = "('%s'" % (v)
-			firstRow = False
+			firstIteration = False
 		else:
 			keys = "%s, `%s`" % (keys, k)
 			values = "%s, '%s'" % (values, v)
@@ -152,7 +185,8 @@ def constructSQLForInsertIntoEMED(eventType, d):
 	values = "%s)" % (values)
 
 	sql = "INSERT INTO `%s` %s VALUES %s" % (tableName, keys, values)
-	
+
+	#print sql
 	return sql
 
 def readEventDataFromEM7(eventType, eventTypeData ,dbh):

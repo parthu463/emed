@@ -68,7 +68,7 @@ insert into sheetMapping
 
 
 -- Quanta Nodes Sheet
-set @ETYPE = 'TrapByOID';
+set @ETYPE = 'Trap';
 SELECT esource into @ESOURCE from `definitions_event_sources` where `descr` = @ETYPE;
 
 SET @SHEETNAME = 'Quanta';
@@ -326,7 +326,7 @@ insert into sheetMapping
 (SheetGUID, DataType, DataIdentifier) VALUES
 (@SHEETGUID, @ESOURCE, '603736D666A4A105D34AC00AE53D08E1');
 
-set @ETYPE = 'TrapByOID';
+set @ETYPE = 'Trap';
 SELECT esource into @ESOURCE from `definitions_event_sources` where `descr` = @ETYPE;
 
 insert into sheetMapping
@@ -396,7 +396,7 @@ SELECT `SheetGUID` INTO @SHEETGUID FROM sheets WHERE SheetName = @SHEETNAME;
 --(SheetGUID, DataType, DataIdentifier) VALUES
 --(@SHEETGUID, @ESOURCE, '603736D666A4A105D34AC00AE53D08E1');
 
-set @ETYPE = 'TrapByOID';
+set @ETYPE = 'Trap';
 SELECT esource into @ESOURCE from `definitions_event_sources` where `descr` = @ETYPE;
 
 insert into sheetMapping
@@ -485,7 +485,7 @@ VALUES (@SHEETNAME, @DISPLAYORDER, 'VMware NSX');
 
 SELECT `SheetGUID` INTO @SHEETGUID FROM sheets WHERE SheetName = @SHEETNAME;
 
-set @ETYPE = 'TrapByOID';
+set @ETYPE = 'Trap';
 SELECT esource into @ESOURCE from `definitions_event_sources` where `descr` = @ETYPE;
 
 insert into sheetMapping
@@ -643,7 +643,7 @@ VALUES (@SHEETNAME, @DISPLAYORDER, 'EMC Data Protection Advisor');
 
 SELECT `SheetGUID` INTO @SHEETGUID FROM sheets WHERE SheetName = @SHEETNAME;
 
--- set @ETYPE = 'TrapByOID';
+-- set @ETYPE = 'Trap';
 -- SELECT esource into @ESOURCE from `definitions_event_sources` where `descr` = @ETYPE;
 
 -- insert into sheetMapping
@@ -668,7 +668,7 @@ VALUES (@SHEETNAME, @DISPLAYORDER, 'VMware Site Recovery Manager');
 
 SELECT `SheetGUID` INTO @SHEETGUID FROM sheets WHERE SheetName = @SHEETNAME;
 
-set @ETYPE = 'TrapByOID';
+set @ETYPE = 'Trap';
 SELECT esource into @ESOURCE from `definitions_event_sources` where `descr` = @ETYPE;
 
 insert into sheetMapping

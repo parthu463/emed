@@ -9,11 +9,11 @@ import time
 import pprint
 import uuid
 
-from emedUtil import emed_ConnectToSQL
+from emedUtil import emed_ConnectToEMED
 from emedUtil import emed_getEventsTrapVarbindTableName
 from emedUtil import emed_getEventDetails
 from emedUtil import createDocSet
-from emedUtil import emed_getEventTypesFromSQL
+from emedUtil import emed_getEventTypesFromEMED
 
 pp = pprint.PrettyPrinter(indent = 1)
 
@@ -53,7 +53,7 @@ docMetaData['generator'] = os.path.basename(sys.argv[0])
 	# print "Error %d: %s" % (e.args[0], e.args[1])
 	# sys.exit(1)
 
-dbh = emed_ConnectToSQL('emed', 'EVTM.crd')
+dbh = emed_ConnectToEMED('EVTM.crd')
 	
 # Get the list of sheets
 try:
@@ -74,9 +74,7 @@ except mdb.Error, e:
 #sys.exit(0)	
 
 # Get the event types from the database to loop through them and process
-eventtypes = emed_getEventTypesFromSQL(dbh)
-
-
+eventtypes = emed_getEventTypesFromEMED()
 #pp.pprint(eventtypes)
 #sys.exit(0)
 
@@ -88,12 +86,12 @@ for sheet in sheets:
 		events_prequery = "";
 		sheet[eventtype['descr']] = {}
 		if 'Dynamic' == eventtype['descr']:
-			events_prequery = "select distinct EventGUID from eventsApp\
-				INNER JOIN sheetMapping on eventsApp.AppGUID = sheetMapping.DataIdentifier\
+			events_prequery = "select distinct EventGUID from eventsDynamic\
+				INNER JOIN sheetMapping on eventsDynamic.AppGUID = sheetMapping.DataIdentifier\
 				INNER JOIN sheets on sheetMapping.SheetGUID = sheets.SheetGUID\
 				where sheetMapping.DataType = %d and sheets.SheetGUID = %s and EventSeverity != 0"
 
-		elif 'TrapByOID' == eventtype['descr']:
+		elif 'Trap' == eventtype['descr']:
 			events_prequery = "select distinct EventGUID from eventsTrap\
 				INNER JOIN sheetMapping on eventsTrap.PowerpackGUID = sheetMapping.DataIdentifier\
 				INNER JOIN sheets on sheetMapping.SheetGUID = sheets.SheetGUID\
@@ -120,8 +118,7 @@ for sheet in sheets:
 			#pass
 
 		else:
-			# stupid to put line number in the output. FIX!!!
-			print "Processing Top Level Sheets Directives: Unidentified Event Type: %s" % (eventtype['descr'])
+			print "Processing Top Level Sheets: Unidentified Event Type: %s" % (eventtype['descr'])
 			sys.exit(1)
 			
 		try:
@@ -134,12 +131,14 @@ for sheet in sheets:
 				#pp.pprint(events_query)
 				events_cur.execute(events_query)
 			except mdb.Error, e:
+				print "SQL error in extracting Events from EMED"
 				print "Error %d: %s" % (e.args[0], e.args[1])
 				sys.exit(1)
 	
 			try:
 				events = events_cur.fetchall()
 			except mdb.Error, e:
+				print "Data error in extracting Events from EMED"
 				print "Error %d: %s" % (e.args[0], e.args[1])
 				sys.exit(1)
 			
@@ -163,8 +162,8 @@ for sheet in sheets:
 					
 # sheets contains the ordered list of sheets to create and the list of events for each sheet.
 # uncomment pretty print, sys.exit lines below and run to see format
-# pp.pprint(sheets)
-# sys.exit(0)
+## pp.pprint(sheets)
+## sys.exit(0)
 
 # Data structures populated
 

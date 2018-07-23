@@ -9,6 +9,7 @@ import pprint
 import time
 from datetime import datetime
 
+from emedUtil import emed_ConnectToEMED
 from emedUtil import emed_ConnectToSQL
 from emedLoadUtil import defineEM7ReadQueries
 from emedLoadUtil import readEventDataFromEM7
@@ -17,9 +18,9 @@ from emedLoadUtil import loadEM7DataToEMED
 pp = pprint.PrettyPrinter(indent = 1)
 
 # Database connectivity
-dbname = 'staging'
+sdbname = 'staging'
 crd_fname = "EVTM.crd"
-dbh = emed_ConnectToSQL(dbname, crd_fname)
+sdbh = emed_ConnectToSQL(sdbname, crd_fname)
 
 eventTypeData = {}
 
@@ -33,14 +34,13 @@ except ValueError, e:
 	sys.exit(1)
 
 for eventType in eventTypeList:
-	readEventDataFromEM7(eventType, eventTypeData, dbh)
+	readEventDataFromEM7(eventType, eventTypeData, sdbh)
 
-dbh.close()
+sdbh.close()
 
-dbname = 'emed'
-dbh = emed_ConnectToSQL(dbname, crd_fname)
+#edbname = 'emed'
+#edbh = emed_ConnectToEMED(crd_fname)
 
 for eventType in eventTypeList:
-	loadEM7DataToEMED(eventType, eventTypeData, dbh)
+	loadEM7DataToEMED(eventType, eventTypeData)
 
-dbh.close()
