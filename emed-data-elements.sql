@@ -17,6 +17,7 @@ SELECT `SheetGUID` INTO @SHEETGUID FROM sheets WHERE SheetName = @SHEETNAME;
 
 set @ETYPE = 'Dynamic';
 SELECT esource into @ESOURCE from `definitions_event_sources` where `descr` = @ETYPE;
+-- When type is 'Dynamic' the DataIdentifier is the app_guid of the Dynamic App
 
 insert into sheetMapping
 (SheetGUID, DataType, DataIdentifier) VALUES
@@ -61,6 +62,8 @@ SELECT `SheetGUID` INTO @SHEETGUID FROM sheets WHERE SheetName = @SHEETNAME;
 
 set @ETYPE = 'TrapByVarbind';
 SELECT esource into @ESOURCE from `definitions_event_sources` where `descr` = @ETYPE;
+-- When the type is 'TrapByVarbind' the DataIdentifier is the name of the EMED table where 
+-- the list of documented events exists
 
 insert into sheetMapping
 (SheetGUID, DataType, DataIdentifier) VALUES
@@ -70,6 +73,8 @@ insert into sheetMapping
 -- Quanta Nodes Sheet
 set @ETYPE = 'Trap';
 SELECT esource into @ESOURCE from `definitions_event_sources` where `descr` = @ETYPE;
+-- When the type is 'Trap' (or the deprecated TrapByOID ) the DataIdentifier is the ppguid
+-- where the event is defined
 
 SET @SHEETNAME = 'Quanta';
 SELECT displayOrder INTO @DISPLAYORDER from working;
@@ -82,6 +87,22 @@ SELECT `SheetGUID` INTO @SHEETGUID FROM sheets WHERE SheetName = @SHEETNAME;
 insert into sheetMapping
 (SheetGUID, DataType, DataIdentifier) VALUES
 (@SHEETGUID, @ESOURCE, 'A5DD819A2F01A152801C7943391829EE');
+
+-- iDRAC Sheet
+set @ETYPE = 'Trap';
+SELECT esource into @ESOURCE from `definitions_event_sources` where `descr` = @ETYPE;
+
+SET @SHEETNAME = 'iDRAC';
+SELECT displayOrder INTO @DISPLAYORDER from working;
+UPDATE working SET displayOrder = @DISPLAYORDER + 10;
+insert into sheets (SheetName, displayOrder, SheetDesc)
+VALUES (@SHEETNAME, @DISPLAYORDER, 'Dell iDRAC');
+
+SELECT `SheetGUID` INTO @SHEETGUID FROM sheets WHERE SheetName = @SHEETNAME;
+
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
+(@SHEETGUID, @ESOURCE, '91A3725C746C8009E9B48F19EF53FD10'); -- Dell iDRAC Traps
 
 -- EMC VMAX Sheet
 set @ETYPE = 'Dynamic';
@@ -380,6 +401,38 @@ insert into sheetMapping
 (SheetGUID, DataType, DataIdentifier) VALUES
 (@SHEETGUID, @ESOURCE, 'trapDataXMS');
 
+-- VMware vSAN
+SET @SHEETNAME = 'vSAN';
+SELECT displayOrder INTO @DISPLAYORDER from working;
+UPDATE working SET displayOrder = @DISPLAYORDER + 10;
+insert into sheets (SheetName, displayOrder, SheetDesc)
+VALUES (@SHEETNAME, @DISPLAYORDER, 'VMware vSAN');
+
+SELECT `SheetGUID` INTO @SHEETGUID FROM sheets WHERE SheetName = @SHEETNAME;
+
+set @ETYPE = 'Trap';
+SELECT esource into @ESOURCE from `definitions_event_sources` where `descr` = @ETYPE;
+
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
+(@SHEETGUID, @ESOURCE, 'Not Specified'); -- 
+
+-- EMC VPLEX
+SET @SHEETNAME = 'VPLEX';
+SELECT displayOrder INTO @DISPLAYORDER from working;
+UPDATE working SET displayOrder = @DISPLAYORDER + 10;
+insert into sheets (SheetName, displayOrder, SheetDesc)
+VALUES (@SHEETNAME, @DISPLAYORDER, 'EMC VPLEX');
+
+SELECT `SheetGUID` INTO @SHEETGUID FROM sheets WHERE SheetName = @SHEETNAME;
+
+set @ETYPE = 'Trap';
+SELECT esource into @ESOURCE from `definitions_event_sources` where `descr` = @ETYPE;
+
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
+(@SHEETGUID, @ESOURCE, 'EA99241A8A29BC6E96D80A0C2748609A'); -- Dell EMC: VPLEX Alerts
+
 -- EMC Unity 
 SET @SHEETNAME = 'Unity';
 SELECT displayOrder INTO @DISPLAYORDER from working;
@@ -475,6 +528,42 @@ insert into sheetMapping
 insert into sheetMapping
 (SheetGUID, DataType, DataIdentifier) VALUES
 (@SHEETGUID, @ESOURCE, 'FA9707E3F4F286D3B267C6DAF3CC4000');
+
+-- Dell Switch Sheet
+SET @SHEETNAME = 'Dell Switch';
+SELECT displayOrder INTO @DISPLAYORDER from working;
+UPDATE working SET displayOrder = @DISPLAYORDER + 10;
+insert into sheets (SheetName, displayOrder, SheetDesc)
+VALUES (@SHEETNAME, @DISPLAYORDER, 'Dell PowerConnect Switch');
+
+SELECT `SheetGUID` INTO @SHEETGUID FROM sheets WHERE SheetName = @SHEETNAME;
+
+set @ETYPE = 'Dynamic';
+SELECT esource into @ESOURCE from `definitions_event_sources` where `descr` = @ETYPE;
+
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
+(@SHEETGUID, @ESOURCE, '2CA18982606D58F1E03244A76616E501'); -- Dell Switch: CPU Collection (via Telnet)
+
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
+(@SHEETGUID, @ESOURCE, '00000000000000000000000000000191'); -- Dell PowerConnect: Status
+
+-- Brocade Switch Sheet
+SET @SHEETNAME = 'Brocade Switch';
+SELECT displayOrder INTO @DISPLAYORDER from working;
+UPDATE working SET displayOrder = @DISPLAYORDER + 10;
+insert into sheets (SheetName, displayOrder, SheetDesc)
+VALUES (@SHEETNAME, @DISPLAYORDER, 'Brocade Switch');
+
+SELECT `SheetGUID` INTO @SHEETGUID FROM sheets WHERE SheetName = @SHEETNAME;
+
+set @ETYPE = 'Dynamic';
+SELECT esource into @ESOURCE from `definitions_event_sources` where `descr` = @ETYPE;
+
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
+(@SHEETGUID, @ESOURCE, '00000000000000000000000000000139'); -- Brocade: Configuration
 
 -- VMware NSX
 SET @SHEETNAME = 'NSX';
@@ -674,3 +763,123 @@ SELECT esource into @ESOURCE from `definitions_event_sources` where `descr` = @E
 insert into sheetMapping
 (SheetGUID, DataType, DataIdentifier) VALUES
 (@SHEETGUID, @ESOURCE, 'A75B987BD0E14BAEA62EAA6040930784');
+
+-- vRealize Sheet
+SET @SHEETNAME = 'vRealize';
+SELECT displayOrder INTO @DISPLAYORDER from working;
+UPDATE working SET displayOrder = @DISPLAYORDER + 10;
+insert into sheets (SheetName, displayOrder, SheetDesc)
+VALUES (@SHEETNAME, @DISPLAYORDER, 'vRealize');
+
+SELECT `SheetGUID` INTO @SHEETGUID FROM sheets WHERE SheetName = @SHEETNAME;
+
+set @ETYPE = 'Dynamic';
+SELECT esource into @ESOURCE from `definitions_event_sources` where `descr` = @ETYPE;
+
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
+(@SHEETGUID, @ESOURCE, '4DCE57FFD6FA71BAE0147CB70DC29A7F');  -- Dell EMC: vRealize Orchestrator URL
+
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
+(@SHEETGUID, @ESOURCE, '028989F9AED7F340FCCCC8D9A0FDFA97');  -- Dell EMC: vRealize Operations URL
+
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
+(@SHEETGUID, @ESOURCE, 'B32C4C5BD2B59DBE4AB6EB4D88F73901');  -- Dell EMC: vRealize vCenter URL
+
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
+(@SHEETGUID, @ESOURCE, '3F27CE9B8C9B5633C6AAEE1A94F72056');  -- Dell EMC: vRealize General URL
+
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
+(@SHEETGUID, @ESOURCE, '2C7F792AD88544CF2A8EDDEB19D7C602');  -- Dell EMC: vRealize Log Insight Services
+
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
+(@SHEETGUID, @ESOURCE, 'D276636A361F1B7DAE218EC85AFC20CD');  -- Dell EMC: vRealize Operations Services
+
+
+-- Scale IO Sheet
+SET @SHEETNAME = 'ScaleIO';
+SELECT displayOrder INTO @DISPLAYORDER from working;
+UPDATE working SET displayOrder = @DISPLAYORDER + 10;
+insert into sheets (SheetName, displayOrder, SheetDesc)
+VALUES (@SHEETNAME, @DISPLAYORDER, 'Scale IO');
+
+SELECT `SheetGUID` INTO @SHEETGUID FROM sheets WHERE SheetName = @SHEETNAME;
+
+set @ETYPE = 'Dynamic';
+SELECT esource into @ESOURCE from `definitions_event_sources` where `descr` = @ETYPE;
+
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
+(@SHEETGUID, @ESOURCE, '3C25AED75CE3267B2C2EE95D0BE35AD2');  -- ScaleIO-Array-Capacity
+
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
+(@SHEETGUID, @ESOURCE, 'A564C79FA6E66B91FB47A44FC7351117');  -- ScaleIO-Array-Summary
+
+set @ETYPE = 'Trap';
+SELECT esource into @ESOURCE from `definitions_event_sources` where `descr` = @ETYPE;
+
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
+(@SHEETGUID, @ESOURCE, '2BFFBEB4AD64BD5304CC0C922702DA00'); -- Dell EMC ScaleIO
+
+
+-- ECS Sheet
+SET @SHEETNAME = 'ECS';
+SELECT displayOrder INTO @DISPLAYORDER from working;
+UPDATE working SET displayOrder = @DISPLAYORDER + 10;
+insert into sheets (SheetName, displayOrder, SheetDesc)
+VALUES (@SHEETNAME, @DISPLAYORDER, 'Elastic Cloud Storage');
+
+SELECT `SheetGUID` INTO @SHEETGUID FROM sheets WHERE SheetName = @SHEETNAME;
+
+set @ETYPE = 'Dynamic';
+SELECT esource into @ESOURCE from `definitions_event_sources` where `descr` = @ETYPE;
+
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
+(@SHEETGUID, @ESOURCE, '0DFC661989291982D0474FBD3AB0C0B0');  -- ECS Cluster Utilization
+
+set @ETYPE = 'Trap';
+SELECT esource into @ESOURCE from `definitions_event_sources` where `descr` = @ETYPE;
+
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
+(@SHEETGUID, @ESOURCE, 'A9CC12C2196C59779D52437512B03415'); -- Dell EMC ECS
+
+-- ViPR Sheet
+SET @SHEETNAME = 'ViPR';
+SELECT displayOrder INTO @DISPLAYORDER from working;
+UPDATE working SET displayOrder = @DISPLAYORDER + 10;
+insert into sheets (SheetName, displayOrder, SheetDesc)
+VALUES (@SHEETNAME, @DISPLAYORDER, 'ViPR Controller');
+
+SELECT `SheetGUID` INTO @SHEETGUID FROM sheets WHERE SheetName = @SHEETNAME;
+
+set @ETYPE = 'Dynamic';
+SELECT esource into @ESOURCE from `definitions_event_sources` where `descr` = @ETYPE;
+
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
+(@SHEETGUID, @ESOURCE, 'E7CDE83DC124DF076AFF73C1C64A05E0');  -- Dell EMC: ViPR Services Health
+
+-- Puppet Monitoring Sheet
+SET @SHEETNAME = 'Puppet';
+SELECT displayOrder INTO @DISPLAYORDER from working;
+UPDATE working SET displayOrder = @DISPLAYORDER + 10;
+insert into sheets (SheetName, displayOrder, SheetDesc)
+VALUES (@SHEETNAME, @DISPLAYORDER, 'Puppet');
+
+SELECT `SheetGUID` INTO @SHEETGUID FROM sheets WHERE SheetName = @SHEETNAME;
+
+set @ETYPE = 'SingleEvents';
+SELECT esource into @ESOURCE from `definitions_event_sources` where `descr` = @ETYPE;
+
+insert into sheetMapping
+(SheetGUID, DataType, DataIdentifier) VALUES
+(@SHEETGUID, @ESOURCE, '621866FB006A52B5C64B118A70B08C73');  -- Event GUID is incorrect for this sheet

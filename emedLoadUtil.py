@@ -3,6 +3,7 @@
 import MySQLdb as mdb
 import traceback
 import sys
+import time
 
 from openpyxl import Workbook
 from openpyxl import load_workbook
@@ -117,19 +118,27 @@ def loadEM7DataToEMED(eventType, ddict):
 	for row in ddict[eventType]['results']:
 		#pp.pprint(row)
 		sql_insert = constructSQLForInsertIntoEMED(eventType, row)
-		#print sql_insert	
+		#print sql_insert
 		try:
+			# The library does not return warnings as an exception that can be caught
+			# so the try here is not valid.  Leaving it since it does no harm (KCC: 2018-07-24)
+
+			# It also appears that the sql library will cache a given response and only
+			# print it once per execution of the db session (or cursor).
+			# This might be related to SET WARNING LIMIT in mysql.
 			cur.execute(sql_insert)
+
 		except mdb.Error, e:
+			print "mdb.Error"
 			print "Error %d: %s" % (e.args[0], e.args[1])
 			print ""
 			print sql_insert
 			ldbh.rollback
 			sys.exit(1)
-		except:
+		except Exception, e:
+			print "Exception"
 			print sql_insert
 			traceback.print_exc()
-
 			ldbh.rollback
 			sys.exit(1)
 		
@@ -141,8 +150,22 @@ def constructSQLForInsertIntoEMED(eventType, d):
 	tableName = "events%s" % (eventType)
 	keys = ''
 	values = ''
+	
+	# pp.pprint(d)
+	
+	# The ThresholdValue is a decimal value but may be undefined in EM7 and come over as 'None'
+	# Verify that it should be 0.00 by checking ThresholdGUID and ThresholdName
+	#print d['ThresholdValue']
+#	try:
+#		if d['ThresholdGUID'] == None and d['ThresholdName'] == None:
+#			d['ThresholdValue'] = 0.00
+#	except KeyError:
+#		pass
+
+	
 	firstIteration = True
 	for k in d:
+
 		if isinstance(d[k], str):
 			try:
 				v = d[k].replace('\r','') # remove CR
@@ -172,14 +195,26 @@ def constructSQLForInsertIntoEMED(eventType, d):
 
 		else:
 			v = d[k]
+			
+		#if k == 'ThresholdValue' and d[k] == None:
+		#	print d[k]
 		
 		if firstIteration:
 			keys = "(`%s`" % (k)
-			values = "('%s'" % (v)
+			if v == None:
+				values = "(NULL"
+			else:
+				values = "('%s'" % (v)
 			firstIteration = False
 		else:
 			keys = "%s, `%s`" % (keys, k)
-			values = "%s, '%s'" % (values, v)
+			if v == None:
+				fstring = "%s, %s"
+				cval = 'NULL'
+			else:
+				fstring = "%s, '%s'"
+				cval = v
+			values = fstring % (values, cval)
 
 	keys = "%s)" % (keys)
 	values = "%s)" % (values)
@@ -233,9 +268,9 @@ def defineEM7ReadQueries(eventTypeList, eventTypeData):
 	,ev.event_guid as EventGUID, ev.app_guid as AppGUID \
 	,aa.alert_guid as AlertGUID, ath.thresh_guid as ThresholdGUID \
 	from policies_events as ev \
-	join dynamic_app as da on ev.app_guid = da.app_guid \
-	join dynamic_app_alerts as aa on ev.Xoid = aa.alert_id \
-	join dynamic_app_thresholds as ath on aa.app_guid = ath.app_guid \
+	inner join dynamic_app as da on ev.app_guid = da.app_guid \
+	inner join dynamic_app_alerts as aa on ev.Xoid = aa.alert_id \
+	left outer join dynamic_app_thresholds as ath on aa.app_guid = ath.app_guid \
 	order by AppName, EventGUID \
 	"
 

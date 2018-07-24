@@ -83,6 +83,7 @@ def createDocSet(doctypes, docMetaData, sheets):
 		print('Created file: %s' % (metaData['fname']))
 
 def createITSMPriorityDoc(sheets, docMetaData, metaData):
+	return
 	#lpathname = './%s' % (docMetaData['uuid'])
 	#os.makedirs(lpathname)
 	xmlfile = file((('output/%s') % (metaData['fname'])), 'w', 0)
@@ -530,8 +531,8 @@ def	emed_getEventDetailsFromSQL(dbh, event_query):
 	return event
 
 	
-def	emed_getEventDetails_App(dbh, eventGUID, eventRoot):
-	#pp.pprint('emed_getEventDetails_App')
+def	emed_getEventDetails_Dynamic(dbh, eventGUID, eventRoot):
+	#pp.pprint('emed_getEventDetails_Dynamic')
 	event_prequery = "SELECT EventName, AlertMessage, ThresholdValue, ThresholdUnit, EventSeverity, AppName \
 		, incidentPriority, procText.procText \
 		from eventsDynamic \
@@ -579,7 +580,7 @@ def emed_getEventDetails_Internal(dbh, eventGUID, eventRoot):
 def emed_getEventDetails(dbh, eventtype, eventGUID, eventRoot):
 	eventRoot['data'][eventGUID] = {}
 	if 'Dynamic' == eventtype:
-		eventRoot['data'][eventGUID] = emed_getEventDetails_App(dbh, eventGUID, eventRoot)
+		eventRoot['data'][eventGUID] = emed_getEventDetails_Dynamic(dbh, eventGUID, eventRoot)
 	elif 'Trap' == eventtype:
 		eventRoot['data'][eventGUID] = emed_getEventDetails_Trap(dbh, eventGUID, eventRoot)
 	elif 'TrapByVarbind' == eventtype:
@@ -593,7 +594,7 @@ def emed_getEventDetails(dbh, eventtype, eventGUID, eventRoot):
 		sys.exit(1)
 
 	if 'Dynamic' == eventtype:
-		if eventRoot['data'][eventGUID]['ThresholdUnit'] == 'None' and eventRoot['data'][eventGUID]['AppName'][:4] == 'VNXe':
+		if eventRoot['data'][eventGUID]['ThresholdUnit'] == None and eventRoot['data'][eventGUID]['AppName'][:4] == 'VNXe':
 			eventRoot['data'][eventGUID]['ThresholdUnit'] = ''
 			eventRoot['data'][eventGUID]['ThresholdValue'] = ''
 	
@@ -601,9 +602,14 @@ def emed_getEventDetails(dbh, eventtype, eventGUID, eventRoot):
 			eventRoot['data'][eventGUID]['ThresholdUnit'] = 'Celsius'
 		if eventRoot['data'][eventGUID]['ThresholdUnit'] == 'NULL':
 			eventRoot['data'][eventGUID]['ThresholdUnit'] = ''
-		if eventRoot['data'][eventGUID]['ThresholdUnit'] == 'None':
+		if eventRoot['data'][eventGUID]['ThresholdUnit'] == None:
 			eventRoot['data'][eventGUID]['ThresholdUnit'] = ''
-	
+
+		if eventRoot['data'][eventGUID]['ThresholdValue'] == 'NULL':
+			eventRoot['data'][eventGUID]['ThresholdValue'] = ''
+		if eventRoot['data'][eventGUID]['ThresholdValue'] == None:
+			eventRoot['data'][eventGUID]['ThresholdValue'] = ''
+			
 		eventRoot['data'][eventGUID]['AppName'] = "%s (DynApp)" % (eventRoot['data'][eventGUID]['AppName'])
 	
 	elif 'Trap' == eventtype:
